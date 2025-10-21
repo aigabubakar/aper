@@ -3,112 +3,174 @@
 
 <?= $this->section('content') ?>
 
-
-  <!-- login page start-->
-    <div class="page-content">
-		<div class="form-v4-content">
-    <div class="container-fluid p-0"> 
-      <div class="row m-0">
-        <div class="col-xl-5"><img class="bg-img-cover bg-center" src="../assets/images/login/conf_talk.jpg" alt="looginpage"></div>
-        <div class="col-xl-7 p-0"> 
-          <div class="login-card login-dark">
-            <div>
-              <div class="login-main create-account"> 
-            <h5 class="card-title mb-3">Complete Your Registration</h5>
-              <?= view('partials/flash') // optional partial to render flash messages ?>
-
-              <form class="theme-form" id="registerForm" action="<?= base_url('save-registration') ?>" method="post" novalidate>
-                <?= csrf_field() ?>
-
-                <?php
-                    $startYear = 2016;                   // adjust to your earliest allowed year
-                    $currentYear = (int) date('Y');
-                    //$maxYear = $currentYear + 1;         // allow reporting up to next year if needed
-                    $maxYear = $currentYear ;    
-                    $selectedFrom = old('period_from') ?? ($staff['period_from'] ?? '');
-                    $selectedTo   = old('period_to')   ?? ($staff['period_to']   ?? '');
-                ?>
-                        <p>Enter your personal details to create account</p>
-                        <div class="form-group">
-                          <label class="col-form-label pt-0">Your Name</label> 
-                          <div class="row g-2">
-                            <div class="col-sm-12">
-                              <input class="form-control" type="text" required="" name="fullname" value="<?= esc(old('fullname', $staff['fullname'] ?? '')) ?>">
+<!-- Main Wrapper -->
+		<div class="main-wrapper">
+            <div class="login-content">
+                <div class="row">
+                                        <div class="col-md-6 login-bg d-none d-lg-flex">
+                        <div class="login-carousel">
+                            <div>
+                                <div class="login-carousel-section mb-3">
+                                    <div class="login-banner">
+                                        <img src="assets/img/auth/auth-1.svg" class="img-fluid" alt="Logo">
+                                    </div>
+                                    <div class="mentor-course text-center">
+                                        <h3 class="mb-2">Welcome to <br><?= date('Y') ?><span class="text-secondary">Edo State </span> University Iyahmo.</h3>
+                                         <p>Edo State University Annual Performance Evaluation & Review System.</p>
+                                    </div>
+                                </div>
                             </div>
-                            <label class="col-form-label pt-0">Staff Id Number</label> 
-                            <div class="col-sm-6">
-                              <input class="form-control" type="text" name="staff_id" value="<?= esc(old('staff_number', $staff['staff_number'] ?? '')) ?>" readonly>
+                            <div>
+                                <div class="login-carousel-section mb-3">
+                                    <div class="login-banner">
+                                        <img src="assets/img/auth/auth-1.svg" class="img-fluid" alt="Logo">
+                                    </div>
+                                    <div class="mentor-course text-center">
+                                        <h3 class="mb-2">Welcome to <br><?= date('Y') ?><span class="text-secondary">Edo State </span> University Iyahmo.</h3>
+                                         <p>Edo State University Annual Performance Evaluation & Review System.</p>
+                                    </div>
+                                </div>
                             </div>
-                          </div>
+                            <div>
+                                <div class="login-carousel-section mb-3">
+                                    <div class="login-banner">
+                                        <img src="assets/img/auth/auth-1.svg" class="img-fluid" alt="Logo">
+                                    </div>
+                                    <div class="mentor-course text-center">
+                                        <h3 class="mb-2">Welcome to <br><?= date('Y') ?><span class="text-secondary">Edo State </span> University Iyahmo.</h3>
+                                         <p>Edo State University Annual Performance Evaluation & Review System.</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                          <label class="col-form-label">Email Address</label>
-                          <input class="form-control" type="email"name="email" value="<?= esc(old('email', $staff['email'] ?? '')) ?>" readonly>
-                        </div>
-                        <div class="form-group">
-                          <label class="col-form-label">Phone Number</label>
-                          <div class="form-input position-relative">
-                            <input class="form-control" type="text" name="phone" id="phone" class="form-control" placeholder="+2348012345678" value="<?= esc(old('phone', $staff['phone'] ?? '')) ?>">
-                          </div>
-                        </div>
-
-                    <div class="mb-3">
-                      <label for="category" class="form-label">Category of staff</label>
-                      <select name="category" id="category" class="form-select" required>
-                        <option value="">-- Select category --</option>
-                        <option value="academic" <?= old('category')=='academic' ? 'selected' : '' ?>>Academic</option>
-                        <option value="senior_non_academic" <?= old('category')=='senior_non_academic' ? 'selected' : '' ?>>Senior Non-Academic</option>
-                        <option value="junior_non_academic" <?= old('category')=='junior_non_academic' ? 'selected' : '' ?>>Junior Non-Academic</option>
-                      </select>
                     </div>
+                    <!-- /Login Banner -->
+        
+                    <div class="col-md-6 login-wrap-bg">
+                        <!-- Login -->
+                        <div class="login-wrapper">
+                            <div class="loginbox">
+                                <div class="w-100">
+                                    <div class="d-flex align-items-center justify-content-between login-header">
+                                        <img src="assets/img/" class="img-fluid" alt="Logo">
+                                    </div>
+                                    <h1 class="fs-32 fw-bold topic">Sign up</h1>
+                                   <?= view('partials/flash') // optional partial to render flash messages ?>
+                                   <form class="mb-3 pb-3" id="registerForm" action="<?= base_url('save-registration') ?>" method="post" novalidate>
+                                      <?= csrf_field() ?>
+                                      <?php
+                                          $startYear = 2016;                   // adjust to your earliest allowed year
+                                          $currentYear = (int) date('Y');
+                                          //$maxYear = $currentYear + 1;         // allow reporting up to next year if needed
+                                          $maxYear = $currentYear ;    
+                                          $selectedFrom = old('period_from') ?? ($staff['period_from'] ?? '');
+                                          $selectedTo   = old('period_to')   ?? ($staff['period_to']   ?? '');
+                                      ?>
 
-                        <div class="row">
-                            <div class="mb-3 col-md-6">
-                              <label for="period_from" class="form-label">Reporting Period - From (Year)</label>
-                              <select name="period_from" id="period_from" class="form-select" required>
-                                <option value="">-- Select year --</option>
-                                <?php for ($y = $maxYear; $y >= $startYear; $y--): ?>
-                                  <option value="<?= $y ?>" <?= ($selectedFrom == $y) ? 'selected' : '' ?>><?= $y ?></option>
-                                <?php endfor; ?>
-                              </select>
-                          </div>
+                                        <div class="mb-3 position-relative">
+                                            <label class="form-label">Full Name<span class="text-danger ms-1">*</span></label>
+                                            <div class="position-relative">
+                                                <input class="form-control form-control-lg" type="text" required="" name="fullname" value="<?= esc(old('fullname', $staff['fullname'] ?? '')) ?>">
+                                                <span><i class="isax isax-user input-icon text-gray-7 fs-14"></i></span>
+                                            </div>
+                                        </div>
 
-                        <div class="mb-3 col-md-6">
-                              <label for="period_to" class="form-label">Reporting Period - To (Year)</label>
-                              <select name="period_to" id="period_to" class="form-select" required>
-                                <option value="">-- Select year --</option>
-                                <?php for ($y = $maxYear; $y >= $startYear; $y--): ?>
-                                  <option value="<?= $y ?>" <?= ($selectedTo == $y) ? 'selected' : '' ?>><?= $y ?></option>
-                                <?php endfor; ?>
-                              </select>
+                                        <div class="mb-3 position-relative">
+                                            <label class="form-label">Staff Id Number<span class="text-danger ms-1">*</span></label>
+                                            <div class="position-relative">
+                                                <input class="form-control form-control-lg" type="text" name="staff_id" value="<?= esc(old('staff_number', $staff['staff_number'] ?? '')) ?>" readonly>
+                                                <span><i class="isax isax-user input-icon text-gray-7 fs-14"></i></span>
+                                            </div>
+
+                                             <label class="form-label">Phone Number<span class="text-danger ms-1">*</span></label>
+                                            <div class="position-relative">
+                                                <input class="form-control form-control-lg" type="text" name="phone" id="phone" class="form-control" placeholder="+2348012345678" value="<?= esc(old('phone', $staff['phone'] ?? '')) ?>">
+                                                <span><i class="isax isax-phone input-icon text-gray-7 fs-14"></i></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3 position-relative">
+                                            <label class="form-label">Email<span class="text-danger ms-1">*</span></label>
+                                            <div class="position-relative">
+                                                <input class="form-control form-control-lg" type="email"name="email" value="<?= esc(old('email', $staff['email'] ?? '')) ?>" readonly>
+                                                <span><i class="isax isax-sms input-icon text-gray-7 fs-14"></i></span>
+                                            </div>
+                                        </div>
+
+                                            <div class="mb-3">
+                                            <label for="category" class="form-label">Category of staff</label>
+                                            <select name="category" id="category" class="form-select" required>
+                                              <option value="">-- Select category --</option>
+                                              <option value="academic" <?= old('category')=='academic' ? 'selected' : '' ?>>Academic</option>
+                                              <option value="senior_non_academic" <?= old('category')=='senior_non_academic' ? 'selected' : '' ?>>Senior Non-Academic</option>
+                                              <option value="junior_non_academic" <?= old('category')=='junior_non_academic' ? 'selected' : '' ?>>Junior Non-Academic</option>
+                                            </select>
+                                          </div>
+
+                                              <div class="row">
+                                                  <div class="mb-3 col-md-6">
+                                                    <label for="period_from" class="form-label">Reporting Period - From (Year)</label>
+                                                    <select name="period_from" id="period_from" class="form-select" required>
+                                                      <option value="">-- Select year --</option>
+                                                      <?php for ($y = $maxYear; $y >= $startYear; $y--): ?>
+                                                        <option value="<?= $y ?>" <?= ($selectedFrom == $y) ? 'selected' : '' ?>><?= $y ?></option>
+                                                      <?php endfor; ?>
+                                                    </select>
+                                                </div>
+
+                                              <div class="mb-3 col-md-6">
+                                                    <label for="period_to" class="form-label">Reporting Period - To (Year)</label>
+                                                    <select name="period_to" id="period_to" class="form-select" required>
+                                                      <option value="">-- Select year --</option>
+                                                      <?php for ($y = $maxYear; $y >= $startYear; $y--): ?>
+                                                        <option value="<?= $y ?>" <?= ($selectedTo == $y) ? 'selected' : '' ?>><?= $y ?></option>
+                                                      <?php endfor; ?>
+                                                    </select>
+                                                  </div>
+                                                </div> 
+
+                                        <div class="mb-3 position-relative">
+                                            <label class="form-label">New Password <span class="text-danger"> *</span></label>
+                                            <div class="position-relative" id="passwordInput">
+                                                <input type="password" name="password" id="password" class="pass-inputs form-control form-control-lg">
+                                                <span class="isax toggle-passwords isax-eye-slash text-gray-7 fs-14"></span>
+                                            </div>
+                                            <div class="password-strength" id="passwordStrength">
+                                                <span id="poor"></span>
+                                                <span id="weak"></span>
+                                                <span id="strong"></span>
+                                                <span id="heavy"></span>
+                                            </div>
+                                            <div class="mt-2" id="passwordInfo"></div>	
+                                        </div>
+                                        <div class="mb-3 position-relative">
+                                            <label class="form-label">Confirm Password <span class="text-danger"> *</span></label>
+                                            <div class="position-relative">
+                                                <input type="password" name="password_confirm" class="pass-inputa form-control form-control-lg">
+                                                <span class="isax toggle-passworda isax-eye-slash text-gray-7 fs-14"></span>
+                                            </div>
+                                        </div>
+                                        <div class="d-grid">
+                                           <button id="registerBtn" class="btn btn-lg btn-primary btn-block w-100" type="submit">Create Account</button>
+                                        </div>
+                                    </form>
+
+
+                                    <div class="fs-14 fw-normal d-flex align-items-center justify-content-center">
+                                        Already you have an account?<a href="" class="link-2 ms-1"> Login</a>
+                                    </div>
+    
+                                    <!-- /Login -->
+        
+                                </div>
                             </div>
-                          </div>                          
-                          
-                        <label class="col-form-label pt-0">Password</label> 
-                          <div class="row g-2">
-                            <div class="col-sm-6">
-                              <input class="form-control" type="password" name="password" id="password" Placeholder="Password" value="<?= esc(old('password', $staff['password'] ?? '')) ?>" class="form-control" required>
-                            <div class="show-hide"><span class="show"></span></div>
-                              </div>
-                            <div class="col-sm-6">
-                              <input class="form-control" type="password" name="password_confirm" Placeholder="Password Confirm" value="<?= esc(old('password_confirm', $staff['password_confirm'] ?? '')) ?>" id="password_confirm" class="form-control" required>
-                            </div>
-                          </div>
-                        <div class="form-group mb-0">
-                          <div class="form-check">
-                          </div>
-                          <button id="registerBtn" class="btn btn-primary btn-block w-100" type="submit">Create Account</button>
                         </div>
-                      </form>
                     </div>
-                  </div>
                 </div>
-              </div>
             </div>
-          </div>
-      </div>
-     </div>
-  </div>
+        </div>
+	   <!-- /Main Wrapper -->
+
 
 <script>
 // small client side convenience: basic match check + spinner
@@ -230,5 +292,4 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 <?= $this->endSection() ?>
-
 

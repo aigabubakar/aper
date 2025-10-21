@@ -9,112 +9,106 @@ $role = esc($session->get('role') ?? '');
 
 <?= $this->section('content') ?>
 
-<!-- tap on top starts-->
-    <div class="tap-top"><i data-feather="chevrons-up"></i></div>
-    <!-- tap on tap ends-->
-
-    <!-- page-wrapper Start-->
-    <div class="page-wrapper compact-wrapper" id="pageWrapper">
-      <!-- Page Header Start-->
-      <div class="page-header">
-        <div class="header-wrapper row m-0">
-          
-
-          <div class="nav-right col-xxl-7 col-xl-6 col-md-7 col-8 pull-right right-header p-0 ms-auto">
-            <ul class="nav-menus">
+		<!-- Main Wrapper -->
+		<div class="main-wrapper">
+			<!-- Header -->
+			<header class="header-two">
+				<div class="container">
+					<div class="header-nav">
+						<div class="navbar-header">
+							<a id="mobile_btn" href="javascript:void(0);">
+								<span class="bar-icon">
+									<span></span>
+									<span></span>
+									<span></span>
+								</span>
+							</a>
+							<div class="navbar-logo">
+								<a class="logo-white header-logo" href="index.html">
+									<img src="assets/img/logo.svg" class="logo" alt="Logo">
+								</a>
+								<a class="logo-dark header-logo" href="index.html">
+									<img src="assets/img/logo-white.svg" class="logo" alt="Logo">
+								</a>
+							</div>
+						</div>
+						<div class="main-menu-wrapper">								
+							<div class="menu-header">
+								<a href="index.html" class="menu-logo">
+									<img src="assets/img/logo.svg" class="img-fluid" alt="Logo">
+								</a>
+								<a id="menu_close" class="menu-close" href="javascript:void(0);">
+									<i class="fas fa-times"></i>
+								</a>
+							</div>
               
-              <li class="fullscreen-body">                      
-                 <span>
-                  <svg id="maximize-screen">
-                    <use href="../assets/svg/icon-sprite.svg#full-screen"></use>
-                  </svg></span>
-                </li>
-              <li>
-                <div class="mode">
-                  <svg>
-                    <use href="../assets/svg/icon-sprite.svg#moon"></use>
-                  </svg>
-                </div>
-              </li>
-             
-            
-              <li class="profile-nav onhover-dropdown pe-0 py-0">
-                <div class="d-flex profile-media"><img class="b-r-10" src="../assets/images/dashboard/profile.png" alt="">
-                  <div class="flex-grow-1"><span>  <?= $name ?></span>
-                    <p class="mb-0">User <i class="middle fa-solid fa-angle-down"></i></p>
-                  </div>
-                </div>
-                <ul class="profile-dropdown onhover-show-div">
-                  <li><a href="<?= site_url('settings') ?>"><i data-feather="settings"></i><span>Settings</span></a></li>
-                   <li><a class="dropdown-item" href="<?= site_url('profile') ?>">Profile</a></li>                   
-                  <li><a class="dropdown-item btn btn-danger text-white" href="<?= site_url('logout') ?>">Logout</span></a></li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-          <script class="result-template" type="text/x-handlebars-template">
-            <div class="ProfileCard u-cf">                        
-            <div class="ProfileCard-avatar"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-airplay m-0"><path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"></path><polygon points="12 15 17 21 7 21 12 15"></polygon></svg></div>
-            <div class="ProfileCard-details">
-            <div class="ProfileCard-realName">{{name}}</div>
-            </div>
-            </div>
-          </script>
-          <script class="empty-template" type="text/x-handlebars-template"><div class="EmptyMessage">is down</div></script>
-        </div>
-      </div>
-      <!-- Page Header Ends                              -->
-      <!-- Page Body Start-->
-      <div class="page-body-wrapper">
-        <!-- Page Sidebar Start-->
-        <div class="sidebar-wrapper" data-sidebar-layout="stroke-svg">
-          <div>
-            <div class="logo-wrapper"><a href="index.html"><img class="img-fluid for-light" src="../assets/images/logo/" alt=""><img class="img-fluid for-dark" src="../assets/images/logo/" alt=""></a>
-              <div class="back-btn"><i class="fa-solid fa-angle-left"></i></div>
-              <div class="toggle-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="grid"> </i></div>
-            </div>
-            <div class="logo-icon-wrapper"><a href="index.html"><img class="img-fluid" src="../assets/images/logo/" alt=""></a></div>
-            <nav class="sidebar-main">
-              <div class="left-arrow" id="left-arrow"><i data-feather="arrow-left"></i></div>
-              <div id="sidebar-menu">
-                <ul class="sidebar-links" id="simple-bar">
-                  <li class="back-btn"><a href="index.html"><img class="img-fluid" src="../assets/images/logo/" alt=""></a>
-                    <div class="mobile-back text-end"><span>Back</span><i class="fa-solid fa-angle-right ps-2" aria-hidden="true"></i></div>
-                  </li>
-                  <li class="pin-title sidebar-main-title">
-                    <div> 
-                      <h6>Pinned</h6>
-                    </div>
-                  </li>
-                  <li class="sidebar-main-title">
-                    <div>
-                      <h6 class="lan-1">General</h6>
-                    </div>
-                  </li>
-                  <li class="sidebar-list"><i class="fa-solid fa-thumbtack"></i>
-                    <a class="sidebar-link sidebar-title" href="#">
-                      <svg class="stroke-icon">
-                        <use href="../assets/svg/icon-sprite.svg#stroke-home"></use>
-                      </svg>
-                      <svg class="fill-icon">
-                        <use href="<?= base_url('dashboard') ?>"></use>
-                      </svg><span class="lan-3">Dashboard          </span></a>
-                    <ul class="sidebar-submenu">
-                     
-                    <?php $cat = $user['category'] ?? 'non_academic'; ?>
-                      <li class="nav-item">
-                        <a class="nav-link" href="<?= site_url('profile/overview') ?>">Profile</a>
-                        <ul class="nav flex-column ms-3">
-                          <li><a href="<?= site_url('profile/personal') ?>">Personal</a></li>
-                          <li><a href="<?= site_url('profile/employment') ?>">Employment</a></li>
-                          <li><a href="<?= site_url('profile/professional') ?>">Professional</a></li>
-                        </ul>
-                      </li>
-                  </div>
-              
-              <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>
-            </nav>
-          </div>
-        </div>
-        <!-- Page Sidebar Ends-->
-     <div class="page-body">
+						</div>
+
+						<div class="header-btn d-flex align-items-center">
+							<div class="icon-btn me-2">
+								<a href="javascript:void(0);" id="dark-mode-toggle" class="theme-toggle activate">
+									<i class="isax isax-sun-15"></i>
+								</a>
+								<a href="javascript:void(0);" id="light-mode-toggle" class="theme-toggle">
+									<i class="isax isax-moon"></i>
+								</a>
+							</div>
+						
+							<div class="dropdown profile-dropdown">
+                  <a href="javascript:void(0);" class="d-flex align-items-center" data-bs-toggle="dropdown">
+                                    <span class="avatar">
+										<img src="assets/img/user/user-02.jpg" alt="Img" class="img-fluid rounded-circle">
+									</span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end">
+									<div class="profile-header d-flex align-items-center">
+										<div class="avatar">
+											<img src="assets/img/user/user-02.jpg" alt="Img" class="img-fluid rounded-circle">
+										</div>
+										<div>
+											<h6>Ronald Richard</h6>
+											<p>studentdemo@example.com</p>
+										</div>
+									</div>
+									<ul class="profile-body">
+										<li>
+											<a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-profile.html"><i class="isax isax-security-user me-2"></i>My Profile</a>
+										</li>
+										<li>
+											<a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-quiz.html"><i class="isax isax-award me-2"></i>Quiz Attempts</a>
+										</li>
+									
+										<li>
+											<a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-messages.html"><i class="isax isax-messages-3 me-2"></i>Messages<span class="message-count">2</span></a>
+										</li>
+										<li>
+											<a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="student-settings.html"><i class="isax isax-setting-2 me-2"></i>Settings</a>
+										</li>										
+									</ul>
+									<div class="profile-footer">
+										<a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="login.html"><i class="isax isax-arrow-2 me-2"></i>Log in as Instructor</a>
+										<a href="index.html" class="btn btn-secondary d-inline-flex align-items-center justify-content-center w-100"><i class="isax isax-logout me-2"></i>Logout</a>
+									</div>
+                 </div>
+               </div>
+						</div>
+					</div>
+				</div>
+			</header>
+			<!-- /Header -->
+		   
+			<!-- Breadcrumb -->
+			<div class="breadcrumb-bar text-center">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-12 col-12">
+						
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- /Breadcrumb -->
+
+			<div class="content">
+				<div class="container">
+			

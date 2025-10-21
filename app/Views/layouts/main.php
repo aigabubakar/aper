@@ -21,56 +21,45 @@ $isLoggedIn = (bool) $session->get('isLoggedIn');
   <link href="https://fonts.googleapis.com/css?family=Rubik:400,400i,500,500i,700,700i&amp;display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i,900&amp;display=swap" rel="stylesheet">
 
-  <!-- Vendor & Plugin CSS -->
-  <link href="<?= base_url('assets/css/fontawesome.css') ?>" rel="stylesheet">
-  <link href="<?= base_url('assets/css/vendors/icofont.css') ?>" rel="stylesheet">
-  <link href="<?= base_url('assets/css/vendors/themify.css') ?>" rel="stylesheet">
-  <link href="<?= base_url('assets/css/vendors/flag-icon.css') ?>" rel="stylesheet">
-  <link href="<?= base_url('assets/css/vendors/feather-icon.css') ?>" rel="stylesheet">
-	<link rel="stylesheet" href="https://jqueryvalidation.org/files/demo/site-demos.css">
+  <!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="">
+    <link href="<?= base_url('assets/css/bootstrap.min.css') ?>" rel="stylesheet">
+		
+		<!-- Fontawesome CSS -->
+    <link href="<?= base_url('assets/plugins/fontawesome/css/fontawesome.min.css') ?>" rel="stylesheet">
+    <link href="<?= base_url('assets/plugins/fontawesome/css/all.min.css') ?>" rel="stylesheet">
 
 
-  <!-- Plugins css -->
-  <link href="<?= base_url('assets/css/vendors/slick.css') ?>" rel="stylesheet">
-  <link href="<?= base_url('assets/css/vendors/slick-theme.css') ?>" rel="stylesheet">
-  <link href="<?= base_url('assets/css/vendors/scrollbar.css') ?>" rel="stylesheet">
-  <link href="<?= base_url('assets/css/vendors/animate.css') ?>" rel="stylesheet">
-  <link href="<?= base_url('assets/css/vendors/jquery.dataTables.css') ?>" rel="stylesheet">
-  <link href="<?= base_url('assets/css/vendors/select.bootstrap5.css') ?>" rel="stylesheet">
-  <link href="<?= base_url('assets/css/vendors/flatpickr/flatpickr.min.css') ?>" rel="stylesheet">
+		<!-- Select2 CSS -->
+    <link href="<?= base_url('assets/plugins/select2/css/select2.min.css') ?>" rel="stylesheet">
 
-  <!-- Bootstrap and App CSS -->
-  <link href="<?= base_url('assets/css/vendors/bootstrap.css') ?>" rel="stylesheet">
-  <link href="<?= base_url('assets/css/opensans-font.css') ?>" rel="stylesheet">
- 
-  <link href="<?= base_url('assets/css/style.css') ?>" rel="stylesheet">
-   <link href="<?= base_url('assets/css/formstyle.css') ?>" rel="stylesheet">
-  <link href="<?= base_url('assets/css/color-1.css') ?>" media="screen" rel="stylesheet">
-  <link href="<?= base_url('assets/css/responsive.css') ?>" rel="stylesheet">
+        <!-- Slick CSS -->
+		<link href="<?= base_url('assets/plugins/slick/slick.css') ?>" rel="stylesheet">
+    <link href="<?= base_url('assets/plugins/slick/slick-theme.css') ?>" rel="stylesheet">
+
+		<!-- Feathericon CSS -->
+        <link href="<?= base_url('assets/plugins/feather/feather.css') ?>" rel="stylesheet">
+
+		<!-- Tabler Icon CSS -->
+    <link href="<?= base_url('assets/plugins/tabler-icons/tabler-icons.css') ?>" rel="stylesheet">
+
+        <!-- Iconsax CSS -->
+    <link href="<?= base_url('assets/css/iconsax.css') ?>" rel="stylesheet">
+
+		<!-- Main CSS -->
+    <link href="<?= base_url('assets/css/style.css') ?>" rel="stylesheet">
+
 
   <?= $this->renderSection('styles') ?>
 </head>
 
 <body>
-  <!-- loader starts-->
-  <div class="loader-wrapper">
-    <div class="loader-index"><span></span></div>
-    <svg>
-      <defs></defs>
-      <filter id="goo">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="11" result="blur" />
-        <feColorMatrix in="blur" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
-      </filter>
-    </svg>
-  </div>
-  <!-- loader ends-->
+ 
 
   <!-- HEADER / NAVBAR -->
   <!-- header -->
 <?php if ($isLoggedIn): ?>
   <?= $this->include('partials/header_auth') ?>
-<?php else: ?>
-  <?= $this->include('partials/header_guest') ?>
 <?php endif; ?>
 
   <!-- Main Content -->
@@ -81,47 +70,27 @@ $isLoggedIn = (bool) $session->get('isLoggedIn');
   <!-- FOOTER -->
 <?php if ($isLoggedIn): ?>
   <?= $this->include('partials/footer_auth') ?>
-<?php else: ?>
-  <?= $this->include('partials/footer_guest') ?>
 <?php endif; ?>
 
+<!-- jQuery -->
+		<script src="<?= base_url('assets/js/jquery-3.7.1.min.js') ?>"></script>
+		<!-- Bootstrap Core JS -->
+		<script src="<?= base_url('assets/js/bootstrap.bundle.min.js') ?>"></script>
+		<!-- Select2 JS -->
+	  	<script src="<?= base_url('assets/plugins/select2/js/select2.min.js') ?>"></script>
+        <!-- Slick Slider -->
+		<script src="<?= base_url('assets/plugins/slick/slick.js') ?>"></script>
+        <!-- Validation-->
+		<script src="<?= base_url('assets/js/validation.js') ?>"></script>	
+		<!-- Custom JS -->
+		<script src="<?= base_url('assets/js/script.js') ?>"></script>
+
   <!-- JS: core libs first -->
-  <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-  <script src="<?= base_url('assets/js/jquery.min.js') ?>"></script>
-  <script src="<?= base_url('assets/js/bootstrap/bootstrap.bundle.min.js') ?>"></script>
-  <script src="<?= base_url('assets/js/icons/feather-icon/feather.min.js') ?>"></script>
-
-  <!-- Scrollbar / sidebar / config -->
-  <script src="<?= base_url('assets/js/scrollbar/simplebar.min.js') ?>"></script>
-  <script src="<?= base_url('assets/js/scrollbar/custom.js') ?>"></script>
-  <script src="<?= base_url('assets/js/config.js') ?>"></script>
-
-  <!-- Plugins JS -->
-  <script src="<?= base_url('assets/js/sidebar-menu.js') ?>"></script>
-  <script src="<?= base_url('assets/js/sidebar-pin.js') ?>"></script>
-  <script src="<?= base_url('assets/js/slick/slick.min.js') ?>"></script>
-  <script src="<?= base_url('assets/js/slick/slick.js') ?>"></script>
-  <script src="<?= base_url('assets/js/header-slick.js') ?>"></script>
-  <script src="<?= base_url('assets/js/chart/apex-chart/apex-chart.js') ?>"></script>
-  <script src="<?= base_url('assets/js/chart/apex-chart/stock-prices.js') ?>"></script>
-  <script src="<?= base_url('assets/js/chart/apex-chart/moment.min.js') ?>"></script>
-  <script src="<?= base_url('assets/js/counter/counter-custom.js') ?>"></script>
-  <script src="<?= base_url('assets/js/datatable/datatables/jquery.dataTables.min.js') ?>"></script>
-  <script src="<?= base_url('assets/js/datatable/datatables/dataTables.js') ?>"></script>
-  <script src="<?= base_url('assets/js/datatable/datatables/dataTables.select.js') ?>"></script>
-  <script src="<?= base_url('assets/js/datatable/datatables/select.bootstrap5.js') ?>"></script>
-  <script src="<?= base_url('assets/js/datatable/datatables/datatable.custom.js') ?>"></script>
-  <script src="<?= base_url('assets/js/flat-pickr/flatpickr.js') ?>"></script>
-  <script src="<?= base_url('assets/js/dashboard/dashboard_3.js') ?>"></script>
+ 
   <!-- SweetAlert2 CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
-
-    <script src="<?= base_url('assets/js/form-wizard/form-wizard.js') ?>"></script>
-    <script src="<?= base_url('assets/js/form-wizard/image-upload.js') ?>"></script>
-    <script src="<?= base_url('assets/js/form-validation-custom.js') ?>"></script>
-    <script src="<?= base_url('assets/js/height-equal.js') ?>"></script>
     <script src="<?= base_url('') ?>"></script>
     <script src="<?= base_url('') ?>"></script>
 

@@ -5,56 +5,98 @@
 <?= $this->section('content') ?>
 
     <!-- login page start-->
-      <div class="page-content">
-		<div class="form-v4-content">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="text-center">
-            <h1>Welcome to APER  <?= date('Y') ?></h1>
-            <p class="lead">Edo State University Annual Performance Evaluation & Review System</p>
-        </div>
-        <div class="col-xl-5">
-            <img class="bg-img-cover bg-center" src=" <?= base_url('assets/images/loginbg_img3.png') ?>" alt="looginpage"></div>
-        <div class="col-xl-7 p-0">    
-          <div class="login-card login-dark">
-            <div>
-              <div class="login-main"> 
-                 <?= view('partials/flash') ?>
+    <div class="main-wrapper">
+            <div class="login-content">
+                <div class="row">
+                    <!-- Login Banner -->
+                    <div class="col-md-6 login-bg d-none d-lg-flex">
+                        <div class="login-carousel">
+                            <div>
+                                <div class="login-carousel-section mb-3">
+                                    <div class="login-banner">
+                                        <img src="assets/img/auth/" class="img-fluid" alt="Logo">
+                                    </div>
+                                    <div class="mentor-course text-center">
+                                        <h3 class="mb-2">Welcome to <br><?= date('Y') ?><span class="text-secondary">Edo State </span> University Iyahmo.</h3>
+                                         <p>Edo State University Annual Performance Evaluation & Review System.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="login-carousel-section mb-3">
+                                    <div class="login-banner">
+                                        <img src="assets/img/auth/auth-1.svg" class="img-fluid" alt="Logo">
+                                    </div>
+                                    <div class="mentor-course text-center">
+                                        <h3 class="mb-2">Welcome to <br><?= date('Y') ?><span class="text-secondary">Edo State </span> University Iyahmo.</h3>
+                                         <p>Edo State University Annual Performance Evaluation & Review System.</p>
+                                    </div>
+                                </div>
+                            </div>
 
-                <form action="<?= base_url('login') ?>" class="theme-form" method="post" novalidate>
-                     <?= csrf_field() ?>
-
-                  <h4>Sign in to aper</h4>
-                  <p>Enter your email & password to login</p>
-                  <div class="form-group">
-                    <label class="col-form-label">Email Address</label>
-                      <input class="form-control"  id="email" name="email"  placeholder="name@edouniversity.edu.ng" type="email" value="<?= esc(old('email')) ?>" class="form-control" required autofocus>
-                  </div>
-                  <div class="form-group">
-                    <label class="col-form-label">Password</label>
-                    <div class="form-input position-relative">
-                        <input class="form-control"  id="password" name="password" type="password" placeholder="password" class="form-control" required>
-                      <div class="show-hide"><span class="show">                        
-                     </span></div>
+                            <div>
+                                <div class="login-carousel-section mb-3">
+                                    <div class="login-banner">
+                                        <img src="assets/img/auth/auth-1.svg" class="img-fluid" alt="Logo">
+                                    </div>
+                                    <div class="mentor-course text-center">
+                                        <h3 class="mb-2">Welcome to <br><?= date('Y') ?><span class="text-secondary">Edo State </span> University Iyahmo.</h3>
+                                         <p>Edo State University Annual Performance Evaluation & Review System.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                  <div class="form-group mb-0">
-                   <div class="form-check">
-                      <input class="checkbox-primary form-check-input" id="checkbox1" type="checkbox" name="remember" id="remember" class="form-check-input" <?= old('remember') ? 'checked' : '' ?>>
-                      <label class="text-muted form-check-label" for="checkbox1">Remember password</label>
-                    </div> 
-                    <button class="btn btn-primary btn-block w-100 mt-3" type="submit">Sign in to Continue</button>
-                  </div>
-                  <p class="mt-4 mb-0 text-center">Don't have account? Please click here to start your evaluation process.<a class="ms-2" href="<?= base_url('/check-email'); ?>">Apply for Evaluation</a></p>                     
-                </form>
-              </div>
+                    <!-- /Login Banner -->
+        
+                    <div class="col-md-6 login-wrap-bg">
+                        <!-- Login -->
+                        <div class="login-wrapper">
+                            <div class="loginbox">
+                                <div class="w-100">
+                                    <div class="d-flex align-items-center justify-content-between login-header">
+                                    <img class="bg-img-cover bg-center" src=" <?= base_url('assets/images/loginbg_img3.png') ?>" alt="looginpage"></div>
+                                    </div>
+                                    <h4>Sign in to APER</h4>
+                                    <?= view('partials/flash') ?>
+                                    <form action="<?= base_url('login') ?>" class="theme-form" method="post" novalidate>
+                                        <?= csrf_field() ?>
+                                        <div class="mb-3 position-relative">
+                                            <label class="form-label">Email<span class="text-danger ms-1">*</span></label>
+                                            <div class="position-relative">
+                                                 <input class="form-control form-control-lg"  id="email" name="email"  placeholder="name@edouniversity.edu.ng" type="email" value="<?= esc(old('email')) ?>" class="form-control" required autofocus>
+                                                <span><i class="isax isax-sms input-icon text-gray-7 fs-14"></i></span>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 position-relative">
+                                            <label class="form-label">Password <span class="text-danger ms-1">*</span></label>
+                                            <div class="position-relative" id="passwordInput">
+                                                <input class="pass-inputs form-control form-control-lg"  id="password" name="password" type="password" placeholder="password" class="form-control" required>
+                                                <span class="isax toggle-passwords isax-eye-slash fs-14"></span>
+                                            </div>	
+                                        </div>
+                                       
+                                        <div class="d-grid">
+                                            <button class="btn btn-secondary btn-lg btn-primary" type="submit">Sign in to Continue <i class="isax isax-arrow-right-3 ms-1"></i></button>
+                                        </div>
+                                    </form>
+
+                                    <div class="fs-14 fw-normal d-flex align-items-center justify-content-center">
+                                      <p class="mt-4 mb-0 text-center">Don't have account? Please click here to start your evaluation process.<br/><a class="ms-2" href="<?= base_url('/check-email'); ?>">Apply for Evaluation</a></p>                     
+
+                                    </div>
+    
+                                    <!-- /Login -->
+        
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
- </div>
-  </div>
- </div>
+	   <!-- /Main Wrapper -->
+    
 <?= $this->endSection() ?>
 
 

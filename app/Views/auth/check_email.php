@@ -5,62 +5,96 @@
 <?= $this->section('content') ?>
 
     <!-- login page start-->
-     <div class="page-content">
-		<div class="form-v4-content">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="text-center">
-            <h1>Welcome to APER  <?= date('Y') ?></h1>
-            <p class="lead">Edo State University Annual Performance Evaluation & Review System</p>
-        </div>
-        <div class="col-xl-2">
-            <img class="bg-img-cover bg-center" src=" <?= base_url('assets/images/loginbg_img3.png') ?>" alt="looginpage"></div>
-        <div class="col-xl-7 p-0">    
-          <div class="login-card login-dark">
-            <div>
-              <div class="login-main"> 
-               
-              <div class="card-body">
-        <h5 class="card-title">Staff Email Verification</h5>
-        <p class="text-muted">Enter your institution email to begin registration.</p>
 
-        <!-- Feedback placeholders -->
-        <div id="alert-placeholder"></div>
 
-        <form id="checkEmailForm" action="<?= base_url('check-email') ?>" method="post" novalidate>
-          <?= csrf_field() ?>
 
-          <div class="mb-3">
-            <label for="email" class="form-label">Institution Email</label>
-            <input type="email"
-                   name="email"
-                   id="email"
-                   class="form-control"
-                   required
-                   value="<?= esc(old('email')) ?>">
-          </div>
-
-          <button id="verifyBtn" class="btn btn-primary" type="submit">
-            <span id="btn-text">Verify Email</span>
-            <span id="btn-spinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
-          </button>
-        </form>
-      </div>
-              </div>
-              <div class="col-xl-2">
-
-              </div>
+    <!-- Main Wrapper -->
+		<div class="main-wrapper">
+            <div class="login-content">
+                <div class="row">
+                     <!-- Login Banner -->
+                    <div class="col-md-6 login-bg d-none d-lg-flex">
+                        <div class="login-carousel">
+                            <div>
+                                <div class="login-carousel-section mb-3">
+                                    <div class="login-banner">
+                                        <img src="assets/img/auth/auth-1.svg" class="img-fluid" alt="Logo">
+                                    </div>
+                                    <div class="mentor-course text-center">
+                                        <h3 class="mb-2">Welcome to <br><?= date('Y') ?><span class="text-secondary">Edo State </span> University Iyahmo.</h3>
+                                         <p>Edo State University Annual Performance Evaluation & Review System.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="login-carousel-section mb-3">
+                                    <div class="login-banner">
+                                        <img src="assets/img/auth/auth-1.svg" class="img-fluid" alt="Logo">
+                                    </div>
+                                    <div class="mentor-course text-center">
+                                        <h3 class="mb-2">Welcome to <br><?= date('Y') ?><span class="text-secondary">Edo State </span> University Iyahmo.</h3>
+                                         <p>Edo State University Annual Performance Evaluation & Review System.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="login-carousel-section mb-3">
+                                    <div class="login-banner">
+                                        <img src="assets/img/auth/auth-1.svg" class="img-fluid" alt="Logo">
+                                    </div>
+                                    <div class="mentor-course text-center">
+                                        <h3 class="mb-2">Welcome to <br><?= date('Y') ?><span class="text-secondary">Edo State </span> University Iyahmo.</h3>
+                                         <p>Edo State University Annual Performance Evaluation & Review System.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Login Banner -->
+        
+                    <div class="col-md-6 login-wrap-bg">
+                        <!-- Login -->
+                        <div class="login-wrapper">
+                            <div class="loginbox">
+                                <div class="w-100">
+                                    <div class="d-flex align-items-center justify-content-between login-header">
+                                          <img class="bg-img-cover bg-center" class="img-fluid" src=" <?= base_url('assets/images/loginbg_img3.png') ?>" alt="looginpage"></div>
+                                    </div>
+                                    <h1 class="fs-32 fw-bold topic">Sign into Your Account</h1>
+                                    <div id="alert-placeholder"></div>
+                                    
+                                    <form id="checkEmailForm" action="<?= base_url('check-email') ?>" class="mb-3 pb-3">
+                                             <?= csrf_field() ?>
+                                        <div class="mb-3 position-relative">
+                                          <label for="email" class="text-danger ms-1">Institution Email</label>
+                                          <input type="email"
+                                                name="email"
+                                                id="email"
+                                                class="form-control form-control-lg
+                                                required
+                                                value="<?= esc(old('email')) ?>">
+                                              <span><i class="isax isax-sms input-icon text-gray-7 fs-14"></i></span>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-between mb-4">
+                                        </div>
+                                        
+                                        <div class="d-grid">
+                                        <button id="verifyBtn" class="btn btn-secondary btn-lg btn-primary" type="submit"><i class="isax isax-arrow-right-3 ms-1"></i>
+                                        <span id="btn-text">Verify Email</span>
+                                        <span id="btn-spinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+                                       </button>
+                                        </div>
+                                    </form>
+                                    <!-- /Login -->
+        
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
-    </div>
-    </div>
-  </div>
-  </div>
-
-<div class="row justify-content-center">
- 
+	   <!-- /Main Wrapper -->
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
