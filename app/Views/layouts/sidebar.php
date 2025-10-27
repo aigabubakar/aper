@@ -62,11 +62,11 @@ function isActivePath(string $target, string $currentPath): bool {
         <?php endif; ?>
 
         <!-- Announcements (visible to all logged in users) -->
-        <li class="<?= isActivePath('announcements', $currentPath) ? 'active' : '' ?>">
+        <!-- <li class="<?= isActivePath('announcements', $currentPath) ? 'active' : '' ?>">
           <a href="<?= site_url('announcements') ?>" class="d-inline-flex align-items-center <?= isActivePath('announcements', $currentPath) ? 'active' : '' ?>">
             <i class="isax isax-volume-high5 me-2"></i>Announcements
           </a>
-        </li>
+        </li> -->
 
         <!-- Additional role-specific links -->
         <?php if ($role === 'hod'): ?>
@@ -105,20 +105,38 @@ function isActivePath(string $target, string $currentPath): bool {
           <?php else: ?>
       <!-- Category-specific menus for staff -->
       <?php if ($userCategory === 'academic'): ?>
-        <li><a href="<?= base_url('academic/profile') ?>">My Profile</a></li>
-        <li><a href="<?= base_url('academic/performance') ?>">Performance</a></li>
-        <li><a href="<?= base_url('profile/academic/personal') ?>">Profile</a></li>
-        <li><a href="<?= base_url('profile/academic/employment') ?>">Employment</a></li>
-        <li><a href="<?= base_url('profile/academic/qualifications') ?>">Qualifications</a></li>
-        <li><a href="<?= base_url('profile/academic/professional') ?>"></a></li>
-        <li><a href="<?= base_url('profile/academic/professional') ?>"></a></li>
-        <li><a href="<?= base_url('profile/academic/employment') ?>">Employment</a></li>
+               <li class="<?= isActivePath('profile/academic/personal', $currentPath) ? 'active' : '' ?>">
+            <a href="<?= site_url('profile/academic/personal') ?>" class="d-inline-flex align-items-center <?= isActivePath('profile/academic/personal', $currentPath) ? 'active' : '' ?>">
+              <i class="isax isax-security-user me-2"></i>Profile
+            </a>
+        </li>
+        <li class="<?= isActivePath('profile/academic/employment', $currentPath) ? 'active' : '' ?>">
+            <a href="<?= site_url('profile/academic/employment') ?>" class="d-inline-flex align-items-center <?= isActivePath('profile/academic/employment', $currentPath) ? 'active' : '' ?>">
+              <i class="isax isax-medal-star5 me-2"></i>Employment
+            </a>
+        </li>
+        <li class="<?= isActivePath('profile/academic/experience', $currentPath) ? 'active' : '' ?>">
+            <a href="<?= site_url('profile/academic/experience') ?>" class="d-inline-flex align-items-center <?= isActivePath('profile/academic/experience', $currentPath) ? 'active' : '' ?>">
+              <i class="isax isax-note-215 me-2"></i>Experience
+            </a>
+        </li>
 
         <?php elseif ($userCategory === 'senior_non_academic'): ?>
-       <li><a href="<?= base_url('profile/senior/personal') ?>">Profile</a></li>
-        <li><a href="<?= base_url('profile/senior/employment') ?>">Employment</a></li>
-        <li><a href="<?= base_url('profile/senior/qualifications') ?>">Qualifications</a></li>
-        <li><a href="<?= base_url('profile/senior/employment') ?>">Employment</a></li>
+              <li class="<?= isActivePath('profile/senior/personal', $currentPath) ? 'active' : '' ?>">
+            <a href="<?= site_url('profile/senior/personal') ?>" class="d-inline-flex align-items-center <?= isActivePath('profile/senior/personal', $currentPath) ? 'active' : '' ?>">
+              <i class="isax isax-security-user me-2"></i>Profile
+            </a>
+        </li>
+        <li class="<?= isActivePath('profile/senior/employment', $currentPath) ? 'active' : '' ?>">
+            <a href="<?= site_url('profile/senior/employment') ?>" class="d-inline-flex align-items-center <?= isActivePath('profile/senior/employment', $currentPath) ? 'active' : '' ?>">
+              <i class="isax isax-medal-star5 me-2"></i>Employment
+            </a>
+        </li>
+        <li class="<?= isActivePath('profile/senior/experience', $currentPath) ? 'active' : '' ?>">
+            <a href="<?= site_url('profile/senior/experience') ?>" class="d-inline-flex align-items-center <?= isActivePath('profile/senior/experience', $currentPath) ? 'active' : '' ?>">
+              <i class="isax isax-note-215 me-2"></i>Experience
+            </a>
+        </li>
 
       <?php elseif ($userCategory === 'junior_non_academic'): ?>
         <li class="<?= isActivePath('profile/junior/personal', $currentPath) ? 'active' : '' ?>">
@@ -131,11 +149,12 @@ function isActivePath(string $target, string $currentPath): bool {
               <i class="isax isax-medal-star5 me-2"></i>Employment
             </a>
         </li>
-        <li class="<?= isActivePath('profile/junior/employment', $currentPath) ? 'active' : '' ?>">
-            <a href="<?= site_url('profile/junior/employment') ?>" class="d-inline-flex align-items-center <?= isActivePath('profile/junior/employment', $currentPath) ? 'active' : '' ?>">
-              <i class="isax isax-note-215 me-2"></i>Qualifications
+        <li class="<?= isActivePath('profile/junior/experience', $currentPath) ? 'active' : '' ?>">
+            <a href="<?= site_url('profile/junior/experience') ?>" class="d-inline-flex align-items-center <?= isActivePath('profile/junior/experience', $currentPath) ? 'active' : '' ?>">
+              <i class="isax isax-note-215 me-2"></i>Experience
             </a>
         </li>
+        
 
       <?php else: ?>
         <li><a href="<?= base_url('profile') ?>">My Profile</a></li>
