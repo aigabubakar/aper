@@ -3,9 +3,135 @@
 <?= $this->section('title') ?>Academic — Qualifications<?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
+<div class="row">
+
+						<!-- Sidebar -->
+						<div class="col-lg-3 theiaStickySidebar">
+							<div class="settings-sidebar mb-lg-0">
+									<div>
+										<h6 class="mb-3">Main Menu</h6>
+										<ul class="mb-3 pb-1">
+                     <li>
+												<a href="<?= site_url('/dashboard') ?>" class="d-inline-flex align-items-center active"><i class="isax isax-grid-35 me-2"></i>Dashboard</a>
+											</li>
+                      <?php
+                // sidebar-menu.php (or inside your existing partial)
+                // Ensure $user is available (passed from controller) or use session()
+                // $user = $user ?? session()->get('user') ?? [];
+
+                $cat = $user['category'] ?? session()->get('category') ?? 'non_academic';
+                $uri = service('uri');
+                $current = trim($uri->getPath(), '/'); // e.g. "profile/personal"
+
+                $menus = [
+                    // common base node present for all
+                    'profile' => [
+                        'label' => 'Profile',
+                        'url'   => site_url('profile/overview'),
+                        'children' => [
+                            // common links available to all categories
+                            'personal' => ['label' => 'Personal', 'url' => site_url('profile/personal')],
+                        ],
+                    ],
+                    // category-specific nodes (we can add/remove children below)
+                ];
+
+                // Extend children depending on category
+                 switch ($cat) {
+                    case 'academic':
+                        $menus['profile']['children'] += [
+                          
+                            'employment'   => ['label' => 'Employment',   'url' => site_url('profile/academic/employment')],
+                            'qualifications' => ['label' => 'Qualifications/Professional', 'url' => site_url('profile/academic/qualifications')],
+                            'experience'   => ['label' => 'Experience',   'url' => site_url('profile/academic/experience')],
+                            'professional' => ['label' => 'Professional','url' => site_url('profile/academic/professional')],
+                            'print'        => ['label' => 'Print Summary','url' => site_url('profile/print-summary')],
+                        ];
+                        break;
+
+                    case 'senior_non_academic':
+                        $menus['profile']['children'] += [
+                            'employment'   => ['label' => 'Employment',   'url' => site_url('profile/senior/employment')],
+                            'professional' => ['label' => 'Qualifications/Professional','url' => site_url('profile/senior/professional')],
+                            'experience'   => ['label' => 'Experience',   'url' => site_url('profile/senior/experience')],
+                            'print'        => ['label' => 'Print Summary','url' => site_url('profile/print-summary')],
+                        ];
+                        break;
+
+                    case 'junior_non_academic':
+                        $menus['profile']['children'] += [
+                            'employment'   => ['label' => 'Employment',   'url' => site_url('profile/junior/employment')],
+                            'professional' => ['label' => 'Professional','url' => site_url('profile/junior/professional')],
+                            'print'        => ['label' => 'Print Summary','url' => site_url('profile/print-summary')],
+                        ];
+                        break;
+
+                    case 'non_academic':
+                    default:
+                        $menus['profile']['children'] += [
+                            'employment'   => ['label' => 'Employment',   'url' => site_url('profile/employment')],
+                            'professional' => ['label' => 'Professional','url' => site_url('profile/professional')],
+                            'print'        => ['label' => 'Print Summary','url' => site_url('profile/print-summary')],
+                        ];
+                        break;
+                }
+
+
+                // Utility: is current path starts with menu url path
+                function isActive(string $menuUrlPath, string $currentPath): bool {
+                    // normalize both
+                    $menu = trim(parse_url($menuUrlPath, PHP_URL_PATH), '/');
+                    if ($menu === '') return $currentPath === '';
+                    // exact match or prefix match so "profile/academic/employment" matches "profile/academic/employment/save" etc.
+                    return $currentPath === $menu || strpos($currentPath, $menu . '/') === 0;
+                }
+                ?>
+
+                <ul class="sidebar-submenu list-unstyled">
+                <?php foreach ($menus as $key => $node): 
+                    $nodeActive = false;
+                    // determine if any child is active
+                    foreach ($node['children'] as $ck => $child) {
+                        if (isActive($child['url'], $current)) { $nodeActive = true; break; }
+                    }
+                ?>
+                  <li class="nav-item <?= $nodeActive ? 'open' : '' ?>">
+                    <a class="nav-link <?= $nodeActive ? 'active' : '' ?>" href="<?= esc($node['url']) ?>">
+                      <?= esc($node['label']) ?>
+                    </a>
+
+                    <?php if (! empty($node['children'])): ?>
+                      <ul class="nav flex-column ms-3">
+                        <?php foreach ($node['children'] as $ck => $child): 
+                            $active = isActive($child['url'], $current) ? 'active' : '';
+                        ?>
+                          <li class="nav-item">
+                            <a class="nav-link <?= $active ?>" href="<?= esc($child['url']) ?>"><?= esc($child['label']) ?></a>
+                          </li>
+                        <?php endforeach; ?>
+                      </ul>
+                    <?php endif; ?>
+                  </li>
+                <?php endforeach; ?>
+
+										<hr>
+										<h6 class="mb-3">Account Settings</h6>
+										<ul>
+											<li>
+												<a href="<?= site_url('logout') ?>" class="d-inline-flex align-items-center"><i class="isax isax-logout5 me-2"></i>Logout</a>
+											</li>
+										</ul>
+									</div>
+							</div>
+       </ul>
+		</div>
+<!-- /Sidebar -->
+ <div class="col-lg-9">
+<div class="row">
+           
 <div class="card mx-auto" style="max-width:1100px;">
   <div class="card-body">
-    <h4 class="card-title">Qualifications</h4>
+   <h4 class="card-title">Qualifications</h4>
     <p class="text-muted mb-3">Enter up to 5 academic qualifications and up to 5 professional qualifications.</p>
 
     <div id="alert-placeholder"><?= view('partials/flash') ?></div>
@@ -78,12 +204,18 @@
         </button>
       </div>
     </form>
+</div>
+<!-- Employement Information-->
+   </div>
   </div>
 </div>
- </div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <?= $this->endSection() ?>
-
 
 <?= $this->section('scripts') ?>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -160,3 +292,4 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 </script>
 <?= $this->endSection() ?>
+

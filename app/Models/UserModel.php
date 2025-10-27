@@ -4,6 +4,7 @@ use CodeIgniter\Model;
 
 class UserModel extends Model
 {
+    
     protected $table      = 'users';
     protected $primaryKey = 'id';
     protected $returnType = 'array';
@@ -34,12 +35,12 @@ class UserModel extends Model
     'category',
     'period_from',
     'period_to',
-    'dob','gender',
+    'dob',
+    'gender',
+    'faculty',
     'department',
     'designation',
     'grade_level',
-    'faculty_id',
-    'department_id',
     'verify_token',
     'email_verified_at',
     'completed_profile',

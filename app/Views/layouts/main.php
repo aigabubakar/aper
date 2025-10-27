@@ -21,14 +21,16 @@ $isLoggedIn = (bool) $session->get('isLoggedIn');
   <link href="https://fonts.googleapis.com/css?family=Rubik:400,400i,500,500i,700,700i&amp;display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i,900&amp;display=swap" rel="stylesheet">
 
+  
+    		<!-- Theme Settings Js -->
+		<script src=<?= base_url('assets/js/theme-script.js');?> type="beac13c0e5f6ca3dfbd860c7-text/javascript"></script>
+
   <!-- Bootstrap CSS -->
-		<link rel="stylesheet" href="">
     <link href="<?= base_url('assets/css/bootstrap.min.css') ?>" rel="stylesheet">
 		
 		<!-- Fontawesome CSS -->
     <link href="<?= base_url('assets/plugins/fontawesome/css/fontawesome.min.css') ?>" rel="stylesheet">
     <link href="<?= base_url('assets/plugins/fontawesome/css/all.min.css') ?>" rel="stylesheet">
-
 
 		<!-- Select2 CSS -->
     <link href="<?= base_url('assets/plugins/select2/css/select2.min.css') ?>" rel="stylesheet">
@@ -49,7 +51,6 @@ $isLoggedIn = (bool) $session->get('isLoggedIn');
 		<!-- Main CSS -->
     <link href="<?= base_url('assets/css/style.css') ?>" rel="stylesheet">
 
-
   <?= $this->renderSection('styles') ?>
 </head>
 
@@ -60,8 +61,10 @@ $isLoggedIn = (bool) $session->get('isLoggedIn');
   <!-- header -->
 <?php if ($isLoggedIn): ?>
   <?= $this->include('partials/header_auth') ?>
+  <?php else: ?>
+  <?= $this->include('partials/header_guest') ?>
 <?php endif; ?>
-
+ 
   <!-- Main Content -->
   <div class="container">
     <?= $this->renderSection('content') ?>
@@ -90,11 +93,8 @@ $isLoggedIn = (bool) $session->get('isLoggedIn');
   <!-- SweetAlert2 CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-
     <script src="<?= base_url('') ?>"></script>
     <script src="<?= base_url('') ?>"></script>
-
-
  	<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
 	<script>

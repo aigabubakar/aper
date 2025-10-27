@@ -46,13 +46,46 @@ abstract class BaseController extends Controller
     /**
      * @return void
      */
-    public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
-    {
-        // Do Not Edit This Line
-        parent::initController($request, $response, $logger);
 
-        // Preload any models, libraries, etc, here.
+    // --- START PATCH: BaseController initController user exposure ---
+protected $data = [];
 
-        // E.g.: $this->session = \Config\Services::session();
-    }
+public function initController(
+    \CodeIgniter\HTTP\RequestInterface $request,
+    \CodeIgniter\HTTP\ResponseInterface $response,
+    \Psr\Log\LoggerInterface $logger
+) {
+    parent::initController($request, $response, $logger);
+
+    // start session service
+    $this->session = \Config\Services::session();
+
+    // Compose a minimal user array from session keys for views
+    $this->data['user'] = [
+        'id'       => $this->session->get('user_id'),
+        'fullname' => $this->session->get('fullname'),
+        'email'    => $this->session->get('email'),
+        'role'     => $this->session->get('role') ?? 'staff',
+        'category' => $this->session->get('category') ?? 'non_academic',
+    ];
+
+    // (Optional) Make $this->data available globally to views when returned manually:
+    // In controllers use: return view('...', $this->data + $localData);
+}
+// --- END PATCH ---
+
+protected function getUserSession()
+{
+    $session = session();
+    return [
+        'isLoggedIn' => $session->get('isLoggedIn'),
+        'fullname'   => $session->get('fullname'),
+        'email'      => $session->get('email'),
+        'role'       => $session->get('role'),
+        'category'   => $session->get('category'),
+    ];
+}
+
+
+
 }

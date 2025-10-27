@@ -26,28 +26,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <div>
-                                <div class="login-carousel-section mb-3">
-                                    <div class="login-banner">
-                                        <img src="assets/img/auth/auth-1.svg" class="img-fluid" alt="Logo">
-                                    </div>
-                                    <div class="mentor-course text-center">
-                                        <h3 class="mb-2">Welcome to <br><?= date('Y') ?><span class="text-secondary">Edo State </span> University Iyahmo.</h3>
-                                         <p>Edo State University Annual Performance Evaluation & Review System.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="login-carousel-section mb-3">
-                                    <div class="login-banner">
-                                        <img src="assets/img/auth/auth-1.svg" class="img-fluid" alt="Logo">
-                                    </div>
-                                    <div class="mentor-course text-center">
-                                        <h3 class="mb-2">Welcome to <br><?= date('Y') ?><span class="text-secondary">Edo State </span> University Iyahmo.</h3>
-                                         <p>Edo State University Annual Performance Evaluation & Review System.</p>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                     <!-- /Login Banner -->
@@ -58,9 +36,9 @@
                             <div class="loginbox">
                                 <div class="w-100">
                                     <div class="d-flex align-items-center justify-content-between login-header">
-                                          <img class="bg-img-cover bg-center" class="img-fluid" src=" <?= base_url('assets/images/loginbg_img3.png') ?>" alt="looginpage"></div>
+                                          <img class="bg-img-cover bg-center" class="img-fluid" src="assets/img/logo.jpg" class="img-fluid" alt="Logo">
                                     </div>
-                                    <h1 class="fs-32 fw-bold topic">Sign into Your Account</h1>
+                                    <h1 class="fs-32 fw-bold topic">Verify Your Email Account</h1>
                                     <div id="alert-placeholder"></div>
                                     
                                     <form id="checkEmailForm" action="<?= base_url('check-email') ?>" class="mb-3 pb-3">
@@ -85,6 +63,7 @@
                                        </button>
                                         </div>
                                     </form>
+                                        
                                     <!-- /Login -->
         
                                 </div>

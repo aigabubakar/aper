@@ -64,9 +64,6 @@ $routes->group('profile', ['filter' => 'auth'], function($routes) {
     $routes->get('profile/academic/employment', 'ProfileController::academicEmployment', ['filter'=>'auth']);
     $routes->post('profile/academic/employment/save', 'ProfileController::saveAcademicEmployment', ['filter'=>'auth']);
 
-    $routes->get('profile/academic/teaching_research', 'ProfileController::academicTeachingResearch', ['filter'=>'auth']);
-    $routes->post('profile/academic/teaching_research/save', 'ProfileController::saveAcademicTeachingResearch', ['filter'=>'auth']);
-
     $routes->get('profile/academic/qualifications', 'ProfileController::academicQualifications', ['filter'=>'auth']);
     $routes->post('profile/academic/qualifications/save', 'ProfileController::saveAcademicQualifications', ['filter'=>'auth']);
 
@@ -75,12 +72,11 @@ $routes->group('profile', ['filter' => 'auth'], function($routes) {
 
     // Senior Non-Academic (render + save)
     $routes->get('profile/senior/personal', 'ProfileController::seniorPersonal');
-    $routes->get('profile/senior/employment', 'ProfileController::seniorEmployment', ['filter' => 'auth']);
-    $routes->post('profile/senior/employment/save', 'ProfileController::saveSeniorEmployment', ['filter' => 'auth']);
-   
-    $routes->get('profile/junior/personal', 'ProfileController::juniorPersonal');
-    $routes->get('profile/nonacademic/personal', 'ProfileController::nonAcademicPersonal');
+    $routes->post('profile/senior/personal/save', 'ProfileController::saveSeniorPersonal', ['filter'=>'auth']);
 
+    $routes->get('profile/senior/employment', 'ProfileController::seniorEmployment', ['filter' => 'auth']);
+    $routes->post('profile/senior/employment/save', 'ProfileController::saveSeniorEmployment', ['filter' => 'auth']);  
+    
     $routes->get('profile/senior/qualifications', 'ProfileController::seniorQualifications', ['filter' => 'auth']);
     $routes->post('profile/senior/qualifications/save', 'ProfileController::saveSeniorQualifications', ['filter' => 'auth']);
     
@@ -88,7 +84,32 @@ $routes->group('profile', ['filter' => 'auth'], function($routes) {
     $routes->post('profile/senior/experience/save', 'ProfileController::saveSeniorExperience', ['filter' => 'auth']);
     
     // Junior Non-Academic (render + save)
-     $routes->get('profile/success', 'ProfileController::success', ['filter' => 'auth']);
+    $routes->get('profile/junior/personal', 'ProfileController::juniorPersonal', ['filter'=>'auth']);
+    $routes->post('profile/junior/personal/save', 'ProfileController::saveJuniorPersonal', ['filter'=>'auth']);
+
+    $routes->get('profile/junior/employment', 'ProfileController::juniorEmployment', ['filter'=>'auth']);
+    $routes->post('profile/junior/employment/save', 'ProfileController::saveJuniorEmployment', ['filter'=>'auth']);
+    
+     $routes->get('profile/junior/qualifications', 'ProfileController::JuniorQualifications', ['filter'=>'auth']);
+    $routes->post('profile/junior/qualifications/save', 'ProfileController::saveJuniorQualifications', ['filter'=>'auth']);
+
+    $routes->get('profile/junior/experience', 'ProfileController::juniorExperience', ['filter' => 'auth']);
+    $routes->post('profile/junior/experience/save', 'ProfileController::saveJuniorExperience', ['filter' => 'auth']);
+   
+
+    $routes->get('profile/success', 'ProfileController::success', ['filter' => 'auth']);
+     
+     // Profile print summary
+    $routes->get('profile/print-summary', 'ProfileController::printSummary', ['filter' => 'auth']);
+
+    $routes->group('admin', ['filter'=>'auth'], function($routes){
+    $routes->get('menus', 'Admin\MenuController::index');
+    $routes->match(['get','post'],'menus/create','Admin\MenuController::create');
+    $routes->match(['get','post'],'menus/edit/(:num)','Admin\MenuController::edit/$1');
+    $routes->get('menus/delete/(:num)','Admin\MenuController::delete/$1');
+});
+
+
 
 
 

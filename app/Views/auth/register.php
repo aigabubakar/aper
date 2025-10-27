@@ -15,33 +15,12 @@
                                         <img src="assets/img/auth/auth-1.svg" class="img-fluid" alt="Logo">
                                     </div>
                                     <div class="mentor-course text-center">
-                                        <h3 class="mb-2">Welcome to <br><?= date('Y') ?><span class="text-secondary">Edo State </span> University Iyahmo.</h3>
+                                        <h3 class="mb-2">Welcome to <br><?= date('Y')?>  <span class="text-secondary">Edo State </span> University Iyahmo.</h3>
                                          <p>Edo State University Annual Performance Evaluation & Review System.</p>
                                     </div>
                                 </div>
                             </div>
-                            <div>
-                                <div class="login-carousel-section mb-3">
-                                    <div class="login-banner">
-                                        <img src="assets/img/auth/auth-1.svg" class="img-fluid" alt="Logo">
-                                    </div>
-                                    <div class="mentor-course text-center">
-                                        <h3 class="mb-2">Welcome to <br><?= date('Y') ?><span class="text-secondary">Edo State </span> University Iyahmo.</h3>
-                                         <p>Edo State University Annual Performance Evaluation & Review System.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="login-carousel-section mb-3">
-                                    <div class="login-banner">
-                                        <img src="assets/img/auth/auth-1.svg" class="img-fluid" alt="Logo">
-                                    </div>
-                                    <div class="mentor-course text-center">
-                                        <h3 class="mb-2">Welcome to <br><?= date('Y') ?><span class="text-secondary">Edo State </span> University Iyahmo.</h3>
-                                         <p>Edo State University Annual Performance Evaluation & Review System.</p>
-                                    </div>
-                                </div>
-                            </div>
+                           
                         </div>
                     </div>
                     <!-- /Login Banner -->
@@ -51,9 +30,12 @@
                         <div class="login-wrapper">
                             <div class="loginbox">
                                 <div class="w-100">
-                                    <div class="d-flex align-items-center justify-content-between login-header">
-                                        <img src="assets/img/" class="img-fluid" alt="Logo">
+                                  <div class="row">
+                                      <div class="d-flex align-items-center justify-content-between login-header">
+                                       <img class="bg-img-cover text-center-container"  src="assets/img/logo.jpg" class="img-fluid" alt="Logo">
                                     </div>
+                                  </div>
+                                    
                                     <h1 class="fs-32 fw-bold topic">Sign up</h1>
                                    <?= view('partials/flash') // optional partial to render flash messages ?>
                                    <form class="mb-3 pb-3" id="registerForm" action="<?= base_url('save-registration') ?>" method="post" novalidate>
@@ -78,7 +60,7 @@
                                         <div class="mb-3 position-relative">
                                             <label class="form-label">Staff Id Number<span class="text-danger ms-1">*</span></label>
                                             <div class="position-relative">
-                                                <input class="form-control form-control-lg" type="text" name="staff_id" value="<?= esc(old('staff_number', $staff['staff_number'] ?? '')) ?>" readonly>
+                                                <input class="form-control form-control-lg" type="text" name="staff_id" value="<?= esc(old('staff_number', $staff['staff_number'] ?? '')) ?>">
                                                 <span><i class="isax isax-user input-icon text-gray-7 fs-14"></i></span>
                                             </div>
 
@@ -157,7 +139,7 @@
 
 
                                     <div class="fs-14 fw-normal d-flex align-items-center justify-content-center">
-                                        Already you have an account?<a href="" class="link-2 ms-1"> Login</a>
+                                        Already you have an account?<a href="/login" class="link-2 ms-1"> Login</a>
                                     </div>
     
                                     <!-- /Login -->
@@ -170,6 +152,10 @@
             </div>
         </div>
 	   <!-- /Main Wrapper -->
+
+  
+
+     
 
 
 <script>
