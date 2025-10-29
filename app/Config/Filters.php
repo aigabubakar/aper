@@ -26,6 +26,8 @@ class Filters extends BaseConfig
         'secureheaders' => SecureHeaders::class,
         // 👇 Add this line for your auth filter
     'auth'     => \App\Filters\Auth::class,
+    'adminAuth' => \App\Filters\AdminAuth::class,
+
     ];
 
     

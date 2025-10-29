@@ -109,14 +109,57 @@ $routes->group('profile', ['filter' => 'auth'], function($routes) {
     $routes->get('menus/delete/(:num)','Admin\MenuController::delete/$1');
 });
 
-
-
-
-
-
-
-
 $routes->get('dashboard', 'Dashboard::index', ['filter' => 'auth']);
+
+
+$routes->group('admin', ['namespace' => 'App\Controllers\Admin'], function($routes){
+    // auth
+    $routes->get('login', 'Auth::login');
+    $routes->post('login', 'Auth::attempt');
+    $routes->get('logout', 'Auth::logout');
+
+
+    // admin user management (example)
+    $routes->get('users', 'UserController::index', ['filter'=>'adminAuth']);
+    // ... add admin CRUD routes here and apply 'adminAuth' filter
+});
+// Admin dashboard + manage users (staff)
+$routes->get('dashboard', 'Dashboard::index', ['filter' => 'adminAuth']);
+$routes->get('', 'Dashboard::index', ['filter' => 'adminAuth']);
+
+// Admin user/staff management (CRUD)
+// $routes->get('users/create', 'UserManagement::create', ['filter' => 'adminAuth']);
+// $routes->post('users/store', 'UserManagement::store', ['filter' => 'adminAuth']);
+// $routes->get('users/show/(:num)', 'UserManagement::show/$1', ['filter' => 'adminAuth']);
+// $routes->get('users/edit/(:num)', 'UserManagement::edit/$1', ['filter' => 'adminAuth']);
+// $routes->post('users/update/(:num)', 'UserManagement::update/$1', ['filter' => 'adminAuth']);
+// $routes->post('users/delete/(:num)', 'UserManagement::delete/$1', ['filter' => 'adminAuth']);
+
+
+
+// -------------------------------
+// Admin routes (Routes.php)
+// -------------------------------
+$routes->group('admin', ['namespace' => 'App\Controllers\Admin'], function($routes) {
+    // Public admin auth
+    $routes->get('login', 'Auth::login');
+    $routes->post('login', 'Auth::attempt');
+    $routes->get('logout', 'Auth::logout');
+
+    // Dashboard + user management — protect with adminAuth filter if you have it
+    // If you use an AdminAuth filter alias, add ['filter'=>'adminAuth'] to protected routes
+    $routes->get('', 'Dashboard::index', ['filter' => 'adminAuth']);
+    $routes->get('dashboard', 'Dashboard::index', ['filter' => 'adminAuth']);
+
+// Admin user/staff management (CRUD)
+    $routes->get('users', 'UserManagement::index', ['filter' => 'adminAuth']);
+    $routes->get('users/create', 'UserManagement::create', ['filter' => 'adminAuth']);
+    $routes->post('users/store', 'UserManagement::store', ['filter' => 'adminAuth']);
+    $routes->get('users/edit/(:num)', 'UserManagement::edit/$1', ['filter' => 'adminAuth']);
+    $routes->post('users/update/(:num)', 'UserManagement::update/$1', ['filter' => 'adminAuth']);
+    $routes->post('users/delete/(:num)', 'UserManagement::delete/$1', ['filter' => 'adminAuth']);
+});
+
 
 
 

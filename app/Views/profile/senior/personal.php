@@ -2,7 +2,17 @@
 <?= $this->section('title') ?>Senior Staff — Personal Info<?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
-<div class="card mx-auto" style="max-width:900px;">
+
+<div class="row">
+  <!-- Sidebar (the sidebar partial already contains the column wrapper: col-lg-3) -->
+  <?= view('layouts/sidebar') ?>
+
+  <!-- Main column -->
+  <div class="col-lg-9">
+    <div class="page-title d-flex align-items-center justify-content-between mb-3">
+      <!-- you can place breadcrumbs / page actions here -->
+    </div>
+    <div class="card mx-auto" style="max-width:900px;">
   <div class="card-body">
     <h4 class="card-title">Senior Non-Academic — Personal Information</h4>
     <p class="text-muted mb-3">Fill these personal details. Fields marked * are required.</p>
@@ -94,7 +104,13 @@
     </form>
   </div>
 </div>
- </div>
+
+    
+
+  </div> <!-- /.col-lg-9 -->
+</div> <!-- /.row -->
+</div> <!-- /.row -->
+</div> <!-- /.row -->
 
 <?= $this->endSection() ?>
 

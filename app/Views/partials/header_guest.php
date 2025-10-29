@@ -26,7 +26,7 @@
 							</div>		
 						</div>
 						<div class="header-btn d-flex align-items-center">
-							<a href="" class="btn btn-light d-inline-flex align-items-center me-2">
+							<a href="/admin/login" class="btn btn-light d-inline-flex align-items-center me-2">
 								<i class="isax isax-lock-circle me-2"></i>Admin Sign In
 							</a>
 						
