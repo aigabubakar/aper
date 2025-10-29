@@ -1,15 +1,27 @@
+
 <?= $this->extend('layouts/main') ?>
 <?= $this->section('title') ?>Senior — Experience<?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
-<div class="card mx-auto" style="max-width:1000px;">
+
+<div class="row">
+  <!-- Sidebar (the sidebar partial already contains the column wrapper: col-lg-3) -->
+  <?= view('layouts/sidebar') ?>
+
+  <!-- Main column -->
+  <div class="col-lg-9">
+    <div class="page-title d-flex align-items-center justify-content-between mb-3">
+      <!-- you can place breadcrumbs / page actions here -->
+    </div>
+
+    <div class="card mx-auto" style="max-width:1000px;">
   <div class="card-body">
     <h4 class="card-title">Experience / Activities</h4>
     <p class="text-muted mb-3">Add your external professional experience and descriptions.</p>
 
     <div id="alert-placeholder"><?= view('partials/flash') ?></div>
 
-    <form id="expForm" action="<?= site_url('profile/senior/experience/save') ?>" method="post" novalidate>
+    <form id="expForm" action="<?= site_url('profile/junior/experience/save') ?>" method="post" novalidate>
       <?= csrf_field() ?>
       <div class="row g-3">
         <div class="col-12"><h6>External Experience #1</h6></div>
@@ -63,7 +75,7 @@
       </div>
 
       <div class="d-flex justify-content-between mt-3">
-        <a href="<?= site_url('profile/senior/qualifications') ?>" class="btn btn-outline-secondary">Back</a>
+        <a href="<?= site_url('profile/junior/qualifications') ?>" class="btn btn-outline-secondary">Back</a>
         <button id="saveExpBtn" class="btn btn-primary" type="submit">
           <span id="saveExpText">Save & Continue</span>
           <span id="saveExpSpinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
@@ -71,8 +83,16 @@
       </div>
     </form>
   </div>
-</div>
+</div>    
+
+  </div> <!-- /.col-lg-9 -->
+</div> <!-- /.row -->
+</div> <!-- /.row -->
+</div> <!-- /.row -->
+
 <?= $this->endSection() ?>
+
+
 
 <?= $this->section('scripts') ?>
 <!-- Ensure SweetAlert2 loaded: -->
@@ -184,3 +204,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <?= $this->endSection() ?>
+

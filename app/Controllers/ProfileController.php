@@ -452,11 +452,13 @@ public function saveSeniorEmployment()
     return redirect()->to($next)->with('success','Saved');
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-public function seniorEmployment1()
+
+// Show Qualifications form
+public function seniorQualifications()
 {
-    // require login
     $session = session();
     if (! $session->get('isLoggedIn')) {
         return redirect()->to('/login')->with('errors', ['Please login to continue.']);
@@ -469,92 +471,65 @@ public function seniorEmployment1()
         return redirect()->to('/login')->with('errors', ['User not found.']);
     }
 
-    // optional: enforce category match
-    // if (($user['category'] ?? '') !== 'senior_non_academic') { ... }
-
-    // load lookup data (if needed)
-    $faculties = (new FacultyModel())->findAll();
-    $departments = (new DepartmentModel())->where('faculty_id', $user['faculty_id'] ?? null)->findAll();
-
-    return view('profile/senior/employment', [
+    return view('profile/senior/qualifications', [
         'user' => $user,
-        'faculties' => $faculties,
-        'departments' => $departments,
     ]);
 }
 
-/**
- * Save Senior None Academic employment stage (AJAX + normal POST)
- */
-public function saveSeniorEmployment1()
+// POST handler to save Qualifications
+public function saveSeniorQualifications()
 {
     if ($this->request->getMethod() !== 'post') {
-        return $this->response->setJSON(['success'=>false,'message'=>'Method not allowed'])->setStatusCode(405);
+        return $this->response->setJSON(['success' => false, 'message' => 'Method not allowed'])->setStatusCode(405);
     }
-
     if (! session()->get('isLoggedIn')) {
-        return $this->response->setJSON(['success'=>false,'message'=>'Not authenticated'])->setStatusCode(401);
+        return $this->response->setJSON(['success' => false, 'message' => 'Not authenticated'])->setStatusCode(401);
     }
 
-    $userId = (int) session()->get('user_id');
-    $user = $this->userModel->find($userId);
-    if (! $user) {
-        return $this->response->setJSON(['success'=>false,'message'=>'User not found'])->setStatusCode(404);
+    // validation rules (each qualification entry is optional)
+    $rules = [];
+    for ($i = 1; $i <= 5; $i++) {
+        $rules["qual{$i}"] = 'permit_empty|max_length[255]';               // qualification name
+        $rules["qual{$i}_grade"] = 'permit_empty|max_length[50]';         // grade
+        $rules["qual{$i}_institution"] = 'permit_empty|max_length[255]';  // institution
+        $rules["qual{$i}_date"] = 'permit_empty|valid_date';             // date
     }
-
-    // Validation rules for employment stage
-    $rules = [
-        'main_job' => 'permit_empty|max_length[255]',
-        'position_institution' => 'permit_empty|max_length[255]',
-        'adhoc_job' => 'permit_empty|max_length[255]',
-        'activities_within_university' => 'permit_empty|max_length[2000]',
-        'activities_outside_university' => 'permit_empty|max_length[2000]',
-        'professional_experience' => 'permit_empty|max_length[4000]',
-        'trainings' => 'permit_empty|max_length[2000]',
-        'certifications' => 'permit_empty|max_length[2000]',
-        'period_from' => 'required|integer|greater_than_equal_to[1900]|less_than_equal_to[9999]',
-        'period_to' => 'required|integer|greater_than_equal_to[1900]|less_than_equal_to[9999]',
-    ];
+    for ($i = 1; $i <= 5; $i++) {
+        $rules["prof_qual{$i}"] = 'permit_empty|max_length[255]';
+        $rules["prof_qual{$i}_body"] = 'permit_empty|max_length[255]';
+        $rules["prof_qual{$i}_date"] = 'permit_empty|valid_date';
+    }
 
     if (! $this->validate($rules)) {
         $errors = $this->validator->getErrors();
-        log_message('warning', 'saveSeniorEmployment validation failed for user '.$userId.': '.json_encode($errors));
         if ($this->request->isAJAX()) {
-            return $this->response->setJSON(['success'=>false,'errors'=>$errors])->setStatusCode(422);
+            return $this->response->setJSON(['success' => false, 'errors' => $errors])->setStatusCode(422);
         }
         return redirect()->back()->withInput()->with('errors', $errors);
     }
 
-    $pf = (int) $this->request->getPost('period_from');
-    $pt = (int) $this->request->getPost('period_to');
-    if ($pf > $pt) {
-        $msg = 'Reporting period start year cannot be greater than end year.';
-        if ($this->request->isAJAX()) {
-            return $this->response->setJSON(['success'=>false,'message'=>$msg])->setStatusCode(422);
-        }
-        return redirect()->back()->withInput()->with('errors', [$msg]);
+    // build payload
+    $update = [];
+    for ($i = 1; $i <= 5; $i++) {
+        $update["qual{$i}"] = $this->request->getPost("qual{$i}") ?: null;
+        $update["qual{$i}_grade"] = $this->request->getPost("qual{$i}_grade") ?: null;
+        $update["qual{$i}_institution"] = $this->request->getPost("qual{$i}_institution") ?: null;
+        $update["qual{$i}_date"] = $this->request->getPost("qual{$i}_date") ?: null;
+    }
+    for ($i = 1; $i <= 5; $i++) {
+        $update["prof_qual{$i}"] = $this->request->getPost("prof_qual{$i}") ?: null;
+        $update["prof_qual{$i}_body"] = $this->request->getPost("prof_qual{$i}_body") ?: null;
+        $update["prof_qual{$i}_date"] = $this->request->getPost("prof_qual{$i}_date") ?: null;
     }
 
-    $update = [
-        'main_job' => $this->request->getPost('main_job') ?: null,
-        'position_institution' => $this->request->getPost('position_institution') ?: null,
-        'adhoc_job' => $this->request->getPost('adhoc_job') ?: null,
-        'activities_within_university' => $this->request->getPost('activities_within_university') ?: null,
-        'activities_outside_university' => $this->request->getPost('activities_outside_university') ?: null,
-        'professional_experience' => $this->request->getPost('professional_experience') ?: null,
-        'trainings' => $this->request->getPost('trainings') ?: null,
-        'certifications' => $this->request->getPost('certifications') ?: null,
-        'period_from' => $pf,
-        'period_to' => $pt,
-    ];
-
-    // sanity: check DB columns exist
+    // DB column guard (helpful error if migrations missing)
     try {
         $db = \Config\Database::connect();
         $cols = $db->getFieldNames('users');
     } catch (\Throwable $e) {
-        log_message('error','saveSeniorEmployment DB connect failed: '.$e->getMessage());
-        return $this->response->setJSON(['success'=>false,'message'=>'Database connection error'])->setStatusCode(500);
+        log_message('error','saveSeniorQualifications DB connect failed: '.$e->getMessage());
+        if ($this->request->isAJAX()) return $this->response->setJSON(['success'=>false,'message'=>'Database error'])->setStatusCode(500);
+        return redirect()->back()->withInput()->with('errors', ['Database connection error.']);
     }
 
     $missing = [];
@@ -562,38 +537,40 @@ public function saveSeniorEmployment1()
         if (! in_array($col, $cols)) $missing[] = $col;
     }
     if (! empty($missing)) {
-        log_message('error','saveSeniorEmployment missing columns: '.implode(', ',$missing));
-        return $this->response->setJSON([
-            'success'=>false,
-            'message'=>'Database schema mismatch: missing columns: '.implode(', ',$missing),
-            'missing_columns'=>$missing
-        ])->setStatusCode(500);
+        log_message('error','saveSeniorQualifications missing columns: '.implode(', ',$missing));
+        if ($this->request->isAJAX()) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Database schema mismatch: missing columns: '.implode(', ',$missing),
+                'missing_columns' => $missing
+            ])->setStatusCode(500);
+        }
+        return redirect()->back()->withInput()->with('errors', ['Database schema mismatch: '.implode(', ',$missing)]);
     }
 
+    // perform update
     try {
+        $userId = (int) session()->get('user_id');
         $this->userModel->update($userId, $update);
     } catch (\Throwable $e) {
-        log_message('error','saveSeniorEmployment update failed for user '.$userId.': '.$e->getMessage()."\n".$e->getTraceAsString());
-        return $this->response->setJSON(['success'=>false,'message'=>'Failed to save data'])->setStatusCode(500);
+        log_message('error','saveSeniorQualifications update failed for user '.$userId.': '.$e->getMessage());
+        if ($this->request->isAJAX()) return $this->response->setJSON(['success'=>false,'message'=>'Failed to save data'])->setStatusCode(500);
+        return redirect()->back()->withInput()->with('errors', ['Server error while saving.']);
     }
 
-    // Decide the next route — change to the real route for the next stage of implementation
-    $next = site_url('profile/senior/qualifications');
-
+    $next = site_url('profile/senior/experience');
     if ($this->request->isAJAX()) {
-        return $this->response->setJSON(['success'=>true,'message'=>'Saved','redirect'=>$next])->setStatusCode(200);
+        return $this->response->setJSON(['success'=>true,'message'=>'Qualifications saved','redirect'=>$next,'redirectDelay'=>900])->setStatusCode(200);
     }
-
-    return redirect()->to($next)->with('success','Saved');
+    return redirect()->to($next)->with('success','Qualifications saved');
 }
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 /**
+
+
+**
  * Render Senior Non-Academic — Qualifications page
  */
-public function seniorQualifications()
+public function seniorQualifications1()
 {
     $session = session();
     if (! $session->get('isLoggedIn')) {
@@ -618,7 +595,7 @@ public function seniorQualifications()
 /**
  * Save Senior Non-Academic — Qualifications (AJAX + POST)
  */
-public function saveSeniorQualifications()
+public function saveSeniorQualifications1()
 {
     if ($this->request->getMethod() !== 'post') {
         return $this->response->setJSON(['success' => false, 'message' => 'Method not allowed'])->setStatusCode(405);

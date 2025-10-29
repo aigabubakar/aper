@@ -6,10 +6,10 @@
   <div class="card mx-auto" style="max-width:800px;">
     <div class="card-body text-center">
       
-         <div class="successful-form img-fluid"> <img src="<?= base_url('assets/images/gif/dashboard-8/successful.gif') ?>" alt="Congrats" style="max-width:180px" class="mb-3">
+         <div class="successful-form img-fluid">
             <h2 class="mb-2">Congratulations, <?= esc($user['fullname'] ?? $user['email']) ?>!</h2>
-               <p>Well done! You have successfully completed your <?= date('Y') ?> APER registration.</p>
-        </div>
+               <p>Well done!  you have successfully filled and submitted your Staff’s <?= date('Y') ?> Annual Performance Evaluation Form.</p>
+        </div>  
             <p class="text-muted mb-4">Thank you — your details have been saved.</p>
 
       <p>

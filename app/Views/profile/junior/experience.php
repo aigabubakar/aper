@@ -1,7 +1,6 @@
 <?= $this->extend('layouts/main') ?>
 <?= $this->section('title') ?>Junior — Employment<?= $this->endSection() ?>
 
-
 <?= $this->section('content') ?>
 
 <div class="row">
@@ -21,7 +20,7 @@
 
     <div id="alert-placeholder"><?= view('partials/flash') ?></div>
 
-    <form id="expForm" action="<?= site_url('profile/senior/experience/save') ?>" method="post" novalidate>
+    <form id="expForm" action="<?= site_url('profile/junior/experience/save') ?>" method="post" novalidate>
       <?= csrf_field() ?>
       <div class="row g-3">
         <div class="col-12"><h6>External Experience #1</h6></div>
@@ -75,7 +74,7 @@
       </div>
 
       <div class="d-flex justify-content-between mt-3">
-        <a href="<?= site_url('profile/senior/qualifications') ?>" class="btn btn-outline-secondary">Back</a>
+        <a href="<?= site_url('profile/junior/qualifications') ?>" class="btn btn-outline-secondary">Back</a>
         <button id="saveExpBtn" class="btn btn-primary" type="submit">
           <span id="saveExpText">Save & Continue</span>
           <span id="saveExpSpinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
