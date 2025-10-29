@@ -311,11 +311,150 @@ public function seniorPersonal()
     return $this->response->setJSON(['success'=>true,'message'=>'Saved','redirect'=>$next])->setStatusCode(200);
 }
 
-
 /**
  * Render Senior Non-Academic employment form (next stage after personal)
  */
-public function seniorEmployment()
+
+ public function seniorEmployment()
+{
+         $session = session();
+    if (! $session->get('isLoggedIn')) {
+        return redirect()->to('/login')->with('errors', ['Please login to continue.']);
+    }
+
+    $userId = (int) $session->get('user_id');
+    $user = $this->userModel->find($userId);
+    if (! $user) {
+        $session->destroy();
+        return redirect()->to('/login')->with('errors', ['User not found.']);
+    }
+
+    // load helper data if available (departments, faculties)
+    $faculties = $this->facultyModel ? $this->facultyModel->findAll() : [];
+    $departments = $this->departmentModel ? $this->departmentModel->findAll() : [];
+
+    return view('profile/senior/employment', [
+        'user' => $user,
+        'faculties' => $faculties,
+        'departments' => $departments,
+    ]);
+}
+
+/**
+ * POST /profile/junior/employment/save
+ */
+public function saveSeniorEmployment()
+{
+    if ($this->request->getMethod() !== 'post') {
+        return $this->response->setJSON(['success'=>false,'message'=>'Method not allowed'])->setStatusCode(405);
+    }
+
+    if (! session()->get('isLoggedIn')) {
+        return $this->response->setJSON(['success'=>false,'message'=>'Not authenticated'])->setStatusCode(401);
+    }
+
+    // validation rules
+    $rules = [
+        'present_salary' => 'permit_empty|numeric',
+        'contiss' => 'permit_empty|max_length[50]',
+        'step' => 'permit_empty|max_length[50]',
+        'first_appointment_date' => 'permit_empty|valid_date',
+        'first_appointment_grade' => 'permit_empty|max_length[50]',
+        'last_promotion_date' => 'permit_empty|valid_date',
+        'last_promotion_grade' => 'permit_empty|max_length[50]',
+        'current_appointment_date' => 'permit_empty|valid_date',
+        'current_appointment_grade' => 'permit_empty|max_length[50]',
+        'appointment_confirmed' => 'permit_empty|in_list[0,1,yes,no]',
+        'appointment_confirmed_at' => 'permit_empty|valid_date',
+        
+    ];
+
+    if (! $this->validate($rules)) {
+        $errors = $this->validator->getErrors();
+        log_message('warning','saveSeniorEmployment validation failed: '.json_encode($errors));
+        if ($this->request->isAJAX()) {
+            return $this->response->setJSON(['success'=>false,'errors'=>$errors])->setStatusCode(422);
+        }
+        return redirect()->back()->withInput()->with('errors', $errors);
+    }
+
+    // business rules: normalize appointment_confirmed
+    $raw = $this->request->getPost('appointment_confirmed');
+    $apc = null;
+    if ($raw === '1' || $raw === 'yes' || $raw === 'on') $apc = 1;
+    elseif ($raw === '0' || $raw === 'no' || $raw === '') $apc = 0;
+
+    $apcDate = $this->request->getPost('appointment_confirmed_at') ?: null;
+    if ($apc === 1 && empty($apcDate)) {
+        $err = ['appointment_confirmed_at' => 'Please provide confirmation date.'];
+        if ($this->request->isAJAX()) return $this->response->setJSON(['success'=>false,'errors'=>$err])->setStatusCode(422);
+        return redirect()->back()->withInput()->with('errors', $err);
+    }
+    if ($apc !== 1) $apcDate = null;
+
+    // prepare update payload
+    $update = [
+        'present_salary' => $this->request->getPost('present_salary') !== '' ? $this->request->getPost('present_salary') : null,
+        'contiss' => $this->request->getPost('contiss') ?: null,
+        'step' => $this->request->getPost('step') ?: null,
+        'date_of_first_appointment' => $this->request->getPost('first_appointment_date') ?: null,
+        'first_appointment_grade' => $this->request->getPost('first_appointment_grade') ?: null,
+        'last_promotion_date' => $this->request->getPost('last_promotion_date') ?: null,
+        'last_promotion_grade' => $this->request->getPost('last_promotion_grade') ?: null,
+        'current_appointment_date' => $this->request->getPost('current_appointment_date') ?: null,
+        'current_appointment_grade' => $this->request->getPost('current_appointment_grade') ?: null,
+        'appointment_confirmed' => $apc ?? 0,
+        'appointment_confirmed_at' => $apcDate,
+        
+    ];
+
+    // guard columns exist
+    try {
+        $db = \Config\Database::connect();
+        $cols = $db->getFieldNames('users');
+    } catch (\Throwable $e) {
+        log_message('error','saveSeniorEmployment DB connect failed: '.$e->getMessage());
+        if ($this->request->isAJAX()) return $this->response->setJSON(['success'=>false,'message'=>'Database connection error'])->setStatusCode(500);
+        return redirect()->back()->withInput()->with('errors',['Database connection error.']);
+    }
+
+    $missing = [];
+    foreach (array_keys($update) as $c) {
+        if (! in_array($c, $cols)) $missing[] = $c;
+    }
+    if (! empty($missing)) {
+        log_message('error','saveSeniorEmployment missing columns: '.implode(', ',$missing));
+        if ($this->request->isAJAX()) {
+            return $this->response->setJSON([
+                'success'=>false,
+                'message'=>'Database schema mismatch: missing columns: '.implode(', ',$missing),
+                'missing_columns'=>$missing
+            ])->setStatusCode(500);
+        }
+        return redirect()->back()->withInput()->with('errors',['Database schema mismatch: '.implode(', ',$missing)]);
+    }
+
+    // update DB
+    try {
+        $userId = (int) session()->get('user_id');
+        $this->userModel->update($userId, $update);
+    } catch (\Throwable $e) {
+        log_message('error','saveSeniorEmployment update failed for user '.$userId.': '.$e->getMessage());
+        if ($this->request->isAJAX()) return $this->response->setJSON(['success'=>false,'message'=>'Failed to save data'])->setStatusCode(500);
+        return redirect()->back()->withInput()->with('errors',['Server error while saving.']);
+    }
+
+    // success - next step
+    $next = site_url('profile/senior/qualifications');
+    if ($this->request->isAJAX()) {
+        return $this->response->setJSON(['success'=>true,'message'=>'Saved','redirect'=>$next,'redirectDelay'=>1000])->setStatusCode(200);
+    }
+    return redirect()->to($next)->with('success','Saved');
+}
+
+
+
+public function seniorEmployment1()
 {
     // require login
     $session = session();
@@ -347,7 +486,7 @@ public function seniorEmployment()
 /**
  * Save Senior None Academic employment stage (AJAX + normal POST)
  */
-public function saveSeniorEmployment()
+public function saveSeniorEmployment1()
 {
     if ($this->request->getMethod() !== 'post') {
         return $this->response->setJSON(['success'=>false,'message'=>'Method not allowed'])->setStatusCode(405);
@@ -1483,7 +1622,7 @@ public function saveJuniorEmployment()
 
     if (! $this->validate($rules)) {
         $errors = $this->validator->getErrors();
-        log_message('warning','saveAcademicEmployment validation failed: '.json_encode($errors));
+        log_message('warning','saveJuniorEmployment validation failed: '.json_encode($errors));
         if ($this->request->isAJAX()) {
             return $this->response->setJSON(['success'=>false,'errors'=>$errors])->setStatusCode(422);
         }
