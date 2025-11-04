@@ -14,12 +14,21 @@ class StaffModel extends Model
         'department',
         'created_at',
         'updated_at',
+        'fullname', 
+        'email', 
+        'category', 
+        'role',
+        'password', 
+        'faculty_id', 
+        'department_id'
+
     ];
 
     protected $useTimestamps = true;
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
 
+   
     /**
      * Find staff by email (trimmed, lowercase-safe)
      *
@@ -32,3 +41,6 @@ class StaffModel extends Model
         return $this->where('LOWER(email)', $email)->first();
     }
 }
+
+
+

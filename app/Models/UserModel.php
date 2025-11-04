@@ -3,28 +3,10 @@
 use CodeIgniter\Model;
 
 class UserModel extends Model
-{
-    
+{    
     protected $table      = 'users';
     protected $primaryKey = 'id';
     protected $returnType = 'array';
-    protected $allowedFieldss = [
-        'staff_id',
-        'fullname',
-        'email',
-        'password',
-        'role',
-        'is_active', 
-        'phone',
-        'category',
-        'period_from',
-        'period_to',
-        'verify_token',
-        'email_verified_at'
-    ];
-        
-
-
     protected $allowedFields = [
     // basics
     'staff_id',
@@ -56,6 +38,10 @@ class UserModel extends Model
     'certifications',
     'period_from',
     'period_to',
+    'present_salary',
+    'contiss',
+    'step',
+    'first_appointment_grade','date_of_first_appointment','last_promotion_grade','last_promotion_date','',
 
     'publications','dissertation',
     'articles','books_monographs',
@@ -64,7 +50,7 @@ class UserModel extends Model
     'postgraduate_supervisor',
     'participation',
     'other_remark',
-    
+        
     'exp_out_institution_name1',
     'exp_out_designation1',
     'exp_out_specialization1',
@@ -81,6 +67,7 @@ class UserModel extends Model
     'courses_taught','teaching_load',
     'research_areas','supervisions_count',
     'postgraduate_supervisor','grants',
+    'teaching_experience',
     'publications','dissertation','articles',
     'books_monographs','number_pub_accepted',
     'number_of_points',
@@ -168,9 +155,20 @@ class UserModel extends Model
         return $this->getInsertID() ?: false;
     }
 
-    
-
-    
+    /**
+ * Return a user row augmented with faculty_name and department_name (left joins).
+ *
+ * @param int $userId
+ * @return array|null
+ */
+public function getUserWithRelations(int $userId)
+{
+    return $this->select('users.*, faculty.name AS faculty_name, department.name AS department_name')
+                ->join('faculty', 'faculty.id = users.faculty_id', 'left')
+                ->join('department', 'department.id = users.department_id', 'left')
+                ->where('users.id', $userId)
+                ->first();
+}
 
     
 }

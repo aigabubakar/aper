@@ -33,7 +33,7 @@
           <input type="text" name="contiss" class="form-control" value="<?= esc(old('contiss',$user['contiss'] ?? '')) ?>">
         </div>
         <div class="col-md-3">
-          <label class="form-label">Grade</label>
+          <label class="form-label">Step</label>
           <input type="text" name="step" class="form-control" value="<?= esc(old('step',$user['step'] ?? '')) ?>">
         </div>
       </div>
@@ -42,19 +42,19 @@
 
         <div class="row g-3 mb-2 align-items-end">
             <div class="col-md-4">
-            <label class="form-label">First Appointment Grade</label>
+            <label class="form-label">First Appointment</label>
             <input type="text" name="first_appointment_grade" class="form-control" value="<?= esc(old('first_appointment_grade',$user['first_appointment_grade'] ?? '')) ?>" placeholder="e.g. 7">
           </div>
 
           <div class="col-md-4">
             <label class="form-label">First Appointment Date</label>
-            <input type="date" name="first_appointment_date" class="form-control" value="<?= esc(old('first_appointment_date',$user['date_of_first_appointment'] ?? '')) ?>">
+            <input type="date" name="date_of_first_appointment" class="form-control" value="<?= esc(old('date_of_first_appointment',$user['date_of_first_appointment'] ?? '')) ?>">
           </div>
         </div>
 
         <div class="row g-3 mb-2">
           <div class="col-md-4">            
-            <label class="form-label">Last Promotion Grade</label>
+            <label class="form-label">Last Promotion</label>
             <input type="text" name="last_promotion_grade" class="form-control" value="<?= esc(old('last_promotion_grade',$user['last_promotion_grade'] ?? '')) ?>">
             </div>
           <div class="col-md-4">
@@ -66,7 +66,7 @@
 
         <div class="row g-3 mb-2">
           <div class="col-md-4">
-            <label class="form-label">Current Appointment Grade</label>
+            <label class="form-label">Current Appointment</label>
             <input type="text" name="current_appointment_grade" class="form-control" value="<?= esc(old('current_appointment_grade',$user['current_appointment_grade'] ?? '')) ?>">
               </div>
           <div class="col-md-4"><label class="form-label">Current Appointment Date</label>

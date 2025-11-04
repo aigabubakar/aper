@@ -32,7 +32,8 @@
 
 
 <?= $this->extend('layouts/main') ?>
-<?= $this->section('title') ?>Junior — Employment<?= $this->endSection() ?>
+<?= $this->section('title') ?>Admin Dashboard<?= $this->endSection() ?>
+
 <?= $this->section('content') ?>
 	<!-- Main Wrapper -->
 		<div class="main-wrapper">
@@ -116,15 +117,14 @@
 <div class="row">
   <!-- Sidebar (the sidebar partial already contains the column wrapper: col-lg-3) -->
   <?= view('layouts/sidebar') ?>
+  
 
   <!-- Main column -->
   <div class="col-lg-9">
     <div class="page-title d-flex align-items-center justify-content-between mb-3">
       <!-- you can place breadcrumbs / page actions here -->
     </div>
-			
-
-			<div class="content">
+    	<div class="content">
 				<div class="container">
 					<div class="instructor-profile">
 						<div class="instructor-profile-bg">
@@ -144,9 +144,10 @@
 								</div>
 							</div>
 							<div class="col-md-6">
-								<div class="d-flex align-items-center flex-wrap gap-3 justify-content-md-end">
-									<a href="add-course.html" class="btn btn-white rounded-pill">Add New Course</a>
-									<a href="student-dashboard.html" class="btn btn-secondary rounded-pill">Student Dashboard</a>
+									<div class="d-flex align-items-center flex-wrap gap-3 justify-content-md-end">
+										<a href="" class="btn btn-white rounded-pill">Acount Type</a>
+										<a href="" class="btn btn-secondary rounded-pill">Admin</a>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -155,29 +156,17 @@
 												
 						<div class="col-lg-12">
 							<div class="page-title d-flex align-items-center justify-content-between">
-								<h5 class="fw-bold">Announcements</h5>
+								<h5 class="fw-bold"></h5>
 								<div>
-									<a href="javascript:void(0);" class="btn btn-secondary d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#add_announcement">
-										<i class="isax isax-add-circle me-1"></i>Add Announcement
+									<a href="" class="btn btn-secondary d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#add_announcement">
+										<i class="isax isax-add-circle me-1"></i>Add New A Staff
 									</a>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-md-8">
 									<div class="mb-3">
-										<div class="dropdown">
-											<a href="javascript:void(0);" class="dropdown-toggle btn rounded border d-inline-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false">
-												Status
-											</a>
-											<ul class="dropdown-menu dropdown-menu-end p-3">
-												<li>
-													<a href="javascript:void(0);" class="dropdown-item rounded-1">Published</a>
-												</li>
-												<li>
-													<a href="javascript:void(0);" class="dropdown-item rounded-1">Draft</a>
-												</li>
-											</ul>
-										</div>
+										
 									</div>
 								</div>
 								<div class="col-md-4">
@@ -232,23 +221,6 @@
 												</div>
 											</td>
 										</tr>
-										<tr>
-											<td>26 Jul 2025, 01:30 PM</td>
-											<td>
-												<div>
-													<h6 class="mb-1"><a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#view_announcement">Final Exam Schedule and Preparation Tips</a></h6>
-													<p>Course: Learn Angular Fundamentals Beginners Guide</p>
-												</div>
-											</td>
-											<td><span class="badge badge-sm bg-success d-inline-flex align-items-center"><i class="fa-solid fa-circle fs-5 me-1"></i>Published</span></td>
-											<td>
-												<div class="d-flex align-items-center">
-													<a href="javascript:void(0);" class="d-inline-flex fs-14 me-1 action-icon"><i class="isax isax-edit-2" data-bs-toggle="modal" data-bs-target="#edit_announcement"></i></a>
-													<a href="javascript:void(0);" class="d-inline-flex fs-14 action-icon" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="isax isax-trash"></i></a>
-												</div>
-											</td>
-										</tr>
-
 									</tbody>
 								</table>
 							</div>
@@ -256,7 +228,10 @@
 					</div>
 				</div>
 			</div>
-
+		</div>
+	</div>
+  </div>
+</div>
 		<!-- Footer -->
 		<footer class="footer">
 			<div class="footer-bg">
@@ -269,29 +244,22 @@
 					<div class="row row-gap-2">
 						<div class="col-md-6">
 							<div class="text-center text-md-start">
-								<p class="text-white">Copyright &copy; 2025 DreamsLMS. All rights reserved.</p>
+								<p class="text-white">Copyright &copy; <?= date('Y') ?> APER System. All rights reserved.</p>
 							</div>
 						</div>
-						<div class="col-md-6">
-							<div>
-								<ul class="d-flex align-items-center justify-content-center justify-content-md-end footer-link">
-									<li><a href="terms-and-conditions.html">Terms & Conditions</a></li>
-									<li><a href="privacy-policy.html">Privacy Policy</a></li>
-								</ul>
-							</div>
-						</div>
+						
 					</div>
 				</div>
 			</div>
 		</footer>
 		<!-- /Footer -->
 
-			<!-- Add Announcement -->
+			<!-- Add Staff -->
 			<div class="modal fade" id="add_announcement">
 				<div class="modal-dialog modal-dialog-centered modal-lg">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="fw-bold">Add New Announcement</h5>
+							<h5 class="fw-bold">Add New A Staff</h5>
 							<button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close">
 								<i class="isax isax-close-circle5"></i>
 							</button>
@@ -306,7 +274,6 @@
 												<option>Select</option>
 												<option>Information About UI/UX Design Degree</option>
 												<option>Wordpress for Beginners - Master Wordpress Quickly</option>
-												<option>Introduction to Python Programming</option>
 											</select>
 										</div>
 									</div>
@@ -342,14 +309,14 @@
 					</div>
 				</div>
 			</div>
-			<!-- /Add Announcement -->
+			<!-- /Add Staff -->
 
-			<!-- Edit Announcement -->
+			<!-- Edit Staff -->
 			<div class="modal fade" id="edit_announcement">
 				<div class="modal-dialog modal-dialog-centered modal-lg">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="fw-bold">Edit Announcement</h5>
+							<h5 class="fw-bold">Edit Staff</h5>
 							<button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close">
 								<i class="isax isax-close-circle5"></i>
 							</button>
@@ -400,14 +367,14 @@
 					</div>
 				</div>
 			</div>
-			<!-- /Edit Announcement -->
+			<!-- /Edit Staff -->
 
-			<!-- Announcement Details -->
+			<!-- Staff Details -->
 			<div class="modal fade" id="view_announcement">
 				<div class="modal-dialog modal-dialog-centered modal-lg">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="fw-bold">Announcement Details</h5>
+							<h5 class="fw-bold">Staff Details</h5>
 							<button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close">
 								<i class="isax isax-close-circle5"></i>
 							</button>
@@ -436,7 +403,7 @@
 					</div>
 				</div>
 			</div>
-			<!-- /Announcement Details -->
+			<!-- /Staff Details -->
 
 			<!-- Delete Modal -->
 			<div class="modal fade" id="delete_modal">
@@ -447,8 +414,8 @@
 								<i class="isax isax-trash fs-24 text-danger"></i>
 							</span>
 							<div>
-								<h4 class="mb-2">Delete Announcements</h4>
-								<p class="mb-3">Are you sure you want to delete announcements?</p>
+								<h4 class="mb-2">Delete Staff</h4>
+								<p class="mb-3">Are you sure you want to delete Staff?</p>
 								<div class="d-flex align-items-center justify-content-center">
 									<a href="javascript:void(0);" class="btn bg-gray-100 rounded-pill me-2" data-bs-dismiss="modal">Cancel</a>
 									<a href="javascript:void(0);" class="btn btn-secondary rounded-pill">Yes, Delete</a>
@@ -459,12 +426,7 @@
 				</div>
 			</div>
 			<!-- /Delete Modal -->
-
-
-
-
-
-    
+   
 
   </div> <!-- /.col-lg-9 -->
 </div> <!-- /.row -->

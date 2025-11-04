@@ -357,13 +357,13 @@ public function saveSeniorEmployment()
     $rules = [
         'present_salary' => 'permit_empty|numeric',
         'contiss' => 'permit_empty|max_length[50]',
-        'step' => 'permit_empty|max_length[50]',
-        'first_appointment_date' => 'permit_empty|valid_date',
+        'step' => 'permit_empty|max_length[50]',       
         'first_appointment_grade' => 'permit_empty|max_length[50]',
-        'last_promotion_date' => 'permit_empty|valid_date',
+        'date_of_first_appointment' => 'permit_empty|valid_date',       
         'last_promotion_grade' => 'permit_empty|max_length[50]',
-        'current_appointment_date' => 'permit_empty|valid_date',
+        'last_promotion_date' => 'permit_empty|valid_date',       
         'current_appointment_grade' => 'permit_empty|max_length[50]',
+        'current_appointment_date' => 'permit_empty|valid_date',
         'appointment_confirmed' => 'permit_empty|in_list[0,1,yes,no]',
         'appointment_confirmed_at' => 'permit_empty|valid_date',
         
@@ -397,7 +397,7 @@ public function saveSeniorEmployment()
         'present_salary' => $this->request->getPost('present_salary') !== '' ? $this->request->getPost('present_salary') : null,
         'contiss' => $this->request->getPost('contiss') ?: null,
         'step' => $this->request->getPost('step') ?: null,
-        'date_of_first_appointment' => $this->request->getPost('first_appointment_date') ?: null,
+        'date_of_first_appointment' => $this->request->getPost('date_of_first_appointment') ?: null,
         'first_appointment_grade' => $this->request->getPost('first_appointment_grade') ?: null,
         'last_promotion_date' => $this->request->getPost('last_promotion_date') ?: null,
         'last_promotion_grade' => $this->request->getPost('last_promotion_grade') ?: null,
@@ -2123,7 +2123,62 @@ public function success()
 /**
  * Print-friendly profile summary
  */
-public function printSummary()
+
+ public function printSummary()
+{
+    $session = session();
+    if (! $session->get('isLoggedIn')) {
+        return redirect()->to('/login')->with('errors', ['Please login to continue.']);
+    }
+
+    $userId = (int) $session->get('user_id');
+    $user = $this->userModel->find($userId);
+    if (! $user) {
+        // DO NOT destroy session here (avoid accidental logout). Just redirect.
+        log_message('warning', "printSummary: user not found for id={$userId}");
+        return redirect()->to('/login')->with('errors', ['User not found.']);
+    }
+
+    // Normalize object -> array
+    if (is_object($user)) $user = (array) $user;
+
+    // Defaults
+    $facultyName = $user['faculty_name'] ?? null;
+    $departmentName = $user['department_name'] ?? null;
+
+    try {
+        // If faculty_name not already available, try to load via FacultyModel (if it exists)
+        if (empty($facultyName) && ! empty($user['faculty_id']) && class_exists(\App\Models\FacultyModel::class)) {
+            $fm = new \App\Models\FacultyModel();
+            $f = $fm->find((int)$user['faculty_id']);
+            $facultyName = $f['name'] ?? null;
+        }
+
+        // If department_name not already available, try to load via DepartmentModel (if it exists)
+        if (empty($departmentName) && ! empty($user['department_id']) && class_exists(\App\Models\DepartmentModel::class)) {
+            $dm = new \App\Models\DepartmentModel();
+            $d = $dm->find((int)$user['department_id']);
+            $departmentName = $d['name'] ?? null;
+        }
+    } catch (\Throwable $e) {
+        log_message('warning', 'printSummary relation lookup failed: ' . $e->getMessage());
+    }
+
+    // Inject friendly names into $user array so existing views that read $user[...] will work
+    $user['faculty_name'] = $facultyName;
+    $user['department_name'] = $departmentName;
+
+    return view('profile/print_summary', [
+        'user' => $user,
+        'facultyName' => $facultyName,
+        'departmentName' => $departmentName,
+    ]);
+}
+
+ 
+
+
+public function printSummary1()
 {
     $session = session();
     if (! $session->get('isLoggedIn')) {

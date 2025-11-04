@@ -1,4 +1,4 @@
-<?= $this->extend('layouts/main') ?>
+<!-- <?= $this->extend('layouts/main') ?>
 <?= $this->section('title') ?>Manage Users<?= $this->endSection() ?>
 <?= $this->section('content') ?>
 
@@ -40,11 +40,11 @@
 
 <?= $pager->links() ?>
 
-<?= $this->endSection() ?>
+<?= $this->endSection() ?> -->
 
 
 
-<?= $this->extend('layouts/admin') ?>
+<?= $this->extend('layouts/main') ?>
 <?= $this->section('title') ?>Manage Users<?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
@@ -88,4 +88,7 @@
 </table>
 
 <?= $pager->links() ?>
+
+
+
 <?= $this->endSection() ?>

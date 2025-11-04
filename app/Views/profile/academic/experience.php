@@ -157,22 +157,23 @@
         <div class="row g-3 mb-2">
           <div class="col-md-6">
             <label class="form-label">(i) Dissertation or Thesis</label>
-            <input name="dissertation" class="form-control" value="<?= esc(old('dissertation', $user['dissertation'] ?? '')) ?>">
+             <textarea name="dissertation" class="form-control" rows="4"><?= esc(old('dissertation', $user['dissertation'] ?? '')) ?></textarea>
           </div>
           <div class="col-md-6">
             <label class="form-label">(ii) Articles published in learned journals</label>
-            <input name="articles" class="form-control" value="<?= esc(old('articles', $user['articles'] ?? '')) ?>">
+               <textarea name="articles" class="form-control" rows="4"><?= esc(old('articles', $user['articles'] ?? '')) ?></textarea>
           </div>
         </div>
+        <br/>
 
         <div class="row g-3 mb-2">
           <div class="col-md-6">
             <label class="form-label">(iii) Books and Monographs</label>
-            <input name="books_monographs" class="form-control" value="<?= esc(old('books_monographs', $user['books_monographs'] ?? '')) ?>">
+             <textarea name="books_monographs" class="form-control" rows="4"><?= esc(old('books_monographs', $user['books_monographs'] ?? '')) ?></textarea>
           </div>
           <div class="col-md-6">
             <label class="form-label">(iv) Papers already accepted for publication</label>
-            <input name="papers_accepted" class="form-control" value="<?= esc(old('papers_accepted', $user['papers_accepted'] ?? '')) ?>">
+            <textarea name="papers_accepted" class="form-control" rows="4"><?= esc(old('papers_accepted', $user['papers_accepted'] ?? '')) ?></textarea>
           </div>
         </div>
       

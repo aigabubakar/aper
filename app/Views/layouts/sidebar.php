@@ -40,26 +40,7 @@ function isActivePath(string $target, string $currentPath): bool {
           <a href="<?= site_url('/dashboard') ?>" class="d-inline-flex align-items-center <?= isActivePath('/dashboard', $currentPath) ? 'active' : '' ?>">
             <i class="isax isax-grid-35 me-2"></i>Dashboard
           </a>
-        </li>
-
-        <!-- My Profile - visible to staff and most roles -->
-        <?php if (in_array($role, ['staff','hod','dean','admin'])): ?>
-
-        <li class="<?= isActivePath('profile/print-summary', $currentPath) || isActivePath('profile', $currentPath) ? 'active' : '' ?>">
-          <a href="<?= site_url('profile/print-summary') ?>" class="d-inline-flex align-items-center <?= isActivePath('profile/print-summary', $currentPath) || isActivePath('profile', $currentPath) ? 'active' : '' ?>">
-            <i class="isax isax-ticket5 me-2"></i>My Summary
-          </a>
-        </li>
-        <?php endif; ?>
-
-        <!-- Courses (example only for academic category) -->
-        <?php if ($category === 'academic' && in_array($role, ['staff','hod','dean'])): ?>
-        <li class="<?= isActivePath('courses', $currentPath) ? 'active' : '' ?>">
-          <a href="<?= site_url('courses') ?>" class="d-inline-flex align-items-center <?= isActivePath('courses', $currentPath) ? 'active' : '' ?>">
-            <i class="isax isax-teacher5 me-2"></i>Courses
-          </a>
-        </li>
-        <?php endif; ?>
+        </li>       
 
         <!-- Announcements (visible to all logged in users) -->
         <!-- <li class="<?= isActivePath('announcements', $currentPath) ? 'active' : '' ?>">
@@ -153,14 +134,23 @@ function isActivePath(string $target, string $currentPath): bool {
             <a href="<?= site_url('profile/junior/experience') ?>" class="d-inline-flex align-items-center <?= isActivePath('profile/junior/experience', $currentPath) ? 'active' : '' ?>">
               <i class="isax isax-note-215 me-2"></i>Experience
             </a>
-        </li>
-        
+        </li>       
 
       <?php else: ?>
-        <li><a href="<?= base_url('profile') ?>">My Profile</a></li>
       <?php endif; ?>
 
     <?php endif; ?>
+
+     <!-- My Profile - visible to staff and most roles -->
+        <?php if (in_array($role, ['staff','admin'])): ?>
+        <li class="<?= isActivePath('profile/print-summary', $currentPath) || isActivePath('profile', $currentPath) ? 'active' : '' ?>">
+          <a href="<?= site_url('profile/print-summary') ?>" class="d-inline-flex align-items-center <?= isActivePath('profile/print-summary', $currentPath) || isActivePath('profile', $currentPath) ? 'active' : '' ?>">
+            <i class="isax isax-ticket5 me-2"></i>My Summary
+          </a>
+        </li>
+        
+
+        <?php endif; ?>
 
       </ul>
 

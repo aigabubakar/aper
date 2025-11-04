@@ -161,6 +161,16 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], function($rout
 });
 
 
+$routes->group('admin', ['namespace' => 'App\Controllers\Admin'], function($routes) {
+    $routes->get('staff', 'AdminStaffController::index');
+    $routes->get('staff/create', 'AdminStaffController::create');
+    $routes->post('staff/store', 'AdminStaffController::store');
+    $routes->get('staff/edit/(:num)', 'AdminStaffController::edit/$1');
+    $routes->post('staff/update/(:num)', 'AdminStaffController::update/$1');
+    $routes->get('staff/delete/(:num)', 'AdminStaffController::delete/$1');
+});
+
+
 
 
 

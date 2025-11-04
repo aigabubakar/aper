@@ -77,8 +77,54 @@
 .stamp .stamp-time { font-size: 0.75rem; margin-top: 3px; display:block; }
 
 /* ensure card content above watermark but below stamp */
-#printArea { position: relative; z-index: 1; background: #fff; }
+#printArea {
+  position: relative;
+  z-index: 1;
+  background: #fff;
+  margin: 0 auto;
+  padding: 16px 24px;
+  box-sizing: border-box;
+}
+
+@media print {
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body {
+    background: #fff !important;
+  }
+
+  #printArea {
+    margin: 0 !important;
+    padding-top: 0 !important;
+    top: 0 !important;
+  }
+
+  /* Hide layout wrappers */
+  header, footer, .navbar, .sidebar, .page-title, .no-print, .card-header {
+    display: none !important;
+  }
+
+  .card {
+    box-shadow: none !important;
+    border: none !important;
+  }
+}
+@media print {
+  .section-title {
+    page-break-before: avoid;
+    page-break-after: avoid;
+  }
+  .field {
+    page-break-inside: avoid;
+  }
+}
+
+
 </style>
+
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>   
@@ -139,8 +185,9 @@
       <div class="field"><label>Current appointment grade</label><div class="value"><?= esc($user['current_appointment_grade'] ?? 'N/A') ?></div></div>
       <div class="field"><label>Appointment confirmed</label><div class="value"><?= (isset($user['appointment_confirmed']) ? (($user['appointment_confirmed'] == 1 || $user['appointment_confirmed'] === 'yes') ? 'Yes' : 'No') : 'N/A') ?></div></div>
       <div class="field"><label>Appointment confirmed at</label><div class="value"><?= esc($user['appointment_confirmed_at'] ?? 'N/A') ?></div></div>
-      <div class="field"><label>Faculty</label><div class="value"><?= esc($facultyName ?? ($user['faculty_id'] ?? 'N/A')) ?></div></div>
-      <div class="field"><label>Department</label><div class="value"><?= esc($departmentName ?? ($user['department_id'] ?? 'N/A')) ?></div></div>
+
+     <div class="field"><label>Faculty</label><div class="value"><?= esc($facultyName ?? ($user['faculty'] ?? 'N/A')) ?></div></div>
+      <div class="field"><label>Department</label><div class="value"><?= esc($departmentName ?? ($user['department'] ?? 'N/A')) ?></div></div>
       <div class="field"><label>Designation</label><div class="value"><?= esc($user['designation'] ?? 'N/A') ?></div></div>
       <div class="field"><label>Grade level</label><div class="value"><?= esc($user['grade_level'] ?? 'N/A') ?></div></div>
     </div>
@@ -180,7 +227,8 @@
         </div>
       <?php endfor; ?>
     </div>
-
+    
+    
     <div class="section-title">Experience & Research</div>
     <div class="mb-2">
       <div class="field"><label>University Teaching Experience</label><div class="value"><?= nl2br(esc($user['teaching_experience'] ?? 'N/A')) ?></div></div>

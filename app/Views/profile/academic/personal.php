@@ -174,25 +174,26 @@
                 </select>
               </div>
 
-              <div class="col-md-6">
-                <label class="form-label">Faculty</label>
-                <select id="facultySelect" name="faculty_id" class="form-select">
-                  <option value="">-- Select Faculty --</option>
-                  <?php foreach ($faculties as $f): ?>
-                    <option value="<?= (int)$f['id'] ?>" <?= (old('faculty_id', $user['faculty_id'] ?? '') == $f['id']) ? 'selected' : '' ?>><?= esc($f['name']) ?></option>
-                  <?php endforeach; ?>
-                </select>
-              </div>
+              
+        <div class="col-md-6">
+          <label class="form-label">Faculty</label>
+          <select id="facultySelect" name="faculty_id" class="form-select">
+            <option value="">-- Select Faculty --</option>
+            <?php foreach ($faculties as $f): ?>
+              <option value="<?= $f['name'] ?>" <?= (old('faculty', $user['faculty'] ?? '') == $f['name']) ? 'selected' : '' ?>><?= esc($f['name']) ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
 
-              <div class="col-md-6">
-                <label class="form-label">Department</label>
-                <select id="departmentSelect" name="department_id" class="form-select">
-                  <option value="">-- Select Department --</option>
-                  <?php foreach ($departments as $d): ?>
-                    <option value="<?= (int)$d['id'] ?>" <?= (old('department_id', $user['department_id'] ?? '') == $d['id']) ? 'selected' : '' ?>><?= esc($d['name']) ?></option>
-                  <?php endforeach; ?>
-                </select>
-              </div>
+        <div class="col-md-6">
+          <label class="form-label">Department</label>
+          <select id="departmentSelect" name="department_id" class="form-select">
+            <option value="">-- Select Department --</option>
+            <?php foreach ($departments as $d): ?>
+              <option value="<?= $d['name'] ?>" <?= (old('department', $user['department'] ?? '') == $d['name']) ? 'selected' : '' ?>><?= esc($d['name']) ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
 
               <div class="col-md-6">
                 <label class="form-label">Designation</label>
