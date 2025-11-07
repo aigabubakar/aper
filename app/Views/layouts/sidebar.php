@@ -91,11 +91,18 @@ function isActivePath(string $target, string $currentPath): bool {
               <i class="isax isax-security-user me-2"></i>Profile
             </a>
         </li>
+        
         <li class="<?= isActivePath('profile/academic/employment', $currentPath) ? 'active' : '' ?>">
             <a href="<?= site_url('profile/academic/employment') ?>" class="d-inline-flex align-items-center <?= isActivePath('profile/academic/employment', $currentPath) ? 'active' : '' ?>">
-              <i class="isax isax-medal-star5 me-2"></i>Employment
+              <i class="isax isax-note-215 me-2"></i>Employment History
             </a>
         </li>
+        <li class="<?= isActivePath('profile/academic/qualifications', $currentPath) ? 'active' : '' ?>">
+            <a href="<?= site_url('profile/academic/qualifications') ?>" class="d-inline-flex align-items-center <?= isActivePath('profile/academic/qualifications', $currentPath) ? 'active' : '' ?>">
+              <i class="isax isax-medal-star5 me-2"></i>Qualifications
+            </a>
+        </li>
+
         <li class="<?= isActivePath('profile/academic/experience', $currentPath) ? 'active' : '' ?>">
             <a href="<?= site_url('profile/academic/experience') ?>" class="d-inline-flex align-items-center <?= isActivePath('profile/academic/experience', $currentPath) ? 'active' : '' ?>">
               <i class="isax isax-note-215 me-2"></i>Experience
@@ -148,14 +155,9 @@ function isActivePath(string $target, string $currentPath): bool {
             <i class="isax isax-ticket5 me-2"></i>My Summary
           </a>
         </li>
-        
-
         <?php endif; ?>
-
       </ul>
-
       <hr>
-
       <ul>
         <li>
           <a href="<?= site_url('logout') ?>" class="d-inline-flex align-items-center text-danger">
@@ -167,6 +169,3 @@ function isActivePath(string $target, string $currentPath): bool {
   </div>
 </div>
 <!-- /Sidebar (end) -->
-
-
-  

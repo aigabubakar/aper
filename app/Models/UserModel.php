@@ -44,6 +44,10 @@ class UserModel extends Model
     'first_appointment_grade','date_of_first_appointment','last_promotion_grade','last_promotion_date','',
 
     'publications','dissertation',
+    'papers_accepted',
+    'contribution_to_knowledge',
+    'unpub_paper_conference',
+    'courses_conferences',
     'articles','books_monographs',
     'number_pub_accepted',
     'number_of_points',

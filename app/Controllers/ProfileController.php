@@ -1327,7 +1327,7 @@ public function saveAcademicExperience()
 
         // Contribution / conference
         'contribution_to_knowledge' => 'permit_empty|max_length[200000]',
-        'unpub_paper_conference' => 'permit_empty|max_length[v]',
+        'unpub_paper_conference' => 'permit_empty|max_length[200000]',
 
         // Activities
         'activities_within_university' => 'permit_empty|max_length[200000]',
