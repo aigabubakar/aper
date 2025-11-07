@@ -20,7 +20,7 @@ class App extends BaseConfig
 
      *  public string $baseURL = 'http://localhost:8080/';
      */
-    public string $baseURL = 'https://www.edouniversity.edu.ng/aper/';
+    public string $baseURL ='https://www.edouniversity.edu.ng/aper/';
     
     
     /**
