@@ -140,35 +140,67 @@ $routes->get('', 'Dashboard::index', ['filter' => 'adminAuth']);
 // -------------------------------
 // Admin routes (Routes.php)
 // -------------------------------
+// $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], function($routes) {
+//     // Public admin auth
+//     $routes->get('login', 'Auth::login');
+//     $routes->post('login', 'Auth::attempt');
+//     $routes->get('logout', 'Auth::logout');
+
+//     // Dashboard + user management — protect with adminAuth filter if you have it
+//     // If you use an AdminAuth filter alias, add ['filter'=>'adminAuth'] to protected routes
+//     $routes->get('', 'Dashboard::index', ['filter' => 'adminAuth']);
+//     $routes->get('dashboard', 'Dashboard::index', ['filter' => 'adminAuth']);
+
+// // Admin user/staff management (CRUD)
+//     $routes->get('users', 'UserManagement::index', ['filter' => 'adminAuth']);
+//     $routes->get('users/create', 'UserManagement::create', ['filter' => 'adminAuth']);
+//     $routes->post('users/store', 'UserManagement::store', ['filter' => 'adminAuth']);
+//     $routes->get('users/edit/(:num)', 'UserManagement::edit/$1', ['filter' => 'adminAuth']);
+//     $routes->post('users/update/(:num)', 'UserManagement::update/$1', ['filter' => 'adminAuth']);
+//     $routes->post('users/delete/(:num)', 'UserManagement::delete/$1', ['filter' => 'adminAuth']);
+// });
+
+
+// $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], function($routes) {
+//     $routes->get('staff', 'AdminStaffController::index');
+//     $routes->get('staff/create', 'AdminStaffController::create');
+//     $routes->post('staff/store', 'AdminStaffController::store');
+//     $routes->get('staff/edit/(:num)', 'AdminStaffController::edit/$1');
+//     $routes->post('staff/update/(:num)', 'AdminStaffController::update/$1');
+//     $routes->get('staff/delete/(:num)', 'AdminStaffController::delete/$1');
+// });
+
+
+
+// Admin area
 $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], function($routes) {
-    // Public admin auth
-    $routes->get('login', 'Auth::login');
-    $routes->post('login', 'Auth::attempt');
-    $routes->get('logout', 'Auth::logout');
+    // public
+        $routes->post('attempt', 'Auth::attemptLogin'); // <-- add this line
+    // existing: $routes->post('login', 'Auth::attemptLogin');
+       $routes->get('logout', 'Auth::logout');
 
-    // Dashboard + user management — protect with adminAuth filter if you have it
-    // If you use an AdminAuth filter alias, add ['filter'=>'adminAuth'] to protected routes
-    $routes->get('', 'Dashboard::index', ['filter' => 'adminAuth']);
-    $routes->get('dashboard', 'Dashboard::index', ['filter' => 'adminAuth']);
+    // protected
+    $routes->group('/', ['filter' => 'admin_auth'], function($routes) {
+        $routes->get('admin/dashboard', 'Dashboard::index', ['filter' => 'admin_auth']);
+        
 
-// Admin user/staff management (CRUD)
-    $routes->get('users', 'UserManagement::index', ['filter' => 'adminAuth']);
-    $routes->get('users/create', 'UserManagement::create', ['filter' => 'adminAuth']);
-    $routes->post('users/store', 'UserManagement::store', ['filter' => 'adminAuth']);
-    $routes->get('users/edit/(:num)', 'UserManagement::edit/$1', ['filter' => 'adminAuth']);
-    $routes->post('users/update/(:num)', 'UserManagement::update/$1', ['filter' => 'adminAuth']);
-    $routes->post('users/delete/(:num)', 'UserManagement::delete/$1', ['filter' => 'adminAuth']);
+
+        // Staff management (CRUD)
+        $routes->get('staff', 'StaffController::index');
+        $routes->get('staff/data', 'StaffController::data'); // DataTables server-side
+        $routes->get('staff/create', 'StaffController::create');
+        $routes->post('staff/create', 'StaffController::create');
+        $routes->get('staff/(:num)', 'StaffController::view/$1');
+        $routes->get('staff/(:num)/edit', 'StaffController::edit/$1');
+        $routes->post('staff/(:num)/edit', 'StaffController::edit/$1');
+        $routes->post('staff/(:num)/delete', 'StaffController::delete/$1');
+
+
+        // evaluation stub
+        $routes->get('staff/(:num)/evaluate', 'StaffController::evaluate/$1');
+    });
 });
 
-
-$routes->group('admin', ['namespace' => 'App\Controllers\Admin'], function($routes) {
-    $routes->get('staff', 'AdminStaffController::index');
-    $routes->get('staff/create', 'AdminStaffController::create');
-    $routes->post('staff/store', 'AdminStaffController::store');
-    $routes->get('staff/edit/(:num)', 'AdminStaffController::edit/$1');
-    $routes->post('staff/update/(:num)', 'AdminStaffController::update/$1');
-    $routes->get('staff/delete/(:num)', 'AdminStaffController::delete/$1');
-});
 
 
 

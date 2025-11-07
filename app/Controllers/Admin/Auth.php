@@ -1,31 +1,20 @@
 <?php namespace App\Controllers\Admin;
 
-use App\Models\AdminUserModel;
+use App\Controllers\BaseController;
 
-class Auth extends AdminBaseController
+class Auth extends BaseController
 {
-    protected $adminModel;
-
-    public function __construct()
-    {
-        $this->adminModel = new AdminUserModel();
-    }
-
     public function login()
     {
-        // show login form; if logged in, redirect to admin dashboard
-        if ($this->adminSession->get('isAdminLoggedIn')) {
+        if (session()->get('isLoggedIn') && in_array(session()->get('role'), ['admin','superadmin'])) {
             return redirect()->to('/admin/dashboard');
         }
-        return view('admin/auth/login');
+        return view('admin/auth/login'); // create view below
     }
 
-    public function attempt()
+    public function attemptLogin()
     {
-        $rules = [
-            'email' => 'required|valid_email',
-            'password' => 'required'
-        ];
+        $rules = ['email' => 'required|valid_email', 'password' => 'required|min_length[6]'];
         if (! $this->validate($rules)) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
@@ -33,32 +22,38 @@ class Auth extends AdminBaseController
         $email = strtolower(trim($this->request->getPost('email')));
         $password = $this->request->getPost('password');
 
-        $admin = $this->adminModel->where('LOWER(email)', $email)->first();
+        // find admin record in admins table OR in users with role=admin
+        $adminModel = new \App\Models\AdminModel();
+        $admin = $adminModel->where('LOWER(email)', $email)->first();
+
+        // fallback to users where role is admin
+        if (! $admin) {
+            $uModel = new \App\Models\UserModel();
+            $admin = $uModel->where('LOWER(email)', $email)->where('role','admin')->first();
+        }
+
         if (! $admin || ! password_verify($password, $admin['password'])) {
-            return redirect()->back()->withInput()->with('errors', ['Invalid credentials.']);
+            return redirect()->back()->withInput()->with('errors', ['Invalid credentials']);
         }
 
-        if ((int)($admin['is_active'] ?? 1) === 0) {
-            return redirect()->back()->withInput()->with('errors', ['Account disabled.']);
-        }
-
-        // set separate admin session keys
-        $this->adminSession->set([
-            'isAdminLoggedIn' => true,
-            'admin_id'        => $admin['id'],
-            'admin_fullname'  => $admin['fullname'],
-            'admin_email'     => $admin['email'],
-            'admin_role'      => $admin['role'],
+        // set session (store user array)
+        session()->set([
+            'isLoggedIn' => true,
+            'user_id'    => $admin['id'],
+            'fullname'   => $admin['fullname'] ?? $admin['name'] ?? $admin['email'],
+            'email'      => $admin['email'],
+            'role'       => $admin['role'] ?? 'admin',
+            'user'       => $admin,
         ]);
-        $this->adminSession->regenerate();
+        session()->regenerate();
 
-        return redirect()->to('/admin/dashboard')->with('success','Welcome back, '.$admin['fullname']);
+        return redirect()->to('/admin/dashboard')->with('success', 'Welcome back!');
     }
 
     public function logout()
     {
-        $this->adminSession->remove(['isAdminLoggedIn','admin_id','admin_fullname','admin_email','admin_role']);
-        $this->adminSession->destroy();
-        return redirect()->to('/admin/login')->with('success','Logged out.');
+        session()->remove(['isLoggedIn','user_id','fullname','email','role','user']);
+        session()->destroy();
+        return redirect()->to('/admin/login')->with('success','Logged out');
     }
 }

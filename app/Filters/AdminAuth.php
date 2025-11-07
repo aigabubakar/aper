@@ -9,10 +9,18 @@ class AdminAuth implements FilterInterface
     public function before(RequestInterface $request, $arguments = null)
     {
         $session = session();
-        if (! $session->get('isAdminLoggedIn')) {
-            return redirect()->to(site_url('admin/login'));
+        if (! $session->get('isLoggedIn') || ! in_array($session->get('role'), ['admin','superadmin'])) {
+            // redirect to admin login (works both ajax & normal)
+            $url = site_url('admin/login');
+            if ($request->isAJAX()) {
+                return service('response')->setJSON(['success'=>false,'message'=>'Unauthorized','redirect'=>$url])->setStatusCode(401);
+            }
+            return redirect()->to($url);
         }
     }
 
-    public function after(RequestInterface $request, ResponseInterface $response, $arguments = null) {}
+    public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)
+    {
+        // no-op
+    }
 }

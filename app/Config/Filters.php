@@ -27,6 +27,8 @@ class Filters extends BaseConfig
         // 👇 Add this line for your auth filter
     'auth'     => \App\Filters\Auth::class,
     'adminAuth' => \App\Filters\AdminAuth::class,
+    'admin_auth' => \App\Filters\AdminAuth::class,
+
 
     ];
 
@@ -76,4 +78,5 @@ class Filters extends BaseConfig
      * @var array<string, array<string, list<string>>>
      */
     public array $filters = [];
+
 }

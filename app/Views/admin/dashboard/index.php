@@ -115,12 +115,8 @@
 			<!-- /Header -->
 
 <div class="row">
-  <!-- Sidebar (the sidebar partial already contains the column wrapper: col-lg-3) -->
-  <?= view('layouts/sidebar') ?>
-  
-
   <!-- Main column -->
-  <div class="col-lg-9">
+  <div class="col-lg-10">
     <div class="page-title d-flex align-items-center justify-content-between mb-3">
       <!-- you can place breadcrumbs / page actions here -->
     </div>

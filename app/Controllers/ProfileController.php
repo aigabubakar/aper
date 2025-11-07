@@ -1316,26 +1316,26 @@ public function saveAcademicExperience()
 
     $rules = [
         // Experience
-        'teaching_experience' => 'permit_empty|max_length[4000]',
-        'professional_experience' => 'permit_empty|max_length[4000]',
+        'teaching_experience' => 'permit_empty|max_length[200000]',
+        'professional_experience' => 'permit_empty|max_length[200000]',
 
         // Research
-        'dissertation' => 'permit_empty|max_length[2000]',
-        'articles' => 'permit_empty|max_length[2000]',
-        'books_monographs' => 'permit_empty|max_length[2000]',
-        'papers_accepted' => 'permit_empty|max_length[2000]',
+        'dissertation' => 'permit_empty|max_length[200000]',
+        'articles' => 'permit_empty|max_length[200000]',
+        'books_monographs' => 'permit_empty|max_length[200000]',
+        'papers_accepted' => 'permit_empty|max_length[200000]',
 
         // Contribution / conference
-        'contribution_to_knowledge' => 'permit_empty|max_length[4000]',
-        'unpub_paper_conference' => 'permit_empty|max_length[2000]',
+        'contribution_to_knowledge' => 'permit_empty|max_length[200000]',
+        'unpub_paper_conference' => 'permit_empty|max_length[v]',
 
         // Activities
-        'activities_within_university' => 'permit_empty|max_length[3000]',
-        'activities_outside_university' => 'permit_empty|max_length[3000]',
-        'courses_conferences' => 'permit_empty|max_length[2000]',
+        'activities_within_university' => 'permit_empty|max_length[200000]',
+        'activities_outside_university' => 'permit_empty|max_length[200000]',
+        'courses_conferences' => 'permit_empty|max_length[200000]',
 
         // optional extras
-        'other_notes' => 'permit_empty|max_length[2000]',
+        'other_notes' => 'permit_empty|max_length[200000]',
     ];
 
     if (! $this->validate($rules)) {
