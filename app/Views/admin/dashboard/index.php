@@ -1,33 +1,3 @@
-<?= $this->extend('layouts/main') ?>
-<?= $this->section('title') ?>Admin Dashboard<?= $this->endSection() ?>
-
-<?= $this->section('content') ?>
-<div class="row">
-  <div class="col-md-3">
-    <div class="card p-3">
-      <h5>Total Users</h5>
-      <h2><?= esc($totalUsers) ?></h2>
-    </div>
-  </div>
-
-  <div class="col-md-9">
-    <div class="card">
-      <div class="card-body">
-        <h5>Recent Users</h5>
-        <ul class="list-group">
-          <?php foreach ($recentUsers as $u): ?>
-            <li class="list-group-item">
-              <?= esc($u['fullname']) ?> — <?= esc($u['email']) ?>
-              <a class="btn btn-sm btn-outline-secondary float-end" href="<?= site_url('admin/users/show/'.$u['id']) ?>">View</a>
-            </li>
-          <?php endforeach; ?>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-<?= $this->endSection() ?>
-
 
 
 
@@ -35,8 +5,10 @@
 <?= $this->section('title') ?>Admin Dashboard<?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
-	<!-- Main Wrapper -->
+
+		<!-- Main Wrapper -->
 		<div class="main-wrapper">
+	
 			<!-- Header -->
 			<header class="header-two">
 				<div class="container">
@@ -60,14 +32,14 @@
 						</div>
 						<div class="main-menu-wrapper">								
 							<div class="menu-header">
-								<a href="" class="menu-logo">
-									<img src="assets/img/logo.jpg" class="img-fluid" alt="Logo">
+								<a href="index.html" class="menu-logo">
+									<img src="assets/img/logo.svg" class="img-fluid" alt="Logo">
 								</a>
 								<a id="menu_close" class="menu-close" href="javascript:void(0);">
 									<i class="fas fa-times"></i>
 								</a>
 							</div>
-							
+						
 						</div>
 						<div class="header-btn d-flex align-items-center">
 							<div class="icon-btn me-2">
@@ -100,11 +72,24 @@
 											<a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="instructor-profile.html"><i class="isax isax-security-user me-2"></i>My Profile</a>
 										</li>
 										<li>
+											<a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="instructor-course.html"><i class="isax isax-teacher me-2"></i>Courses</a>
+										</li>
+										<li>
+											<a class="dropdown-item d-inline-flex align-items-center rounded fw-medium2" href="instructor-earnings.html"><i class="isax isax-dollar-circle me-2"></i>Earnings</a>
+										</li>
+										<li>
+											<a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="instructor-payout.html"><i class="isax isax-coin me-2"></i>Payouts</a>
+										</li>
+										<li>
+											<a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="instructor-message.html"><i class="isax isax-messages-3 me-2"></i>Messages<span class="message-count">2</span></a>
+										</li>
+										<li>
 											<a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="instructor-settings.html"><i class="isax isax-setting-2 me-2"></i>Settings</a>
 										</li>										
 									</ul>
 									<div class="profile-footer">
-										<a href="" class="btn btn-secondary d-inline-flex align-items-center justify-content-center w-100"><i class="isax isax-logout me-2"></i>Logout</a>
+										<a class="dropdown-item d-inline-flex align-items-center rounded fw-medium" href="login.html"><i class="isax isax-arrow-2 me-2"></i>Log in as Student</a>
+										<a href="index.html" class="btn btn-secondary d-inline-flex align-items-center justify-content-center w-100"><i class="isax isax-logout me-2"></i>Logout</a>
 									</div>
                                 </div>
                             </div>
@@ -113,45 +98,35 @@
 				</div>
 			</header>
 			<!-- /Header -->
-
-<div class="row">
-  <!-- Main column -->
-  <div class="col-lg-10">
-    <div class="page-title d-flex align-items-center justify-content-between mb-3">
-      <!-- you can place breadcrumbs / page actions here -->
-    </div>
-    	<div class="content">
+			<div class="content">
 				<div class="container">
 					<div class="instructor-profile">
 						<div class="instructor-profile-bg">
 							<img src="assets/img/bg/card-bg-01.png" class="instructor-profile-bg-1" alt="">
 						</div>
 						<div class="row align-items-center row-gap-3">
-							<div class="col-md-6">
-								<div class="d-flex align-items-center">
-									<span class="avatar flex-shrink-0 avatar-xxl avatar-rounded me-3 border border-white border-3 position-relative">
-										<img src="assets/img/user/user-01.jpg" alt="img">
-										<span class="verify-tick"><i class="isax isax-verify5"></i></span>
-									</span>
-									<div>
-										<h5 class="mb-1 text-white d-inline-flex align-items-center">Eugene Andre<a href="instructor-profile.html" class="link-light fs-16 ms-2"><i class="isax isax-edit-2"></i></a></h5>
-										<p class="text-light">Instructor</p>
+								<div class="col-md-6">
+									<div class="d-flex align-items-center">
+										<span class="avatar flex-shrink-0 avatar-xxl avatar-rounded me-3 border border-white border-3 position-relative">
+											<img src="assets/img/user/user-01.jpg" alt="img">
+											<span class="verify-tick"><i class="isax isax-verify5"></i></span>
+										</span>
+										<div>
+											<h5 class="mb-1 text-white d-inline-flex align-items-center"><a href="instructor-details.html">Eugene Andre</a><a href="instructor-profile.html" class="link-light fs-16 ms-2"><i class="isax isax-edit-2"></i></a></h5>
+											<p class="text-light">Instructor</p>
+										</div>
 									</div>
 								</div>
-							</div>
-							<div class="col-md-6">
+								<div class="col-md-6">
 									<div class="d-flex align-items-center flex-wrap gap-3 justify-content-md-end">
 										<a href="" class="btn btn-white rounded-pill">Acount Type</a>
 										<a href="" class="btn btn-secondary rounded-pill">Admin</a>
 									</div>
 								</div>
-							</div>
 						</div>
 					</div>
 					<div class="row">
-												
-						<div class="col-lg-12">
-							<div class="page-title d-flex align-items-center justify-content-between">
+						<div class="page-title d-flex align-items-center justify-content-between">
 								<h5 class="fw-bold"></h5>
 								<div>
 									<a href="" class="btn btn-secondary d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#add_announcement">
@@ -159,85 +134,180 @@
 									</a>
 								</div>
 							</div>
-							<div class="row">
-								<div class="col-md-8">
-									<div class="mb-3">
-										
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="input-icon mb-3">
-										<span class="input-icon-addon">
-											<i class="isax isax-search-normal-14"></i>
-										</span>
-										<input type="email" class="form-control form-control-md" placeholder="Search">
-									</div>
-								</div>
-							</div>
-							<div class="table-responsive custom-table">
-								<table class="table">
-									<thead class="thead-light">
-										<tr>
-											<th>Date</th>
-											<th>Announcements</th>
-											<th>Status</th>
-											<th></th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>22 Aug 2025, 05:40 PM </td>
-											<td>
-												<div>
-													<h6 class="mb-1"><a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#view_announcement">Welcome to Introduction to Programming</a></h6>
-													<p>Course: Introduction to Programming - Python & Java</p>
-												</div>
-											</td>
-											<td><span class="badge badge-sm bg-success d-inline-flex align-items-center"><i class="fa-solid fa-circle fs-5 me-1"></i>Published</span></td>
-											<td>
-												<div class="d-flex align-items-center">
-													<a href="javascript:void(0);" class="d-inline-flex fs-14 me-1 action-icon"><i class="isax isax-edit-2" data-bs-toggle="modal" data-bs-target="#edit_announcement"></i></a>
-													<a href="javascript:void(0);" class="d-inline-flex fs-14 action-icon" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="isax isax-trash"></i></a>
-												</div>
-											</td>
-										</tr>
-										<tr>
-											<td>10 Aug 2025, 10:15 AM</td>
-											<td>
-												<div>
-													<h6 class="mb-1"><a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#view_announcement">Essay Assignment Due Date Approaching</a></h6>
-													<p>Course: Sketch from A to Z (2024): Become an app designer</p>
-												</div>
-											</td>
-											<td><span class="badge badge-sm bg-skyblue d-inline-flex align-items-center me-1"><i class="fa-solid fa-circle fs-5 me-1"></i>Draft</span></td>
-											<td>
-												<div class="d-flex align-items-center">
-													<a href="javascript:void(0);" class="d-inline-flex fs-14 me-1 action-icon"><i class="isax isax-edit-2" data-bs-toggle="modal" data-bs-target="#edit_announcement"></i></a>
-													<a href="javascript:void(0);" class="d-inline-flex fs-14 action-icon" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="isax isax-trash"></i></a>
-												</div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+					
+						<div class="col-lg-12">
+                            <div class="statements">
+                            <h5 class="page-title">Total Registered staff  <?= esc($totalUsers) ?></h5>
+                            <div class="table-top">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <div class="d-flex align-items-center">
+                                        <div class="mb-3">
+                                            <div class="dropdown me-3">
+                                                <a href="javascript:void(0);" class="dropdown-toggle btn d-inline-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Payment Method
+                                                </a>
+                                                <ul class="dropdown-menu dropdown-menu-end">
+                                                    <li>
+                                                        <a href="javascript:void(0);" class="dropdown-item rounded-1">Paypal</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="javascript:void(0);" class="dropdown-item rounded-1">Bank Transfer</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="javascript:void(0);" class="dropdown-item rounded-1">Stripe</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="dropdown me-3">
+                                                <a href="javascript:void(0);" class="dropdown-toggle btn d-inline-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false">
+                                                Status
+                                                </a>
+                                                <ul class="dropdown-menu dropdown-menu-end">
+                                                    <li>
+                                                        <a href="javascript:void(0);" class="dropdown-item rounded-1">Completed</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="javascript:void(0);" class="dropdown-item rounded-1">Pending</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="input-icon mb-3">
+                                        <span class="input-icon-addon">
+                                            <i class="isax isax-search-normal-14"></i>
+                                        </span>
+                                        <input type="email" class="form-control form-control-md" placeholder="Search">
+                                    </div>
+                                </div>
+                            </div>
+                           </div>
+                           <div class="table-responsive custom-table">
+                            <table class="table">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Course</th>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Payment Method</th>
+                                        <th>Status</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="order"><a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#view_invoice">#ORD01</a></td>
+                                        <td><a href="course-details.html">Information About UI/UX Design<br> Degree</a></td>
+                                        <td>22 Aug 2025</td>
+                                        <td>$160</td>
+                                        <td>Paypal</td>
+                                        <td><span class="badge badge-sm bg-success d-inline-flex align-items-center"><i class="fa-solid fa-circle fs-5 me-1"></i>Completed</span></td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <a href="javascript:void(0);" class="d-inline-flex fs-14 me-1 action-icon" data-bs-toggle="modal" data-bs-target="#view_invoice"><i class="isax isax-eye"></i></a>
+                                                <a href="javascript:void(0);" class="d-inline-flex fs-14 action-icon"><i class="isax isax-import"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="order"><a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#view_invoice">#ORD009</a></td>
+                                        <td><a href="course-details.html">Build Responsive Real World Websites<br> with Crash Course</a></td>
+                                        <td>10 Aug 2025</td>
+                                        <td>$180</td>
+                                        <td>Bank Transfer</td>
+                                        <td><span class="badge badge-sm bg-info d-inline-flex align-items-center"><i class="fa-solid fa-circle fs-5 me-1"></i>Pending</span></td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <a href="javascript:void(0);" class="d-inline-flex fs-14 me-1 action-icon" data-bs-toggle="modal" data-bs-target="#view_invoice"><i class="isax isax-eye"></i></a>
+                                                <a href="javascript:void(0);" class="d-inline-flex fs-14 action-icon"><i class="isax isax-import"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="order"><a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#view_invoice">#ORD008</a></td>
+                                        <td><a href="course-details.html">C# Developers Double Your Coding<br> with Visual Studio</a></td>
+                                        <td>26 Jul 2025</td>
+                                        <td>$200</td>
+                                        <td>Stripe</td>
+                                        <td><span class="badge badge-sm bg-success d-inline-flex align-items-center"><i class="fa-solid fa-circle fs-5 me-1"></i>Completed</span></td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <a href="javascript:void(0);" class="d-inline-flex fs-14 me-1 action-icon" data-bs-toggle="modal" data-bs-target="#view_invoice"><i class="isax isax-eye"></i></a>
+                                                <a href="javascript:void(0);" class="d-inline-flex fs-14 action-icon"><i class="isax isax-import"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="order"><a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#view_invoice">#ORD007</a></td>
+                                        <td><a href="course-details.html">Wordpress for Beginners - Master<br> Wordpress Quickly</a></td>
+                                        <td>12 Jul 2025</td>
+                                        <td>$220</td>
+                                        <td>Paypal</td>
+                                        <td><span class="badge badge-sm bg-success d-inline-flex align-items-center"><i class="fa-solid fa-circle fs-5 me-1"></i>Completed</span></td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <a href="javascript:void(0);" class="d-inline-flex fs-14 me-1 action-icon" data-bs-toggle="modal" data-bs-target="#view_invoice"><i class="isax isax-eye"></i></a>
+                                                <a href="javascript:void(0);" class="d-inline-flex fs-14 action-icon"><i class="isax isax-import"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="order"><a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#view_invoice">#ORD006</a></td>
+                                        <td><a href="course-details.html">Introduction to Python Programming</a></td>
+                                        <td>02 Jul 2025</td>
+                                        <td>$170</td>
+                                        <td>Stripe</td>
+                                        <td><span class="badge badge-sm bg-success d-inline-flex align-items-center"><i class="fa-solid fa-circle fs-5 me-1"></i>Completed</span></td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <a href="javascript:void(0);" class="d-inline-flex fs-14 me-1 action-icon" data-bs-toggle="modal" data-bs-target="#view_invoice"><i class="isax isax-eye"></i></a>
+                                                <a href="javascript:void(0);" class="d-inline-flex fs-14 action-icon"><i class="isax isax-import"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="order"><a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#view_invoice">#ORD005</a></td>
+                                        <td><a href="course-details.html">Learn JavaScript and Express to<br> become a Expert</a></td>
+                                        <td>25 Jun 2025</td>
+                                        <td>$150</td>
+                                        <td>Bank Transfer</td>
+                                        <td><span class="badge badge-sm bg-success d-inline-flex align-items-center"><i class="fa-solid fa-circle fs-5 me-1"></i>Completed</span></td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <a href="javascript:void(0);" class="d-inline-flex fs-14 me-1 action-icon" data-bs-toggle="modal" data-bs-target="#view_invoice"><i class="isax isax-eye"></i></a>
+                                                <a href="javascript:void(0);" class="d-inline-flex fs-14 action-icon"><i class="isax isax-import"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                     </div>
+				 </div>
+			 </div>
+		 </div>
+	  </div>
 	</div>
-  </div>
-</div>
+	</div>
+	
+
 		<!-- Footer -->
 		<footer class="footer">
 			<div class="footer-bg">
 				<img src="assets/img/bg/footer-bg-01.png" class="footer-bg-1" alt="">
 				<img src="assets/img/bg/footer-bg-02.png" class="footer-bg-2" alt="">
 			</div>
-			
 			<div class="footer-bottom">
 				<div class="container">
 					<div class="row row-gap-2">
+						<div class="col-md-4">
+						</div>
 						<div class="col-md-6">
 							<div class="text-center text-md-start">
 								<p class="text-white">Copyright &copy; <?= date('Y') ?> APER System. All rights reserved.</p>
@@ -250,184 +320,10 @@
 		</footer>
 		<!-- /Footer -->
 
-			<!-- Add Staff -->
-			<div class="modal fade" id="add_announcement">
-				<div class="modal-dialog modal-dialog-centered modal-lg">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="fw-bold">Add New A Staff</h5>
-							<button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close">
-								<i class="isax isax-close-circle5"></i>
-							</button>
-						</div>
-						<form action="instructor-announcements.html">
-							<div class="modal-body">
-								<div class="row">
-									<div class="col-md-12">
-										<div class="mb-3">
-											<label class="form-label">Course <span class="text-danger"> *</span></label>
-											<select class="select">
-												<option>Select</option>
-												<option>Information About UI/UX Design Degree</option>
-												<option>Wordpress for Beginners - Master Wordpress Quickly</option>
-											</select>
-										</div>
-									</div>
-									<div class="col-md-12">
-										<div class="mb-3">
-											<label class="form-label">Announcement Title <span class="text-danger"> *</span></label>
-											<input type="text" class="form-control">
-										</div>
-									</div>
-									<div class="col-md-12">
-										<div class="mb-3">
-											<label class="form-label">Description</label>
-											<textarea class="form-control" placeholder="Enter Description"></textarea>
-										</div>
-									</div>
-									<div class="col-md-12">
-										<div class="mb-0">
-											<label class="form-label">Status <span class="text-danger"> *</span></label>
-											<select class="select">
-												<option>Select</option>
-												<option>Published</option>
-												<option>Draft</option>
-											</select>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="modal-footer">
-								<button class="btn bg-gray-100 rounded-pill me-2" type="button" data-bs-dismiss="modal">Cancel</button>
-								<button class="btn btn-secondary rounded-pill" type="submit">Submit</button>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-			<!-- /Add Staff -->
+		</div>
+		<!-- /Main Wrapper -->
 
-			<!-- Edit Staff -->
-			<div class="modal fade" id="edit_announcement">
-				<div class="modal-dialog modal-dialog-centered modal-lg">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="fw-bold">Edit Staff</h5>
-							<button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close">
-								<i class="isax isax-close-circle5"></i>
-							</button>
-						</div>
-						<form action="instructor-announcements.html">
-							<div class="modal-body">
-								<div class="row">
-									<div class="col-md-12">
-										<div class="mb-3">
-											<label class="form-label">Course <span class="text-danger"> *</span></label>
-											<select class="select">
-												<option>Select</option>
-												<option selected>Information About UI/UX Design Degree</option>
-												<option>Wordpress for Beginners - Master Wordpress Quickly</option>
-												<option>Introduction to Python Programming</option>
-											</select>
-										</div>
-									</div>
-									<div class="col-md-12">
-										<div class="mb-3">
-											<label class="form-label">Announcement Title <span class="text-danger"> *</span></label>
-											<input type="text" class="form-control" value="Welcome to Introduction to Programming">
-										</div>
-									</div>
-									<div class="col-md-12">
-										<div class="mb-3">
-											<label class="form-label">Description</label>
-											<textarea class="form-control">Enter Description</textarea>
-										</div>
-									</div>
-									<div class="col-md-12">
-										<div class="mb-0">
-											<label class="form-label">Status <span class="text-danger"> *</span></label>
-											<select class="select">
-												<option>Select</option>
-												<option selected>Published</option>
-												<option>Draft</option>
-											</select>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="modal-footer">
-								<button class="btn bg-gray-100 rounded-pill me-2" type="button" data-bs-dismiss="modal">Cancel</button>
-								<button class="btn btn-secondary rounded-pill" type="submit">Save Changes</button>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-			<!-- /Edit Staff -->
 
-			<!-- Staff Details -->
-			<div class="modal fade" id="view_announcement">
-				<div class="modal-dialog modal-dialog-centered modal-lg">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="fw-bold">Staff Details</h5>
-							<button type="button" class="btn-close custom-btn-close" data-bs-dismiss="modal" aria-label="Close">
-								<i class="isax isax-close-circle5"></i>
-							</button>
-						</div>
-						<div class="modal-body">
-							<div class="mb-3">
-								<h6 class="mb-1">Course</h6>
-								<p>Introduction to Programming - Python & Java</p>
-							</div>
-							<div class="mb-3">
-								<h6 class="mb-1">Title</h6>
-								<p>Guest Lecture Announcement</p>
-							</div>
-							<div class="mb-3">
-								<h6 class="mb-1">Description</h6>
-								<p>I am excited to inform you that we will be having a guest lecture from , an expert . 
-									This will be an excellent opportunity to gain insight into and ask any questions you might have. 
-									Please make every effort to attend, as participation will count towards.
-								</p>
-							</div>
-							<div class="mb-0">
-								<h6 class="mb-1">Added On</h6>
-								<p>26 Jul 2025, 01:30 PM</p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- /Staff Details -->
-
-			<!-- Delete Modal -->
-			<div class="modal fade" id="delete_modal">
-				<div class="modal-dialog modal-dialog-centered">
-					<div class="modal-content">
-						<div class="modal-body text-center custom-modal-body">
-							<span class="avatar avatar-lg bg-danger-transparent rounded-circle mb-2">
-								<i class="isax isax-trash fs-24 text-danger"></i>
-							</span>
-							<div>
-								<h4 class="mb-2">Delete Staff</h4>
-								<p class="mb-3">Are you sure you want to delete Staff?</p>
-								<div class="d-flex align-items-center justify-content-center">
-									<a href="javascript:void(0);" class="btn bg-gray-100 rounded-pill me-2" data-bs-dismiss="modal">Cancel</a>
-									<a href="javascript:void(0);" class="btn btn-secondary rounded-pill">Yes, Delete</a>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- /Delete Modal -->
-   
-
-  </div> <!-- /.col-lg-9 -->
-</div> <!-- /.row -->
-</div> <!-- /.row -->
-</div> <!-- /.row -->
 
 <?= $this->endSection() ?>
 

@@ -173,32 +173,63 @@ $routes->get('', 'Dashboard::index', ['filter' => 'adminAuth']);
 
 
 // Admin area
-$routes->group('admin', ['namespace' => 'App\Controllers\Admin'], function($routes) {
-    // public
-        $routes->post('attempt', 'Auth::attemptLogin'); // <-- add this line
-    // existing: $routes->post('login', 'Auth::attemptLogin');
-       $routes->get('logout', 'Auth::logout');
 
-    // protected
-    $routes->group('/', ['filter' => 'admin_auth'], function($routes) {
-        $routes->get('admin/dashboard', 'Dashboard::index', ['filter' => 'admin_auth']);
+// $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], function($routes) {
+//     // public
+//         $routes->post('attempt', 'Auth::attemptLogin'); // <-- add this line
+//     // existing: $routes->post('login', 'Auth::attemptLogin');
+//        $routes->get('logout', 'Auth::logout');
+
+//     // protected
+//     $routes->group('/', ['filter' => 'admin_auth'], function($routes) {
+//         $routes->get('admin/dashboard', 'Dashboard::index', ['filter' => 'admin_auth']);
         
 
 
-        // Staff management (CRUD)
-        $routes->get('staff', 'StaffController::index');
-        $routes->get('staff/data', 'StaffController::data'); // DataTables server-side
-        $routes->get('staff/create', 'StaffController::create');
-        $routes->post('staff/create', 'StaffController::create');
-        $routes->get('staff/(:num)', 'StaffController::view/$1');
-        $routes->get('staff/(:num)/edit', 'StaffController::edit/$1');
-        $routes->post('staff/(:num)/edit', 'StaffController::edit/$1');
-        $routes->post('staff/(:num)/delete', 'StaffController::delete/$1');
+//         // Staff management (CRUD)
+//         $routes->get('staff', 'StaffController::index');
+//         $routes->get('staff/data', 'StaffController::data'); // DataTables server-side
+//         $routes->get('staff/create', 'StaffController::create');
+//         $routes->post('staff/create', 'StaffController::create');
+//         $routes->get('staff/(:num)', 'StaffController::view/$1');
+//         $routes->get('staff/(:num)/edit', 'StaffController::edit/$1');
+//         $routes->post('staff/(:num)/edit', 'StaffController::edit/$1');
+//         $routes->post('staff/(:num)/delete', 'StaffController::delete/$1');
 
 
-        // evaluation stub
-        $routes->get('staff/(:num)/evaluate', 'StaffController::evaluate/$1');
-    });
+//         // evaluation stub
+//         $routes->get('staff/(:num)/evaluate', 'StaffController::evaluate/$1');
+//     });
+// });
+
+// Admin routes group
+$routes->group('admin', ['namespace' => 'App\Controllers\Admin'], static function($routes) {
+
+    // Authentication (login form + submit)
+    $routes->get('login', 'Auth::login');                // show login form   -> /admin/login (GET)
+    $routes->post('login', 'Auth::attemptLogin');       // handle login form -> /admin/login (POST)
+    // compatibility: some forms may post to /admin/attempt
+    $routes->post('attempt', 'Auth::attemptLogin');     // optional alias   -> /admin/attempt (POST)
+    $routes->get('logout', 'Auth::logout');             // logout           -> /admin/logout (GET)
+
+    // Dashboard (landing)
+    $routes->get('/', 'Dashboard::index');              // /admin/
+    $routes->get('dashboard', 'Dashboard::index');      // /admin/dashboard
+
+    // Staff CRUD
+    $routes->get('staff', 'Staff::index');              // /admin/staff
+    $routes->get('staff/create', 'Staff::create');      // /admin/staff/create
+    $routes->post('staff/store', 'Staff::store');       // /admin/staff/store
+    $routes->get('staff/(:num)/edit', 'Staff::edit/$1');    // /admin/staff/12/edit
+    $routes->post('staff/(:num)/update', 'Staff::update/$1');// /admin/staff/12/update
+    $routes->get('staff/(:num)/view', 'Staff::view/$1');    // /admin/staff/12/view
+    $routes->get('staff/(:num)/delete', 'Staff::delete/$1');// /admin/staff/12/delete
+
+    // Evaluations
+    $routes->get('evaluations', 'Evaluations::index');
+
+    // Settings
+    $routes->get('settings', 'Settings::index');
 });
 
 

@@ -1,59 +1,66 @@
 <?php namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
+use App\Models\AdminModel;
 
 class Auth extends BaseController
 {
     public function login()
     {
-        if (session()->get('isLoggedIn') && in_array(session()->get('role'), ['admin','superadmin'])) {
+        // If already logged in, go to dashboard
+        if (session()->get('isAdminLoggedIn')) {
             return redirect()->to('/admin/dashboard');
         }
-        return view('admin/auth/login'); // create view below
+
+        return view('admin/auth/login');
     }
 
     public function attemptLogin()
     {
-        $rules = ['email' => 'required|valid_email', 'password' => 'required|min_length[6]'];
-        if (! $this->validate($rules)) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
-        }
+        $model = new AdminModel();
 
-        $email = strtolower(trim($this->request->getPost('email')));
+        $email = trim($this->request->getPost('email'));
         $password = $this->request->getPost('password');
 
-        // find admin record in admins table OR in users with role=admin
-        $adminModel = new \App\Models\AdminModel();
-        $admin = $adminModel->where('LOWER(email)', $email)->first();
+        // Look up admin record
+        $admin = $model->where('email', $email)->first();
 
-        // fallback to users where role is admin
-        if (! $admin) {
-            $uModel = new \App\Models\UserModel();
-            $admin = $uModel->where('LOWER(email)', $email)->where('role','admin')->first();
+        if ($admin && password_verify($password, $admin['password'])) {
+            // Regenerate session ID to prevent fixation
+            session()->regenerate();
+
+            // Save minimal session data
+            session()->set([
+                'isAdminLoggedIn' => true,
+                'admin_id'        => $admin['id'],
+                'admin_name'      => $admin['fullname'],
+                'admin_email'     => $admin['email'],
+                'admin_role'      => $admin['role'],
+            ]);
+
+            // Update last login timestamp
+            $model->update($admin['id'], ['last_login' => date('Y-m-d H:i:s')]);
+
+            return redirect()->to('/admin/dashboard');
         }
 
-        if (! $admin || ! password_verify($password, $admin['password'])) {
-            return redirect()->back()->withInput()->with('errors', ['Invalid credentials']);
-        }
-
-        // set session (store user array)
-        session()->set([
-            'isLoggedIn' => true,
-            'user_id'    => $admin['id'],
-            'fullname'   => $admin['fullname'] ?? $admin['name'] ?? $admin['email'],
-            'email'      => $admin['email'],
-            'role'       => $admin['role'] ?? 'admin',
-            'user'       => $admin,
-        ]);
-        session()->regenerate();
-
-        return redirect()->to('/admin/dashboard')->with('success', 'Welcome back!');
+        // Invalid credentials
+        return redirect()
+            ->back()
+            ->with('errors', ['Invalid email or password.']);
     }
+    /**
+ * Compatibility wrapper so older routes/forms posting to "attempt" keep working.
+ */
+public function attempt()
+{
+    return $this->attemptLogin();
+}
+
 
     public function logout()
     {
-        session()->remove(['isLoggedIn','user_id','fullname','email','role','user']);
         session()->destroy();
-        return redirect()->to('/admin/login')->with('success','Logged out');
+        return redirect()->to('/admin/login')->with('message', 'You have been logged out.');
     }
 }
