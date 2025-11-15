@@ -224,13 +224,18 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], static functio
     $routes->post('staff/(:num)/update', 'Staff::update/$1');// /admin/staff/12/update
     $routes->get('staff/(:num)/view', 'Staff::view/$1');    // /admin/staff/12/view
     $routes->get('staff/(:num)/delete', 'Staff::delete/$1');// /admin/staff/12/delete
-
-    // Evaluations
-    $routes->get('evaluations', 'Evaluations::index');
-
+    $routes->get('staff/(:num)/evaluate', 'Staff::evaluate/$1'); // /Evaluations
     // Settings
     $routes->get('settings', 'Settings::index');
+    $routes->get('staff/export', 'Staff::export', ['filter' => 'adminauth']);
+$routes->get('staff/exportCsv', 'Staff::export', ['filter' => 'adminauth']); // alias -> export   
+    $routes->get('admin/staff/export', 'Admin\Staff::export', ['filter' => 'adminauth']);
+    
+
+
+
 });
+
 
 
 

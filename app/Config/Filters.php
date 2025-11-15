@@ -28,6 +28,8 @@ class Filters extends BaseConfig
     'auth'     => \App\Filters\Auth::class,
     'adminAuth' => \App\Filters\AdminAuth::class,
     'admin_auth' => \App\Filters\AdminAuth::class,
+     'adminauth' => \App\Filters\AdminAuth::class,
+
 
 
     ];

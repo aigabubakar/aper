@@ -6,21 +6,41 @@ use CodeIgniter\Filters\FilterInterface;
 
 class AdminAuth implements FilterInterface
 {
+    /**
+     * Run the filter.
+     *
+     * @param RequestInterface  $request
+     * @param array|null        $arguments
+     * @return mixed
+     */
     public function before(RequestInterface $request, $arguments = null)
     {
         $session = session();
-        if (! $session->get('isLoggedIn') || ! in_array($session->get('role'), ['admin','superadmin'])) {
-            // redirect to admin login (works both ajax & normal)
-            $url = site_url('admin/login');
+        // adjust according to how you store admin session
+        $admin = $session->get('admin');
+
+        if (empty($admin) || ! is_array($admin)) {
+            // If AJAX, return JSON unauthorized
             if ($request->isAJAX()) {
-                return service('response')->setJSON(['success'=>false,'message'=>'Unauthorized','redirect'=>$url])->setStatusCode(401);
+                $response = service('response');
+                return $response->setStatusCode(401)
+                                ->setJSON(['success' => false, 'message' => 'Unauthorized']);
             }
-            return redirect()->to($url);
+
+            // otherwise redirect to admin login
+            return redirect()->to('/admin/login');
         }
+
+        // allow request to continue
+        return null;
     }
 
+    /**
+     * We don't need to modify the response after controller; leave blank.
+     */
     public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)
     {
         // no-op
     }
+    
 }
