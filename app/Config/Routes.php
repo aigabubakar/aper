@@ -227,9 +227,11 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], static functio
     $routes->get('staff/(:num)/evaluate', 'Staff::evaluate/$1'); // /Evaluations
     // Settings
     $routes->get('settings', 'Settings::index');
-    $routes->get('staff/export', 'Staff::export', ['filter' => 'adminauth']);
-$routes->get('staff/exportCsv', 'Staff::export', ['filter' => 'adminauth']); // alias -> export   
-    $routes->get('admin/staff/export', 'Admin\Staff::export', ['filter' => 'adminauth']);
+    // in app/Config/Routes.php admin group
+     $routes->get('admin/staff/export', 'Admin\Staff::export'); // or exportCsv depending on your controller
+     $routes->get('staff/export', 'Staff::export', ['filter' => 'adminauth']);
+    // $routes->get('staff/exportCsv', 'Staff::export', ['filter' => 'adminauth']); // alias -> export   
+    // $routes->get('admin/staff/export', 'Admin\Staff::export', ['filter' => 'adminauth']);
     
 
 

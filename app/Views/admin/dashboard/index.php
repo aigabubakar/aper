@@ -151,6 +151,7 @@
 											</h6>
 											<!-- Export with filters (example) -->
 											<a href="<?= site_url('admin/staff/export') . '?faculty=' . $currentFacultyId . '&department=' . $currentDepartmentId ?>" class="btn btn-outline-secondary">Export filtered CSV</a>
+											
 
 										</div>
 									</div>
@@ -191,18 +192,26 @@
 									</thead>
 									
 									<tbody>
+										<?php $i =0;?>
 									<?php if (! empty($users) && is_array($users)): ?>
 										<?php foreach ($users as $u): ?>
 											<tr>
-											  <td><?= esc($u['id']) ?></td>
+											  <td><?php echo ++$i; ?></td>
 											  <td><?= esc($u['fullname']) ?></td>
 											  <!-- <td><?= esc($u['email']) ?></td> -->
 											  <td><?= esc($u['category'] ?? '-') ?></td>
 											  <td><?= esc($u['faculty_name'] ?? ($u['faculty_id'] ?? '-')) ?></td>
 											  <td><?= esc($u['department_name'] ?? ($u['department_id'] ?? '-')) ?></td>
-											  <td><?= (isset($u['completed_profile']) && $u['completed_profile']) ? '<span class="badge bg-success">Complete</span>' : '<span class="badge bg-warning">Incomplete</span>' ?></td>
+											  <td><?= (isset($u['completed_profile']) && $u['completed_profile']) ? '<span class="badge bg-success">Complete</span>' : '<span class="badge badge-sm bg-info">Pending</span>' ?></td>
 											  <td>
+												  
 												<a href="<?= site_url('admin/staff/'.$u['id'].'/view') ?>" class="btn btn-sm btn-info">View</a>
+
+												<?php $adminRole = session()->get('admin')['role'] ?? session()->get('role') ?? ''; ?>
+												<?php if ($adminRole === 'superadmin'): ?>
+													<!-- show edit/delete -->
+												<?php endif; ?>
+
 
 												<?php if ((session()->get('admin')['role'] ?? session()->get('role') ?? '') === 'superadmin'): ?>
 												<a href="<?= site_url('admin/staff/'.$u['id'].'/edit') ?>" class="btn btn-sm btn-warning"><i class="isax isax-edit-2"></i> Edit</a>

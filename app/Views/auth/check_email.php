@@ -6,8 +6,6 @@
 
     <!-- login page start-->
 
-
-
     <!-- Main Wrapper -->
 		<div class="main-wrapper">
             <div class="login-content">
@@ -45,12 +43,7 @@
                                              <?= csrf_field() ?>
                                         <div class="mb-3 position-relative">
                                           <label for="email" class="text-danger ms-1">Institution Email</label>
-                                          <input type="email"
-                                                name="email"
-                                                id="email"
-                                                class="form-control form-control-lg
-                                                required
-                                                value="<?= esc(old('email')) ?>">
+                                          <input type="email" name="email" id="email" class="form-control form-control-lg"  required  value="<?= esc(old('email')) ?>">
                                               <span><i class="isax isax-sms input-icon text-gray-7 fs-14"></i></span>
                                         </div>
                                         <div class="d-flex align-items-center justify-content-between mb-4">

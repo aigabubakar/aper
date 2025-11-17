@@ -144,7 +144,117 @@ class Staff extends AdminBaseController
 // app/Controllers/Admin/Staff.php
 // Paste this method inside the Admin\Staff class
 
+// app/Controllers/Admin/Staff.php (inside class Admin\Staff)
+
 public function export()
+{
+    $this->guard();
+
+    // Authorization example: only superadmin or role with 'export' permission
+    $role = session()->get('admin')['role'] ?? session()->get('role') ?? '';
+    if ($role !== 'superadmin') {
+        return redirect()->to('/admin/login')->with('errors', ['Unauthorized to export staff data']);
+    }
+
+    $db = \Config\Database::connect();
+    $builder = $db->table('users as u')->select('u.id,u.fullname,u.email,u.staff_id,f.name as faculty,d.name as department,u.category,u.created_at');
+    if ($db->tableExists('faculties')) $builder->join('faculties f', 'f.id = u.faculty_id', 'left');
+    if ($db->tableExists('departments')) $builder->join('departments d', 'd.id = u.department_id', 'left');
+
+    $rows = $builder->get()->getResultArray();
+
+    // send CSV headers
+    $filename = 'staff_export_'.date('Ymd_His').'.csv';
+    $this->response->setHeader('Content-Type', 'text/csv; charset=utf-8');
+    $this->response->setHeader('Content-Disposition', 'attachment; filename="'.$filename.'"');
+    $out = fopen('php://output', 'w');
+
+    // header row
+    fputcsv($out, ['ID','Fullname','Email','StaffID','Faculty','Department','Category','Created At']);
+
+    foreach ($rows as $r) {
+        fputcsv($out, [
+            $r['id'] ?? '',
+            $r['fullname'] ?? '',
+            $r['email'] ?? '',
+            $r['staff_id'] ?? '',
+            $r['faculty'] ?? $r['faculty'] ?? '',
+            $r['department'] ?? '',
+            $r['category'] ?? '',
+            $r['created_at'] ?? '',
+        ]);
+    }
+
+    fclose($out);
+    // tell CodeIgniter we already sent the response body
+    return $this->response;
+}
+
+
+
+public function exportCsv5()
+{
+    // guard: ensure admin logged in and role allowed
+    $admin = session()->get('admin') ?? null;
+    if (! $admin) {
+        return redirect()->to('/admin/login');
+    }
+
+    // Example: allow superadmin and admin roles
+    $allowed = ['superadmin', 'admin'];
+    if (! in_array($admin['role'] ?? '', $allowed)) {
+        // non-AJAX -> redirect back with message
+        session()->setFlashdata('error', 'Unauthorized to export staff data');
+        return redirect()->to('/admin/login');
+    }
+
+    // read optional filters
+    $faculty = $this->request->getGet('faculty') ?: null;
+    $department = $this->request->getGet('department') ?: null;
+
+    // build query using StaffModel (or DB)
+    $model = new \App\Models\StaffModel();
+    $builder = $model->builder(); // or $model->select(...)
+
+    if ($faculty) $builder->where('faculty_id', $faculty);
+    if ($department) $builder->where('department_id', $department);
+
+    $rows = $builder->get()->getResultArray();
+
+    // Always send CSV headers even when empty (so browser will download a file)
+    $filename = 'staff-export-' . date('Y-m-d_His') . '.csv';
+    $this->response->setHeader('Content-Type', 'text/csv; charset=utf-8');
+    $this->response->setHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
+    // Disable CodeIgniter caching for this response
+    $this->response->setHeader('Pragma', 'public');
+    $this->response->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
+
+    // Open output stream and write CSV
+    $fh = fopen('php://output', 'w');
+    // optionally output BOM for Excel
+    fwrite($fh, chr(0xEF).chr(0xBB).chr(0xBF));
+
+    // header row (adjust columns as needed)
+    $columns = ['id','fullname','email','staff_id','category','faculty_id','department_id','phone','role','created_at'];
+    fputcsv($fh, $columns);
+
+    foreach ($rows as $r) {
+        $line = [];
+        foreach ($columns as $c) {
+            $line[] = $r[$c] ?? '';
+        }
+        fputcsv($fh, $line);
+    }
+
+    fclose($fh);
+
+    // IMPORTANT: return response body (CI will send it). Prevent further output.
+    // In CI4 you can return $this->response directly after writing to output, but since we wrote directly we will exit.
+    exit; // ensure no extra HTML is appended
+}
+
+
+public function export4()
 {
     // AUTH CHECK – Make sure user is admin or privileged
     $session = session();
@@ -212,7 +322,7 @@ public function export()
  * Backwards compatibility wrapper for old calls to exportCsv.
  * Left intentionally thin — forwards to export().
  */
-public function exportCsv()
+public function exportCsv1()
 {
     // If you implemented export() expecting the same parameters, just call it:
     return $this->export();
@@ -443,7 +553,7 @@ public function export2()
 
 
 
-public function exportCsv1()
+public function exportCsv0()
 {
     // Ensure only authorized admins
     $this->guard();
