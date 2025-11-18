@@ -12,25 +12,39 @@ class Dashboard extends AdminBaseController
 
         $db = \Config\Database::connect();
 
-        $totalUsers = $db->table('users')->countAll();
-        $recentUsers = $db->table('users')->orderBy('created_at','DESC')->limit(5)->get()->getResultArray();
+        // total users (choose appropriate table - prefer 'users' if present)
+        $usersTable = $db->tableExists('users') ? 'users' : ($db->tableExists('staffs') ? 'staffs' : null);
 
-        // Use query builder join to fetch faculty/department names if tables exist
-        $builder = $db->table('users as u');
-        $builder->select('u.*, f.name as faculty_name, d.name as department_name');
-        // left join because some users may not have faculty/department set
-        if ($db->tableExists('faculties')) {
-            $builder->join('faculties f', 'f.id = u.faculty_id', 'left');
+        $totalUsers = 0;
+        $recentUsers = [];
+        $users = [];
+
+        if ($usersTable) {
+            $totalUsers = $db->table($usersTable)->countAll();
+            $recentUsers = $db->table($usersTable)->orderBy('created_at','DESC')->limit(5)->get()->getResultArray();
+
+            // Build query and join faculty/department only if columns exist
+            $builder = $db->table($usersTable . ' as u');
+            $builder->select('u.*');
+
+            $userFields = $db->getFieldNames($usersTable);
+
+            if ($db->tableExists('faculties') && in_array('faculty_id', $userFields)) {
+                $builder->select('f.name as faculty_name');
+                $builder->join('faculties f', 'f.id = u.faculty_id', 'left');
+            }
+            if ($db->tableExists('departments') && in_array('department_id', $userFields)) {
+                $builder->select('d.name as department_name');
+                $builder->join('departments d', 'd.id = u.department_id', 'left');
+            }
+
+            $builder->orderBy('u.id', 'DESC');
+            $users = $builder->get()->getResultArray();
         }
-        if ($db->tableExists('departments')) {
-            $builder->join('departments d', 'd.id = u.department_id', 'left');
-        }
-        $builder->orderBy('u.id', 'DESC');
-        $users = $builder->get()->getResultArray();
 
         // ensure the variables used by the view always exist
-        $currentFacultyId = session()->get('faculty_id') ?? '';
-        $currentDepartmentId = session()->get('department_id') ?? '';
+        $currentFacultyId = session()->get('admin')['faculty_id'] ?? session()->get('faculty_id') ?? '';
+        $currentDepartmentId = session()->get('admin')['department_id'] ?? session()->get('department_id') ?? '';
 
         return view('admin/dashboard/index', [
             'admin' => session()->get('admin') ?? null,
