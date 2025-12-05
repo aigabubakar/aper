@@ -211,32 +211,58 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], static functio
     // compatibility: some forms may post to /admin/attempt
     $routes->post('attempt', 'Auth::attemptLogin');     // optional alias   -> /admin/attempt (POST)
     $routes->get('logout', 'Auth::logout');             // logout           -> /admin/logout (GET)
-
     // Dashboard (landing)
     $routes->get('/', 'Dashboard::index');              // /admin/
     $routes->get('dashboard', 'Dashboard::index');      // /admin/dashboard
-
     // Staff CRUD
     $routes->get('staff', 'Staff::index');              // /admin/staff
     $routes->get('staff/create', 'Staff::create');      // /admin/staff/create
     $routes->post('staff/store', 'Staff::store');       // /admin/staff/store
-    $routes->get('staff/(:num)/edit', 'Staff::edit/$1');    // /admin/staff/12/edit
-    $routes->post('staff/(:num)/update', 'Staff::update/$1');// /admin/staff/12/update
-    $routes->get('staff/(:num)/view', 'Staff::view/$1');    // /admin/staff/12/view
-    $routes->get('staff/(:num)/delete', 'Staff::delete/$1');// /admin/staff/12/delete
-    $routes->get('staff/(:num)/evaluate', 'Staff::evaluate/$1'); // /Evaluations
-    // Settings
-    $routes->get('settings', 'Settings::index');
-    // in app/Config/Routes.php admin group
-     $routes->get('admin/staff/export', 'Admin\Staff::export'); // or exportCsv depending on your controller
-     $routes->get('staff/export', 'Staff::export', ['filter' => 'adminauth']);
-    // $routes->get('staff/exportCsv', 'Staff::export', ['filter' => 'adminauth']); // alias -> export   
-    // $routes->get('admin/staff/export', 'Admin\Staff::export', ['filter' => 'adminauth']);
-    
+    // put inside $routes->group('admin', ['namespace'=>'App\Controllers\Admin'], function($routes) { ... });
+    $routes->get('dashboard/(:num)/view-form', 'Dashboard::viewForm/$1');
+    $routes->get('dashboard/(:num)/edit-form', 'Dashboard::editForm/$1');
+    $routes->post('dashboard/(:num)/update', 'Dashboard::update/$1');
 
+    // compatibility aliases (if some JS posts to different path)
+    $routes->get('staff/(:num)/view', 'Dashboard::viewForm/$1');
+    $routes->get('staff/(:num)/edit', 'Dashboard::editForm/$1');
+    $routes->post('staff/(:num)/update', 'Dashboard::update/$1');
 
+    // $routes->get('staff/export', 'Staff::export', ['filter' => 'adminauth']);
+   $routes->get('staff/export', 'Staff::export');      
 
+    // admin-users CRUD (URLs: /admin/admin-users/ ...)   
+        $routes->get('admin-users',   'AdminUsers::index');   // GET  /admin/admin-users
+        $routes->get('admin-users/create', 'AdminUsers::create'); // GET  /admin/admin-users/create
+        $routes->post('store',  'AdminUsers::store'); // POST /admin/admin-users/store
+
+        // optional extra routes you probably want:
+        $routes->get('(:num)/edit',   'AdminUsers::edit/$1');
+        $routes->post('(:num)/update', 'AdminUsers::update/$1');
+        $routes->get('(:num)/delete', 'AdminUsers::delete/$1');
+        $routes->get('(:num)/view',   'AdminUsers::view/$1'); 
+
+        //$routes->get('staff/(:num)/evaluations', 'Staff::evaluations/$1'); // /Evaluations
+        $routes->get('Evaluations/(:num)/evaluations', 'Evaluations::evaluations/$1'); // /Evaluations
+        $routes->get('Evaluations', 'Evaluations::index');                   // /admin/evaluations
+        $routes->get('form/(:num)', 'Evaluations::form/$1');       // AJAX: load form modal content
+        $routes->post('save', 'Evaluations::save');                // POST AJAX: save form
+        $routes->get('view/(:num)', 'Evaluations::view/$1');       // view evaluation record
+
+        // inside admin group
+        $routes->get('evaluation/load-form', 'Evaluation::loadForm');   // GET /admin/evaluation/load-form?id=123&category=academic
+        $routes->post('evaluation/submit', 'Evaluation::submit');       // POST /admin/evaluation/submit
+        
+      
+        // Settings
+         $routes->get('settings', 'Settings::index');
 });
+
+
+
+
+
+
 
 
 
