@@ -746,7 +746,104 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
 });
+
+document.addEventListener('submit', async function(ev) {
+  const form = ev.target;
+  if (! form || form.id !== 'staffEditForm') return;
+
+  ev.preventDefault();
+
+  // Clear previous alerts in the form
+  const prevAlerts = form.querySelectorAll('.form-alert');
+  prevAlerts.forEach(n => n.remove());
+
+  const submitBtn = document.getElementById('staffEditSubmit');
+  const submitText = document.getElementById('staffEditSubmitText');
+  const spinner = document.getElementById('staffEditSpinner');
+  if (submitBtn) submitBtn.disabled = true;
+  if (spinner) spinner.classList.remove('d-none');
+
+  const fd = new FormData(form);
+
+  try {
+    const resp = await fetch(form.action, {
+      method: form.method || 'POST',
+      body: fd,
+      credentials: 'same-origin',
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    });
+
+    // If server returned 302 redirect (non-AJAX fallback), just reload
+    if (resp.redirected) {
+      window.location = resp.url;
+      return;
+    }
+
+    const data = await resp.json().catch(()=>null);
+
+    if (! data) {
+      // fallback: non-json or server error HTML
+      const html = await resp.text();
+      console.error('Unexpected server response:', html);
+      Swal.fire({ icon: 'error', title: 'Server error', text: 'Unexpected server response. Check console.' });
+      return;
+    }
+
+    if (! data.success) {
+      // show errors at top of form
+      let html = '<div class="alert alert-danger form-alert"><ul class="mb-0">';
+      if (data.errors && typeof data.errors === 'object') {
+        Object.values(data.errors).forEach(v => html += '<li>' + v + '</li>');
+      } else {
+        html += '<li>' + (data.message || 'Update failed') + '</li>';
+      }
+      html += '</ul></div>';
+      form.insertAdjacentHTML('afterbegin', html);
+      return;
+    }
+
+    // SUCCESS: friendly feedback with slight delay
+    Swal.fire({
+      icon: 'success',
+      title: 'Saved',
+      text: data.message || 'Staff updated successfully',
+      timer: 900,
+      showConfirmButton: false,
+      toast: true,
+      position: 'top-end'
+    });
+
+    // small delay to let toast show then close modal & refresh table/row
+    setTimeout(function(){
+      // close modal if present
+      try {
+        const modalEl = document.getElementById('crudModal') || document.getElementById('evaluationModal') || document.getElementById('evaluationModal');
+        if (modalEl) {
+          const modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+          modalInstance.hide();
+        }
+      } catch(e){/* ignore */ }
+
+      // Attempt to update DataTable row in-place if server returned updated row
+      if (data.updated && window.adminStaffTable && typeof window.adminStaffTable.row === 'function') {
+        // fallback: reload datatable
+        try { window.adminStaffTable.ajax?.reload(); } catch(e){ location.reload(); }
+      } else {
+        // either reload the page or datatable depending on your app
+        try { window.adminStaffTable?.ajax?.reload(); } catch(e){ location.reload(); }
+      }
+    }, 900);
+
+  } catch (err) {
+    console.error('Network error', err);
+    Swal.fire({ icon: 'error', title: 'Network error', text: 'Unable to update. Check console.' });
+  } finally {
+    if (submitBtn) submitBtn.disabled = false;
+    if (spinner) spinner.classList.add('d-none');
+  }
+});
 </script>
+
 
 
 <?= $this->endSection() ?>

@@ -229,7 +229,11 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], static functio
     $routes->post('staff/(:num)/update', 'Dashboard::update/$1');
 
     // $routes->get('staff/export', 'Staff::export', ['filter' => 'adminauth']);
-   $routes->get('staff/export', 'Staff::export');      
+    $routes->get('staff/export', 'Staff::export');    
+    
+    $routes->get('profile/(:num)/download', 'Profile::downloadSummaryPdf/$1');
+
+
 
     // admin-users CRUD (URLs: /admin/admin-users/ ...)   
         $routes->get('admin-users',   'AdminUsers::index');   // GET  /admin/admin-users
@@ -249,7 +253,7 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], static functio
         $routes->post('save', 'Evaluations::save');                // POST AJAX: save form
         $routes->get('view/(:num)', 'Evaluations::view/$1');       // view evaluation record
 
-        // inside admin group
+      
         $routes->get('evaluation/load-form', 'Evaluation::loadForm');   // GET /admin/evaluation/load-form?id=123&category=academic
         $routes->post('evaluation/submit', 'Evaluation::submit');       // POST /admin/evaluation/submit
         

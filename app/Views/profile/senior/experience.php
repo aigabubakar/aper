@@ -24,7 +24,7 @@
     <form id="expForm" action="<?= site_url('profile/junior/experience/save') ?>" method="post" novalidate>
       <?= csrf_field() ?>
       <div class="row g-3">
-        <div class="col-12"><h6>External Experience #1</h6></div>
+        <div class="col-12"><h6>Internal Experience Within Edo Univesity</h6></div>
 
         <div class="col-md-6">
           <label class="form-label">Institution Name</label>
@@ -46,7 +46,7 @@
           <input type="date" name="exp_out_date1" class="form-control" value="<?= esc(old('exp_out_date1', $user['exp_out_date1'] ?? '')) ?>">
         </div>
 
-        <div class="col-12"><h6 class="mt-3">External Experience #2</h6></div>
+        <div class="col-12"><h6 class="mt-3">External Experience Outside Edo Univesity</h6></div>
 
         <div class="col-md-6">
           <label class="form-label">Institution Name</label>

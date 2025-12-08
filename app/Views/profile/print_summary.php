@@ -143,6 +143,11 @@
                   <div class="no-print">
                     <a class="btn btn-outline-secondary" href="<?= site_url('dashboard') ?>">Back to Dashboard</a>
                     <button class="btn btn-primary" onclick="window.print()">Print</button>
+
+                    <a class="btn btn-outline-secondary" href="<?= site_url('admin/profile/' . (int)$user['id'] . '/download') ?>">
+                      Download PDF
+                    </a>
+
                   </div>
                 </div>
 								<div class="row">
@@ -242,22 +247,32 @@
     </div>
 
     <div class="section-title">Activities</div>
-    <div class="mb-2">
-      <div class="field"><label>Within University</label><div class="value"><?= nl2br(esc($user['activities_within_university'] ?? 'N/A')) ?></div></div>
-      <div class="field"><label>Outside University</label><div class="value"><?= nl2br(esc($user['activities_outside_university'] ?? 'N/A')) ?></div></div>
+    <div class="mb-2"> 
+
+    
+      <div class="field">
+        <label>Within University</label><div class="value"><?= nl2br(esc($user['exp_out_institution_name1'] ?? 'N/A')) ?></div> 
+        <div class="value"><?= nl2br(esc($user['exp_out_designation1'] ?? 'N/A')) ?></div>
+         <div class="value"><?= nl2br(esc($user['exp_out_specialization1'] ?? 'N/A')) ?></div>
+        <div class="value"><?= nl2br(esc($user['exp_out_date1'] ?? 'N/A')) ?></div><br/>
+    </div>
+      <div class="field"><label>Outside University</label><div class="value"><?= nl2br(esc($user['exp_out_institution_name2'] ?? 'N/A')) ?></div>
+    <div class="value"><?= nl2br(esc($user['exp_out_designation2'] ?? 'N/A')) ?></div>
+         <div class="value"><?= nl2br(esc($user['exp_out_specialization2'] ?? 'N/A')) ?></div>
+        <div class="value"><?= nl2br(esc($user['exp_out_date2'] ?? 'N/A')) ?></div><br/>
+    </div>
       <div class="field"><label>Courses / Conferences</label><div class="value"><?= nl2br(esc($user['courses_conferences'] ?? 'N/A')) ?></div></div>
       <div class="field"><label>Other notes</label><div class="value"><?= nl2br(esc($user['other_notes'] ?? '')) ?></div></div>
     </div>
 
     <div class="mt-3 small">This summary is generated from the staff profile data saved in the system. For corrections contact ICT.</div>
+    </div>          
+   </div>
+   </div>
+	</div>								
   </div>
-                  
-              </div>
-                </div>
-						</div>								
-          </div>
-        </div>
-      </div>
+  </div>
+ </div>
 
 			
 <?= $this->endSection() ?>

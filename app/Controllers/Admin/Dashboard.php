@@ -1,16 +1,28 @@
 <?php namespace App\Controllers\Admin;
 
 use App\Models\UserModel;
-use CodeIgniter\Controller;
+use App\Models\FacultyModel;
+use App\Models\DepartmentModel;
 
 class Dashboard extends AdminBaseController
 {
-    
+    protected $userModel;
+    protected $facultyModel;
+    protected $departmentModel;
+
+    public function __construct()
+    {
+        parent::__construct(); // if AdminBaseController sets session/admin guard helpers
+        $this->userModel = new UserModel();
+        // only if you have these models
+        if (class_exists(FacultyModel::class)) $this->facultyModel = new FacultyModel();
+        if (class_exists(DepartmentModel::class)) $this->departmentModel = new DepartmentModel();
+
+        helper(['form', 'url', 'text']);
+    }
 public function index()
 {
     $this->guard();
-
-
 
     // safe fetch with normalized name labels
 
@@ -96,9 +108,13 @@ return view('admin/dashboard/index', [
 
 }
 
-// in App\Controllers\Admin\Dashboard.php
+    /**
+     * Return the edit form partial (for modal)
+     * GET /admin/staff/{id}/edit-form  -> route to Dashboard::editForm/$1
+     */
 
-public function viewForm($id)
+
+     public function viewForm($id)
 {
     $um = new \App\Models\UserModel();
     $user = $um->find((int)$id);
@@ -108,99 +124,128 @@ public function viewForm($id)
     return view('admin/dashboard/partials/view_form', ['user'=>$user]);
 }
 
-public function editForm($id)
-{
-    $um = new \App\Models\UserModel();
-    $user = $um->find((int)$id);
-    if (! $user) return $this->response->setStatusCode(404)->setBody('Not found');
-
-    // render only partial (no full layout)
-    return view('admin/dashboard/partials/edit_form', ['user'=>$user]);
-}
-
-public function update($id)
-{
-    helper('form');
-    $um = new \App\Models\UserModel();
-    $user = $um->find((int)$id);
-    if (! $user) return $this->response->setJSON(['success'=>false,'message'=>'User not found'])->setStatusCode(404);
-
-    $rules = [
-      'fullname' => 'required|min_length[3]',
-      'email' => 'required|valid_email',
-      // etc — adapt to fields you allow
-    ];
-    if (! $this->validate($rules)) {
-      return $this->response->setJSON(['success'=>false,'errors'=>$this->validator->getErrors()])->setStatusCode(422);
-    }
-
-    $data = [
-      'fullname' => $this->request->getPost('fullname'),
-      'email' => strtolower($this->request->getPost('email')),
-      // other fields...
-    ];
-
-    try {
-      $um->update($id, $data);
-      return $this->response->setJSON(['success'=>true,'message'=>'Saved','updated'=>['id'=>$id]]);
-    } catch (\Throwable $e) {
-      log_message('error','Update failed: '.$e->getMessage());
-      return $this->response->setJSON(['success'=>false,'message'=>'Server error'])->setStatusCode(500);
-    }
-}
-
-
-public function index1()
+    public function editForm($id = null)
     {
-        // guard called by AdminBaseController->guard()
         $this->guard();
 
-        $db = \Config\Database::connect();
-
-        // total users (choose appropriate table - prefer 'users' if present)
-        $usersTable = $db->tableExists('users') ? 'users' : ($db->tableExists('staffs') ? 'staffs' : null);
-
-        $totalUsers = 0;
-        $recentUsers = [];
-        $users = [];
-
-        if ($usersTable) {
-            $totalUsers = $db->table($usersTable)->countAll();
-            $recentUsers = $db->table($usersTable)->orderBy('created_at','DESC')->limit(5)->get()->getResultArray();
-
-            // Build query and join faculty/department only if columns exist
-            $builder = $db->table($usersTable . ' as u');
-            $builder->select('u.*');
-
-            $userFields = $db->getFieldNames($usersTable);
-
-            if ($db->tableExists('faculties') && in_array('faculty_id', $userFields)) {
-                $builder->select('f.name as faculty_name');
-                $builder->join('faculties f', 'f.id = u.faculty_id', 'left');
-            }
-            if ($db->tableExists('departments') && in_array('department_id', $userFields)) {
-                $builder->select('d.name as department_name');
-                $builder->join('departments d', 'd.id = u.department_id', 'left');
-            }
-
-            $builder->orderBy('u.id', 'DESC');
-            $users = $builder->get()->getResultArray();
+        $id = (int)$id;
+        if (! $id) {
+            return $this->response->setStatusCode(400)->setBody('Invalid id');
         }
 
-        // ensure the variables used by the view always exist
-        $currentFacultyId = session()->get('admin')['faculty_id'] ?? session()->get('faculty_id') ?? '';
-        $currentDepartmentId = session()->get('admin')['department_id'] ?? session()->get('department_id') ?? '';
+        $user = $this->userModel->find($id);
+        if (! $user) {
+            return $this->response->setStatusCode(404)->setBody('User not found');
+        }
 
-        return view('admin/dashboard/index', [
-            'admin' => session()->get('admin') ?? null,
-            'users' => $users,
-            'totalUsers' => $totalUsers,
-            'recentUsers' => $recentUsers,
-            'currentFacultyId' => $currentFacultyId,
-            'currentDepartmentId' => $currentDepartmentId,
+        // Faculties/departments if available (for selects)
+        $faculties = $this->facultyModel ? $this->facultyModel->findAll() : [];
+        $departments = $this->departmentModel ? $this->departmentModel->findAll() : [];
+
+        // Render only the partial used in modal (same partial you used before)
+        return view('admin/dashboard/partials/edit_form', [
+            'user' => $user,
+            'faculties' => $faculties,
+            'departments' => $departments,
+            'method' => 'edit',
         ]);
     }
 
+    /**
+     * Update user (called via AJAX from modal form)
+     * POST /admin/staff/{id}/update  -> route to Dashboard::update/$1
+     */
+    public function update($id = null)
+    {
+        $this->guard();
 
+        helper('form');
+        $id = (int)$id;
+        if (! $id) {
+            return $this->response->setJSON(['success'=>false,'message'=>'Invalid ID'])->setStatusCode(400);
+        }
+
+        $user = $this->userModel->find($id);
+        if (! $user) {
+            return $this->response->setJSON(['success'=>false,'message'=>'User not found'])->setStatusCode(404);
+        }
+
+        // validation rules
+        $rules = [
+            'fullname' => 'required|min_length[3]|max_length[255]',
+            'email' => 'required|valid_email|max_length[255]',
+            'staff_id' => 'required|max_length[120]',
+            'phone' => 'permit_empty|max_length[50]',
+            'faculty_id' => 'permit_empty|integer',
+            'department_id' => 'permit_empty|integer',
+            'period_from' => 'permit_empty|integer',
+            'period_to' => 'permit_empty|integer',
+        ];
+
+        if (! $this->validate($rules)) {
+            return $this->response->setJSON(['success'=>false,'errors'=>$this->validator->getErrors()])->setStatusCode(422);
+        }
+
+        // normalize inputs
+        $fullname = trim($this->request->getPost('fullname'));
+        $email = strtolower(trim($this->request->getPost('email')));
+        $staffIdInput = trim($this->request->getPost('staff_id'));
+        $phone = trim($this->request->getPost('phone')) ?: null;
+        $facultyId = $this->request->getPost('faculty_id') ?: null;
+        $departmentId = $this->request->getPost('department_id') ?: null;
+        $periodFrom = $this->request->getPost('period_from') ?: null;
+        $periodTo = $this->request->getPost('period_to') ?: null;
+
+        // duplicate checks (exclude current record)
+        $existsEmail = $this->userModel->where('LOWER(email)', strtolower($email))->where('id !=', $id)->first();
+        if ($existsEmail) {
+            return $this->response->setJSON(['success'=>false,'message'=>'Email already in use'])->setStatusCode(409);
+        }
+        // staff_id column name may be staff_number in DB; adjust accordingly
+        $existsStaff = $this->userModel->where('staff_id', $staffIdInput)->where('id !=', $id)->first();
+        if ($existsStaff) {
+            return $this->response->setJSON(['success'=>false,'message'=>'Staff ID already in use'])->setStatusCode(409);
+        }
+
+        // prepare update array
+        $update = [
+            'fullname' => $fullname,
+            'email' => $email,
+            'staff_id' => $staffIdInput,
+            'phone' => $phone,
+            'faculty_id' => $facultyId,
+            'department_id' => $departmentId,
+            'period_from' => $periodFrom,
+            'period_to' => $periodTo,
+            'updated_at' => date('Y-m-d H:i:s'),
+        ];
+
+        // Optional password reset: only set if non-empty
+        $pw = $this->request->getPost('password');
+        if ($pw && trim($pw) !== '') {
+            $update['password'] = password_hash(trim($pw), PASSWORD_DEFAULT);
+        }
+
+        try {
+            $this->userModel->update($id, $update);
+            $updated = $this->userModel->find($id);
+        } catch (\Throwable $e) {
+            log_message('error', 'Dashboard update error: '.$e->getMessage());
+            return $this->response->setJSON(['success'=>false,'message'=>'Server error while updating'])->setStatusCode(500);
+        }
+
+        // return the updated minimal payload so client can update row in-place
+        return $this->response->setJSON([
+            'success' => true,
+            'message' => 'User updated successfully',
+            'updated' => [
+                'id' => $id,
+                'fullname' => $updated['fullname'] ?? null,
+                'email' => $updated['email'] ?? null,
+                'staff_id' => $updated['staff_id'] ?? null,
+                'faculty_id' => $updated['faculty_id'] ?? null,
+                'department_id' => $updated['department_id'] ?? null,
+            ],
+        ])->setStatusCode(200);
+    }
 }
-
