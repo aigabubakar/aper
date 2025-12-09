@@ -142,7 +142,7 @@
                   </div>
                   <div class="no-print">
                     <a class="btn btn-outline-secondary" href="<?= site_url('dashboard') ?>">Back to Dashboard</a>
-                    <!-- <button class="btn btn-primary" onclick="window.print()">Print</button> -->
+                    <button class="btn btn-primary" onclick="window.print()">Print</button>
 
                     <a class="btn btn-outline-primary" href="<?= site_url('admin/profile/' . (int)$user['id'] . '/download') ?>">
                       Download PDF
