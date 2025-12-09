@@ -36,12 +36,12 @@
   pointer-events: none;
   user-select: none;
   white-space: nowrap;
-  font-weight: 700;
+  font-weight: 500;
   font-family: "Helvetica Neue", Arial, sans-serif;
   font-size: 72px; /* large for print */
   color: rgba(0,0,0,0.06);
   text-align: center;
-  width: 120%;
+  width: 90%;
   text-transform: uppercase;
   letter-spacing: 2px;
 }
@@ -111,8 +111,8 @@
 /* table layout for fields */
 .field-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
 .field-table td, .field-table th { vertical-align: top; padding: 6px 8px; border-bottom: 1px solid #eee; }
-.field-label { width: 28%; font-weight:700; color:#222; padding-right: 8px; }
-.field-value { width: 22%; color:#111; }
+.field-label { width: 30%; font-weight:700; color:#222; padding-right: 8px; }
+.field-value { width: 70%; color:#111; }
 
 /* If you want the right-hand column labels to be slightly narrower */
 .field-table .right .field-label { width: 18%; }
@@ -130,18 +130,10 @@
 
 </head>
 <body>
-  <!-- WATERMARK (fixed, appears on every page) -->
-<div class="watermark">Edo State University Iyamho — APER</div>
-
-<!-- STAMP (fixed bottom-right on every page) -->
-<div class="stamp">
-  <div class="stamp-text">EDO STATE UNIVERSITY<br>&copy; <?= date('Y') ?>&nbsp;APER</div>
-  <span class="stamp-time"><?= date('Y-m-d H:i:s') ?></span>
-</div>
-
+ 
 
 <!-- WATERMARK AND STAMP (keep in page) -->
-<div class="watermark">Edo State University Iyamho — APER</div>
+<div class="watermark">Edo State University Iyamho<br><?= date('Y') ?> APER</div>
 <div class="stamp">
   <div class="stamp-text">EDO STATE UNIVERSITY<br>&copy; <?= date('Y') ?> APER</div>
   <span class="stamp-time"><?= date('Y-m-d H:i:s') ?></span>
@@ -254,7 +246,8 @@
     <tr>
       <td class="field-label">University Teaching Experience</td>
       <td class="field-value"><?= esc($user['teaching_experience'] ?? 'N/A') ?></td>
-
+    </tr>
+    <tr>
       <td class="field-label right">Professional Experience</td>
       <td class="field-value"><?= esc($user['professional_experience'] ?? 'N/A') ?></td>
     </tr>

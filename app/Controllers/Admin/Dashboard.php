@@ -110,11 +110,87 @@ return view('admin/dashboard/index', [
 
     /**
      * Return the edit form partial (for modal)
-     * GET /admin/staff/{id}/edit-form  -> route to Dashboard::editForm/$1
+     * GET /admin/dashboard/{id}/edit-form  -> route to Dashboard::editForm/$1
      */
 
 
-     public function viewForm($id)
+     /**
+ * Return the view partial for the "view" modal/preview.
+ * Ensures faculty & department names are resolved for display.
+ */
+public function viewForm($id)
+{
+    $id = (int) $id;
+    if (! $id) {
+        return $this->response->setStatusCode(400)->setBody('Invalid id');
+    }
+
+    $um = new \App\Models\UserModel();
+    $user = $um->find($id);
+    if (! $user) {
+        return $this->response->setStatusCode(404)->setBody('Not found');
+    }
+
+    // Resolve faculty name
+    $facultyName = null;
+    try {
+        // prefer numeric FK faculty_id if present
+        if (! empty($user['faculty_id'])) {
+            if (class_exists(\App\Models\FacultyModel::class)) {
+                $fm = new \App\Models\FacultyModel();
+                $f = $fm->find((int)$user['faculty_id']);
+                if ($f && isset($f['name'])) $facultyName = $f['name'];
+            } else {
+                // fallback: try DB direct lookup (if you prefer)
+                $db = \Config\Database::connect();
+                if ($db->tableExists('faculties')) {
+                    $row = $db->table('faculties')->select('name')->where('id', $user['faculty_id'])->get()->getRowArray();
+                    if ($row) $facultyName = $row['name'] ?? null;
+                }
+            }
+        }
+        // fallback if user record already stores faculty name string
+        if (empty($facultyName) && ! empty($user['faculty'])) {
+            $facultyName = $user['faculty'];
+        }
+    } catch (\Throwable $e) {
+        // don't break view on lookup issues; log for debugging
+        log_message('error', 'Faculty lookup failed: '.$e->getMessage());
+    }
+
+    // Resolve department name (same strategy)
+    $departmentName = null;
+    try {
+        if (! empty($user['department_id'])) {
+            if (class_exists(\App\Models\DepartmentModel::class)) {
+                $dm = new \App\Models\DepartmentModel();
+                $d = $dm->find((int)$user['department_id']);
+                if ($d && isset($d['name'])) $departmentName = $d['name'];
+            } else {
+                $db = \Config\Database::connect();
+                if ($db->tableExists('departments')) {
+                    $row = $db->table('departments')->select('name')->where('id', $user['department_id'])->get()->getRowArray();
+                    if ($row) $departmentName = $row['name'] ?? null;
+                }
+            }
+        }
+        if (empty($departmentName) && ! empty($user['department'])) {
+            $departmentName = $user['department'];
+        }
+    } catch (\Throwable $e) {
+        log_message('error', 'Department lookup failed: '.$e->getMessage());
+    }
+
+    // Provide the partial with user + resolved names
+    return view('admin/dashboard/partials/view_form', [
+        'user' => $user,
+        'facultyName' => $facultyName,
+        'departmentName' => $departmentName,
+    ]);
+}
+
+
+ public function viewForm1($id)
 {
     $um = new \App\Models\UserModel();
     $user = $um->find((int)$id);
@@ -127,6 +203,7 @@ return view('admin/dashboard/index', [
     public function editForm($id = null)
     {
         $this->guard();
+        
 
         $id = (int)$id;
         if (! $id) {

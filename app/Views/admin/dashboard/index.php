@@ -264,7 +264,7 @@
 		<!-- /Footer -->
 
 			<!-- Generic CRUD Modal (place near end of layout) -->
-			<div class="modal fade" id="crudModal" tabindex="-1" aria-hidden="true">
+			<div class="modal fade" id="crudModal" tabindex="-1" aria-hidden="true"data-bs-backdrop="static">
 			<div class="modal-dialog modal-lg modal-dialog-centered">
 				<div class="modal-content">
 				<div class="modal-header">
@@ -281,7 +281,7 @@
 
 		<!-- /Main Wrapper -->
 			<!-- Evaluation Modal -->
-			<div class="modal fade" id="evaluationModal" tabindex="-1" aria-hidden="true">
+			<div class="modal fade" id="evaluationModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
 			<div class="modal-dialog modal-lg modal-dialog-centered">
 				<div class="modal-content">
 				<div class="modal-header">

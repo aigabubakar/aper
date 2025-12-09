@@ -94,6 +94,8 @@ class UserModel extends Model
     'prof_qual3','prof_qual3_body','prof_qual3_date',
     'prof_qual4','prof_qual4_body','prof_qual4_date',
     'prof_qual5','prof_qual5_body','prof_qual5_date',
+    
+    'staff_id','category','overall_score','comments','meta','created_by',
 ];
      
 
