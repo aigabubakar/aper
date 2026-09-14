@@ -18,7 +18,7 @@
 						<div class="main-menu-wrapper">								
 							<div class="menu-header">
 								<a href="index.html" class="menu-logo">
-									<img src="assets/img/logo.jpg" class="img-fluid" alt="Logo">
+									<img src="<?= base_url('assets/img/logo.jpg') ?>" class="img-fluid" alt="Logo">
 								</a>
 								<a id="menu_close" class="menu-close" href="javascript:void(0);">
 									<i class="fas fa-times"></i>

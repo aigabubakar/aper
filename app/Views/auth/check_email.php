@@ -34,7 +34,7 @@
                             <div class="loginbox">
                                 <div class="w-100">
                                     <div class="d-flex align-items-center justify-content-between login-header">
-                                          <img class="bg-img-cover bg-center" class="img-fluid" src="assets/img/logo.jpg" class="img-fluid" alt="Logo">
+                                          <img class="bg-img-cover bg-center" class="img-fluid" src="<?= base_url('assets/img/logo.jpg') ?>" class="img-fluid" alt="Logo">
                                     </div>
                                     <h1 class="fs-32 fw-bold topic">Verify Your Email Account</h1>
                                     <div id="alert-placeholder"></div>

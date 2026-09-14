@@ -160,7 +160,7 @@ $isLoggedIn = (bool) $session->get('isLoggedIn');
 
   <!-- app scripts -->
   <script src="<?= base_url('assets/js/script.js') ?>"></script>
-  <script src="<?= base_url('assets/js/script1.js') ?>"></script>
+
 
   <!-- page-specific scripts -->
   <?= $this->renderSection('scripts') ?>

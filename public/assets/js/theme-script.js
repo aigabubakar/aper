@@ -19,6 +19,7 @@
       };
 
       const updateToggleButtons = (isDarkMode) => {
+          if (!darkModeToggle || !lightModeToggle) return;
           if (isDarkMode) {
               darkModeToggle.classList.remove('activate');
               lightModeToggle.classList.add('activate');

@@ -32,7 +32,7 @@
                                 <div class="w-100">
                                   <div class="row">
                                       <div class="d-flex align-items-center justify-content-between login-header">
-                                       <img class="bg-img-cover text-center-container"  src="assets/img/logo.jpg" class="img-fluid" alt="Logo">
+                                       <img class="bg-img-cover text-center-container"  src="<?= base_url('assets/img/logo.jpg') ?>" class="img-fluid" alt="Logo">
                                     </div>
                                   </div>
                                     
