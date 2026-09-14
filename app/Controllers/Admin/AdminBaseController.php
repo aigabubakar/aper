@@ -61,8 +61,20 @@ protected function getAdminScope(): array
     $facultyId = $admin['faculty_id'] ?? $session->get('faculty_id') ?? null;
     $departmentId = $admin['department_id'] ?? $session->get('department_id') ?? null;
 
+    $facultyName = null;
+    $departmentName = null;
+    $db = \Config\Database::connect();
+    if ($facultyId && $db->tableExists('faculties')) {
+        $f = $db->table('faculties')->select('name')->where('id', $facultyId)->get()->getRowArray();
+        if ($f) $facultyName = $f['name'];
+    }
+    if ($departmentId && $db->tableExists('departments')) {
+        $d = $db->table('departments')->select('name')->where('id', $departmentId)->get()->getRowArray();
+        if ($d) $departmentName = $d['name'];
+    }
+
     // The apply closure accepts a Query Builder instance and optionally GET filters
-    $apply = function($builder, $getFilters = []) use ($role, $facultyId, $departmentId) {
+    $apply = function($builder, $getFilters = []) use ($role, $facultyId, $departmentId, $facultyName, $departmentName) {
         // If explicit filters were passed (e.g. superadmin allowed filters), apply them
         $filterFaculty = $getFilters['faculty'] ?? null;
         $filterDepartment = $getFilters['department'] ?? null;
@@ -77,7 +89,11 @@ protected function getAdminScope(): array
         if ($role === 'dean') {
             // dean: restrict to their faculty (if session has faculty_id), otherwise apply filterFaculty if it matches
             if ($facultyId) {
-                $builder->where('u.faculty', (int)$facultyId);
+                $builder->groupStart()
+                        ->where('u.faculty', (int)$facultyId)
+                        ->orWhere('u.faculty', (string)$facultyId);
+                if ($facultyName) $builder->orWhere('u.faculty', $facultyName);
+                $builder->groupEnd();
             } elseif ($filterFaculty) {
                 $builder->where('u.faculty', (int)$filterFaculty);
             } else {
@@ -90,7 +106,11 @@ protected function getAdminScope(): array
         if ($role === 'hod') {
             // hod: restrict to their department
             if ($departmentId) {
-                $builder->where('u.department', (int)$departmentId);
+                $builder->groupStart()
+                        ->where('u.department', (int)$departmentId)
+                        ->orWhere('u.department', (string)$departmentId);
+                if ($departmentName) $builder->orWhere('u.department', $departmentName);
+                $builder->groupEnd();
             } elseif ($filterDepartment) {
                 $builder->where('u.department', (int)$filterDepartment);
             } else {
@@ -101,11 +121,19 @@ protected function getAdminScope(): array
 
         // fallback for other admin roles:
         if ($departmentId) {
-            $builder->where('u.department', (int)$departmentId);
+            $builder->groupStart()
+                    ->where('u.department', (int)$departmentId)
+                    ->orWhere('u.department', (string)$departmentId);
+            if ($departmentName) $builder->orWhere('u.department', $departmentName);
+            $builder->groupEnd();
             return;
         }
         if ($facultyId) {
-            $builder->where('u.faculty', (int)$facultyId);
+            $builder->groupStart()
+                    ->where('u.faculty', (int)$facultyId)
+                    ->orWhere('u.faculty', (string)$facultyId);
+            if ($facultyName) $builder->orWhere('u.faculty', $facultyName);
+            $builder->groupEnd();
             return;
         }
 
@@ -150,14 +178,30 @@ protected function getAdminScope(): array
             return true;
         }
 
+        $db = \Config\Database::connect();
+
         if ($role === 'dean') {
-            // Dean's faculty must match the staff's faculty
-            return $facultyId && ((int)$staff['faculty'] === (int)$facultyId || (int)($staff['faculty_id'] ?? 0) === (int)$facultyId);
+            if (!$facultyId) return false;
+            $sFac = $staff['faculty'] ?? null;
+            $sFacId = $staff['faculty_id'] ?? null;
+            if ((int)$sFac === (int)$facultyId || (int)$sFacId === (int)$facultyId || (string)$sFac === (string)$facultyId) return true;
+            if ($db->tableExists('faculties')) {
+                $f = $db->table('faculties')->select('name')->where('id', $facultyId)->get()->getRowArray();
+                if ($f && strcasecmp((string)$sFac, $f['name']) === 0) return true;
+            }
+            return false;
         }
 
         if ($role === 'hod') {
-            // HOD's department must match the staff's department
-            return $departmentId && ((int)$staff['department'] === (int)$departmentId || (int)($staff['department_id'] ?? 0) === (int)$departmentId);
+            if (!$departmentId) return false;
+            $sDept = $staff['department'] ?? null;
+            $sDeptId = $staff['department_id'] ?? null;
+            if ((int)$sDept === (int)$departmentId || (int)$sDeptId === (int)$departmentId || (string)$sDept === (string)$departmentId) return true;
+            if ($db->tableExists('departments')) {
+                $d = $db->table('departments')->select('name')->where('id', $departmentId)->get()->getRowArray();
+                if ($d && strcasecmp((string)$sDept, $d['name']) === 0) return true;
+            }
+            return false;
         }
 
         // fallback deny for other roles
