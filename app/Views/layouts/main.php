@@ -23,7 +23,7 @@ $isLoggedIn = (bool) $session->get('isLoggedIn');
 
   
     		<!-- Theme Settings Js -->
-		<script src="<?= base_url('assets/js/theme-script.js') ?>"></script>
+		<script src="<?= base_url('assets/js/theme-script.js?v=2') ?>"></script>
 
   <!-- Bootstrap CSS -->
     <link href="<?= base_url('assets/css/bootstrap.min.css') ?>" rel="stylesheet">
@@ -110,7 +110,7 @@ $isLoggedIn = (bool) $session->get('isLoggedIn');
         <!-- Validation-->
 		<script src="<?= base_url('assets/js/validation.js') ?>"></script>	
 		<!-- Custom JS -->
-		<script src="<?= base_url('assets/js/script.js') ?>"></script>
+		<script src="<?= base_url('assets/js/script.js?v=2') ?>"></script>
 
   <!-- JS: core libs first -->
  
@@ -158,7 +158,7 @@ $isLoggedIn = (bool) $session->get('isLoggedIn');
 
 
   <!-- app scripts -->
-  <script src="<?= base_url('assets/js/script.js') ?>"></script>
+  <script src="<?= base_url('assets/js/script.js?v=2') ?>"></script>
 
 
   <!-- page-specific scripts -->
