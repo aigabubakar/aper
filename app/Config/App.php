@@ -16,11 +16,11 @@ class App extends BaseConfig
      *
      * E.g., http://example.com/
      * 
-     *     public string $baseURL = 'https://www.edouniversity.edu.ng/aper/';
+     *    public string $baseURL = 'http://localhost:8080/';
 
      *  public string $baseURL = 'http://localhost:8080/';
      */
-     public string $baseURL = 'https://www.edouniversity.edu.ng/aper/';
+    public string $baseURL = 'https://edouniversity.edu.ng/aper/';
     
     
     /**
@@ -34,7 +34,7 @@ class App extends BaseConfig
      *
      * @var list<string>
      */
-    public array $allowedHostnames = [];
+    public array $allowedHostnames = ['www.edouniversity.edu.ng', 'localhost'];
 
     /**
      * --------------------------------------------------------------------------

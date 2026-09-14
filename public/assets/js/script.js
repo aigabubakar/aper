@@ -1080,7 +1080,7 @@ Version      : 1.0
 		//   Login
 		if($('.login-carousel').length > 0) {
 		$('.login-carousel').slick({
-			dots: true,
+			dots: false,
 			infinite: true,
 			slidesToShow: 1,
 			slidesToScroll: 1,

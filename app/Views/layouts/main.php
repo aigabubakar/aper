@@ -117,8 +117,7 @@ $isLoggedIn = (bool) $session->get('isLoggedIn');
   <!-- SweetAlert2 CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script src="<?= base_url('') ?>"></script>
-    <script src="<?= base_url('') ?>"></script>
+
  	<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
 	<script>
