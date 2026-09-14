@@ -20,8 +20,15 @@ class Staff extends AdminBaseController
 
         // Prefer 'users' table if it exists, else use 'staffs'
         $db = \Config\Database::connect();
-        $table = $db->tableExists('staffs') ? 'staffs': 'users';
-        $rows = $db->table($table)->orderBy('id','DESC')->get()->getResultArray();
+        $table = $db->tableExists('users') ? 'users' : 'staffs';
+        
+        $builder = $db->table($table . ' as u')->select('u.*');
+
+        // Apply role scoping
+        $scope = $this->getAdminScope();
+        ($scope['apply'])($builder);
+
+        $rows = $builder->orderBy('u.id', 'DESC')->get()->getResultArray();
 
         return view('admin/staff/index', [
             'staff' => $rows,
@@ -61,11 +68,14 @@ class Staff extends AdminBaseController
 
     // builder
     $builder = $db->table($table . ' as u');
-    $builder->select('u.id, u.staff_id, u.fullname, u.email, u.category, u.role, u.faculty_id, u.department_id, u.phone, u.period_from, u.period_to, u.created_at');
+    $builder->select('u.id, u.staff_id, u.fullname, u.email, u.category, u.role, u.faculty, u.department, u.phone, u.period_from, u.period_to, u.created_at');
+    $builder->select('u.evaluation_overall_score, u.evaluation_comments, u.evaluation_at, u.evaluation_teaching, u.evaluation_research, u.evaluation_admin_performance, u.evaluation_discipline, u.staff_evaluation_comment');
+    $builder->select('a.fullname as evaluator_name');
 
     // optional joins for names (not required)
-    if ($db->tableExists('faculties')) $builder->join('faculties f', 'f.id = u.faculty_id', 'left');
-    if ($db->tableExists('departments')) $builder->join('departments d', 'd.id = u.department_id', 'left');
+    if ($db->tableExists('faculties')) $builder->join('faculties f', 'f.id = u.faculty', 'left');
+    if ($db->tableExists('departments')) $builder->join('departments d', 'd.id = u.department', 'left');
+    if ($db->tableExists('admin_users')) $builder->join('admin_users a', 'a.id = u.evaluation_by', 'left');
 
     // apply role-based scope; pass GET filters so superadmin can filter
     $getFilters = [
@@ -91,12 +101,34 @@ class Staff extends AdminBaseController
     // build CSV
     $fh = fopen('php://temp', 'w+');
     fwrite($fh, chr(0xEF).chr(0xBB).chr(0xBF)); // BOM for Excel
-    $headers = ['ID','Staff ID','Fullname','Email','Category','Role','Faculty','Department','Phone','Period From','Period To','Created At'];
+    $headers = [
+        'ID',
+        'Staff ID',
+        'Fullname',
+        'Email',
+        'Category',
+        'Role',
+        'Faculty',
+        'Department',
+        'Phone',
+        'Period From',
+        'Period To',
+        'Created At',
+        'Evaluation Overall Score',
+        'Evaluation Comments',
+        'Evaluator',
+        'Evaluation Date',
+        'Teaching Score (Academic)',
+        'Research Score (Academic)',
+        'Admin Performance (Senior Non-Academic)',
+        'Discipline Score (Junior Non-Academic)',
+        'Staff Acknowledgment Comment'
+    ];
     fputcsv($fh, $headers);
 
     foreach ($rows as $r) {
-        $facultyLabel = $facultyNames[$r['faculty_id']] ?? $r['faculty_id'] ?? '';
-        $deptLabel = $departmentNames[$r['department_id']] ?? $r['department_id'] ?? '';
+        $facultyLabel = $facultyNames[$r['faculty']] ?? $r['faculty'] ?? '';
+        $deptLabel = $departmentNames[$r['department']] ?? $r['department'] ?? '';
 
         $line = [
             $r['id'] ?? '',
@@ -111,6 +143,15 @@ class Staff extends AdminBaseController
             $r['period_from'] ?? '',
             $r['period_to'] ?? '',
             $r['created_at'] ?? '',
+            $r['evaluation_overall_score'] ?? '',
+            $r['evaluation_comments'] ?? '',
+            $r['evaluator_name'] ?? '',
+            $r['evaluation_at'] ?? '',
+            $r['evaluation_teaching'] ?? '',
+            $r['evaluation_research'] ?? '',
+            $r['evaluation_admin_performance'] ?? '',
+            $r['evaluation_discipline'] ?? '',
+            $r['staff_evaluation_comment'] ?? '',
         ];
         fputcsv($fh, $line);
     }
@@ -1004,7 +1045,7 @@ public function export2()
      */
     public function create()
     {
-        $this->guard(); // keep your existing guard/authorization
+        $this->guard('superadmin'); // strictly superadmin only!
 
         $faculties = [];
         $departments = [];
@@ -1027,10 +1068,10 @@ public function export2()
      */
     public function store()
     {
-        $this->guard();
+        $this->guard('superadmin'); // strictly superadmin only!
 
         if ($this->request->getMethod() !== 'post') {
-            return redirect()->back();
+            return redirect()->to('/admin/staff/create');
         }
 
         // NOTE: use 'staff_number' to match your DB/model
@@ -1045,7 +1086,7 @@ public function export2()
             if ($this->request->isAJAX()) {
                 return $this->response->setJSON(['success' => false, 'errors' => $errors])->setStatusCode(422);
             }
-            return redirect()->back()->withInput()->with('errors', $errors);
+            return redirect()->to('/admin/staff/create')->withInput()->with('errors', $errors);
         }
 
         // normalize inputs
@@ -1063,7 +1104,7 @@ public function export2()
             if ($this->request->isAJAX()) {
                 return $this->response->setJSON(['success' => false, 'message' => $msg])->setStatusCode(409);
             }
-            return redirect()->back()->withInput()->with('errors', [$msg]);
+            return redirect()->to('/admin/staff/create')->withInput()->with('errors', ['email' => $msg]);
         }
 
         if ($this->staffModel->where('staff_number', $staffNumber)->first()) {
@@ -1071,7 +1112,7 @@ public function export2()
             if ($this->request->isAJAX()) {
                 return $this->response->setJSON(['success' => false, 'message' => $msg])->setStatusCode(409);
             }
-            return redirect()->back()->withInput()->with('errors', [$msg]);
+            return redirect()->to('/admin/staff/create')->withInput()->with('errors', ['staff_number' => $msg]);
         }
         
 
@@ -1094,7 +1135,7 @@ public function export2()
             if ($this->request->isAJAX()) {
                 return $this->response->setJSON(['success' => false, 'message' => $msg])->setStatusCode(500);
             }
-            return redirect()->back()->withInput()->with('errors', [$msg]);
+            return redirect()->to('/admin/staff/create')->withInput()->with('errors', ['server' => $msg]);
         }
 
         // success
@@ -1106,7 +1147,29 @@ public function export2()
         return redirect()->to(site_url('admin/staff/create'))->with('success', $msg);
     }
 
-    // TODO: implement edit(), update(), view(), delete() methods below
+    /**
+     * Delete staff member (strictly superadmin)
+     */
+    public function delete($id = null)
+    {
+        $this->guard('superadmin');
+
+        $id = (int)$id;
+        if (! $id) {
+            return redirect()->to('/admin')->with('error', 'Invalid Staff ID');
+        }
+
+        $db = \Config\Database::connect();
+        $table = $db->tableExists('users') ? 'users' : 'staffs';
+
+        try {
+            $db->table($table)->where('id', $id)->delete();
+            return redirect()->to('/admin')->with('success', 'Staff deleted successfully.');
+        } catch (\Throwable $e) {
+            log_message('error', 'Staff delete error: ' . $e->getMessage());
+            return redirect()->to('/admin')->with('error', 'Server error while deleting staff.');
+        }
+    }
 }
 
     

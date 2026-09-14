@@ -41,6 +41,10 @@ if ($db->tableExists('departments')) {
     $builder->join('departments d', 'd.id = u.department', 'left');
 }
 
+// Apply role scoping
+$scope = $this->getAdminScope();
+($scope['apply'])($builder);
+
 $builder->orderBy('u.id', 'DESC');
 $rows = $builder->get()->getResultArray();
 
@@ -96,12 +100,29 @@ foreach ($rows as $r) {
     $users[] = $r;
 }
 
+// Compute statistics based on scoped users
+$totalCount = count($users);
+$evaluatedCount = 0;
+foreach ($users as $u) {
+    if (isset($u['evaluation_overall_score']) && $u['evaluation_overall_score'] !== null && $u['evaluation_overall_score'] !== '') {
+        $evaluatedCount++;
+    }
+}
+$pendingCount = $totalCount - $evaluatedCount;
+
+// Get scoped recent users
+$recentBuilder = $db->table('users as u')->select('u.*');
+($scope['apply'])($recentBuilder);
+$recentUsers = $recentBuilder->orderBy('u.created_at', 'DESC')->limit(5)->get()->getResultArray();
+
 // pass normalized $users to view
 return view('admin/dashboard/index', [
     'admin' => session()->get('admin') ?? null,
     'users' => $users,
-    'totalUsers' => $db->table('users')->countAll(),
-    'recentUsers' => $db->table('users')->orderBy('created_at','DESC')->limit(5)->get()->getResultArray(),
+    'totalUsers' => $totalCount,
+    'evaluatedCount' => $evaluatedCount,
+    'pendingCount' => $pendingCount,
+    'recentUsers' => $recentUsers,
     'currentFacultyId' => session()->get('faculty_id') ?? '',
     'currentDepartmentId' => session()->get('department_id') ?? '',
 ]);
@@ -130,6 +151,8 @@ public function viewForm($id)
     if (! $user) {
         return $this->response->setStatusCode(404)->setBody('Not found');
     }
+
+    $this->guardStaffScope($user);
 
     // Resolve faculty name
     $facultyName = null;
@@ -202,7 +225,7 @@ public function viewForm($id)
 
     public function editForm($id = null)
     {
-        $this->guard();
+        $this->guard('superadmin'); // strictly superadmin only!
         
 
         $id = (int)$id;
@@ -234,7 +257,7 @@ public function viewForm($id)
      */
     public function update($id = null)
     {
-        $this->guard();
+        $this->guard('superadmin'); // strictly superadmin only!
 
         helper('form');
         $id = (int)$id;
@@ -290,8 +313,8 @@ public function viewForm($id)
             'email' => $email,
             'staff_id' => $staffIdInput,
             'phone' => $phone,
-            'faculty_id' => $facultyId,
-            'department_id' => $departmentId,
+            'faculty' => $facultyId,
+            'department' => $departmentId,
             'period_from' => $periodFrom,
             'period_to' => $periodTo,
             'updated_at' => date('Y-m-d H:i:s'),
@@ -320,8 +343,8 @@ public function viewForm($id)
                 'fullname' => $updated['fullname'] ?? null,
                 'email' => $updated['email'] ?? null,
                 'staff_id' => $updated['staff_id'] ?? null,
-                'faculty_id' => $updated['faculty_id'] ?? null,
-                'department_id' => $updated['department_id'] ?? null,
+                'faculty_id' => $updated['faculty'] ?? null,
+                'department_id' => $updated['department'] ?? null,
             ],
         ])->setStatusCode(200);
     }

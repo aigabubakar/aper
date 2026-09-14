@@ -8,11 +8,18 @@ class Profile extends AdminBaseController
 {
     public function downloadSummaryPdf($id = null)
     {
-        $this->guard(); // optional
-
         $id = (int)$id;
         if (! $id) {
             return redirect()->back()->with('error', 'Invalid user id');
+        }
+
+        $session = session();
+        $isAdmin = (bool)$session->get('isAdminLoggedIn');
+        $isUser = (bool)$session->get('isLoggedIn');
+        $currentUserId = (int)$session->get('user_id');
+
+        if (!$isAdmin && (!$isUser || $currentUserId !== $id)) {
+            return redirect()->to('/login')->with('error', 'Please login to continue.');
         }
 
         // Load user (adjust model to your UserModel location)
@@ -22,18 +29,22 @@ class Profile extends AdminBaseController
             return redirect()->back()->with('error', 'User not found');
         }
 
-        // Resolve faculty/department names if needed
-        $facultyName = null;
-        $departmentName = null;
-        if (class_exists(\App\Models\FacultyModel::class)) {
-            $fm = new \App\Models\FacultyModel();
-            $f = $fm->find($user['faculty_id'] ?? null);
-            $facultyName = $f['name'] ?? null;
+        if ($isAdmin) {
+            $this->guardStaffScope($user);
         }
-        if (class_exists(\App\Models\DepartmentModel::class)) {
+
+        // Resolve faculty/department names if needed
+        $facultyName = $user['faculty'] ?? null;
+        $departmentName = $user['department'] ?? null;
+        if (class_exists(\App\Models\FacultyModel::class) && is_numeric($facultyName)) {
+            $fm = new \App\Models\FacultyModel();
+            $f = $fm->find((int)$facultyName);
+            $facultyName = $f['name'] ?? $facultyName;
+        }
+        if (class_exists(\App\Models\DepartmentModel::class) && is_numeric($departmentName)) {
             $dm = new \App\Models\DepartmentModel();
-            $d = $dm->find($user['department_id'] ?? null);
-            $departmentName = $d['name'] ?? null;
+            $d = $dm->find((int)$departmentName);
+            $departmentName = $d['name'] ?? $departmentName;
         }
 
         // Render view to HTML (use the PDF-specific view above) 

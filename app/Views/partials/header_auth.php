@@ -2,6 +2,23 @@
 $session = session();
 $name = esc($session->get('fullname') ?? $session->get('email'));
 $role = esc($session->get('role') ?? '');
+
+if (!isset($user) || empty($user)) {
+    $userId = $session->get('user_id');
+    if ($userId) {
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->find($userId);
+        if (is_object($user)) {
+            $user = (array) $user;
+        }
+    }
+}
+if (!isset($user) || !is_array($user)) {
+    $user = [];
+}
+if (!isset($user['fullname'])) {
+    $user['fullname'] = $session->get('fullname') ?? $session->get('email') ?? 'User';
+}
 ?>
 
 <?= $this->extend('layouts/main') ?>
@@ -80,8 +97,7 @@ $role = esc($session->get('role') ?? '');
 			</header>
 			<!-- /Header -->
 		
-	<!-- Main Wrapper -->
-		<div class="main-wrapper">
+
 
 			<div class="content">
 				<div class="container">

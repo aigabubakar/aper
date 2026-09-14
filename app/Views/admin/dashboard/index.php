@@ -199,29 +199,64 @@
 											  <td><?= esc($u['category'] ?? '-') ?></td>
 											  <td><?= esc($u['faculty_name'] ?? ($u['faculty_id'] ?? '-')) ?></td>
 											  <td><?= esc($u['department_name'] ?? ($u['department_id'] ?? '-')) ?></td>
-											  <td><?= (isset($u['completed_profile']) && $u['completed_profile']) ? '<span class="badge bg-success">Complete</span>' : '<span class="badge badge-sm bg-info">Pending</span>' ?></td>
+											  <td>
+												<?php
+													$hasScore = isset($u['evaluation_overall_score']) && $u['evaluation_overall_score'] !== null && $u['evaluation_overall_score'] !== '';
+													$hasComment = !empty($u['staff_evaluation_comment']);
+													if (!$hasScore) {
+														echo '<span class="badge badge-sm bg-info">Pending</span>';
+													} elseif (!$hasComment) {
+														echo '<span class="badge badge-sm bg-warning text-dark">Awaiting Comment</span>';
+													} else {
+														echo '<span class="badge badge-sm bg-success">Completed</span>';
+													}
+												?>
+											  </td>
 											 
-											<td>
-											<a class="btn btn-sm btn-info open-view" data-id="<?= $u['id'] ?>">View</a>
-											
-											<?php if ((session()->get('admin')['role'] ?? session()->get('role')) === 'superadmin'): ?>
-												<a class="btn btn-sm btn-warning open-edit" data-id="<?= $u['id'] ?>">Edit</a>
-											<?php endif; ?>
+											<td class="text-nowrap" style="white-space: nowrap !important; width: 1%;">
+												<div class="d-flex align-items-center gap-1 flex-nowrap">
+													<a class="btn btn-sm btn-info open-view d-inline-flex align-items-center justify-content-center" 
+													   data-id="<?= $u['id'] ?>" 
+													   title="View Staff" 
+													   style="width: 30px; height: 30px; padding: 0;">
+														<i class="isax isax-eye fs-14"></i>
+													</a>
+													
+													<?php if ((session()->get('admin')['role'] ?? session()->get('role')) === 'superadmin'): ?>
+														<a class="btn btn-sm btn-warning open-edit d-inline-flex align-items-center justify-content-center" 
+														   data-id="<?= $u['id'] ?>" 
+														   title="Edit Staff" 
+														   style="width: 30px; height: 30px; padding: 0;">
+															<i class="isax isax-edit-2 fs-14"></i>
+														</a>
+														<a href="<?= site_url('admin/staff/'.$u['id'].'/delete') ?>" 
+														   class="btn btn-sm btn-danger d-inline-flex align-items-center justify-content-center" 
+														   title="Delete Staff" 
+														   style="width: 30px; height: 30px; padding: 0;" 
+														   onclick="return confirm('Are you sure you want to delete this staff member?')">
+															<i class="isax isax-trash fs-14"></i>
+														</a>
+													<?php endif; ?>
 
-											<a class="btn btn-sm btn-warning open-edit" data-id="<?= $u['id'] ?>">Edit</a>
-											
-											<?php if ((session()->get('admin')['role'] ?? session()->get('role') ?? '') === 'superadmin'): ?>
-												<a href="<?= site_url('admin/staff/'.$u['id'].'/edit') ?>" class="btn btn-sm btn-warning"><i class="isax isax-edit-2"></i> Edit</a>
-												<a href="<?= site_url('admin/staff/'.$u['id'].'/delete') ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')"><i class="isax isax-trash"></i> Delete</a>
-											<?php endif; ?>
-
-											<!-- single button used to open modal — uses values from the current row ($u) -->
-											<button type="button"
-													class="btn btn-sm btn-success open-eval"
-													data-user-id="<?= esc($u['id']) ?>"
-													data-category="<?= esc($u['category'] ?? '') ?>">
-												Evaluate
-											</button>
+													<?php if ($hasScore && $hasComment): ?>
+														<button type="button"
+																class="btn btn-sm btn-secondary d-inline-flex align-items-center justify-content-center"
+																title="Evaluation Locked"
+																style="width: 30px; height: 30px; padding: 0;"
+																disabled>
+															<i class="isax isax-lock fs-14"></i>
+														</button>
+													<?php else: ?>
+														<button type="button"
+																class="btn btn-sm btn-success open-eval d-inline-flex align-items-center justify-content-center"
+																data-user-id="<?= esc($u['id']) ?>"
+																data-category="<?= esc($u['category'] ?? '') ?>"
+																title="Evaluate Staff"
+																style="width: 30px; height: 30px; padding: 0;">
+															<i class="isax isax-award fs-14"></i>
+														</button>
+													<?php endif; ?>
+												</div>
 											</td>
 
 											

@@ -1,9 +1,9 @@
 <?php namespace App\Controllers\Admin;
 
-use App\Controllers\BaseController;
+use App\Controllers\Admin\AdminBaseController;
 use Config\Services;
 
-class Evaluation extends BaseController
+class Evaluation extends AdminBaseController
 {
     protected $request;
     protected $session;
@@ -11,6 +11,7 @@ class Evaluation extends BaseController
 
     public function __construct()
     {
+        parent::__construct();
         $this->request = Services::request();
         $this->session = session();
 
@@ -32,10 +33,7 @@ class Evaluation extends BaseController
      */
     public function loadForm()
     {
-        // must be logged in as admin (adjust to your guard)
-        if (! $this->session->get('isAdminLoggedIn') && ! $this->session->get('isLoggedIn')) {
-            return view('admin/evaluation/partial_error', ['message' => 'Please login as admin to evaluate.']);
-        }
+        $this->guard();
 
         $id = (int) $this->request->getGet('id');
         $category = $this->request->getGet('category') ?? 'generic';
@@ -52,6 +50,8 @@ class Evaluation extends BaseController
         if (! $staff) {
             return view('admin/evaluation/partial_error', ['message' => 'Staff record not found.']);
         }
+
+        $this->guardStaffScope($staff);
 
         // map category -> view file
         $map = [
@@ -84,9 +84,7 @@ class Evaluation extends BaseController
         }
 
         // auth
-        if (! $this->session->get('isAdminLoggedIn') && ! $this->session->get('isLoggedIn')) {
-            return $this->response->setJSON(['success' => false, 'message' => 'Please login as admin'])->setStatusCode(401);
-        }
+        $this->guard();
 
         if (! $this->userModel) {
             return $this->response->setJSON(['success' => false, 'message' => 'User model not available'])->setStatusCode(500);
@@ -100,6 +98,16 @@ class Evaluation extends BaseController
             return $this->response->setJSON(['success' => false, 'message' => 'Missing staff id'])->setStatusCode(422);
         }
 
+        // fetch user to ensure it still exists and check if locked
+        $user = $this->userModel->find($staffId);
+        if (! $user) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Staff not found'])->setStatusCode(404);
+        }
+
+        if (! empty($user['staff_evaluation_comment'])) {
+            return $this->response->setJSON(['success' => false, 'message' => 'This evaluation has been acknowledged and locked by the staff member, and cannot be modified.'])->setStatusCode(403);
+        }
+
         // base rules
         $rules = [
             'staff_id' => 'required|integer',
@@ -111,17 +119,25 @@ class Evaluation extends BaseController
 
         if ($category === 'academic') {
             $rules['overall_score'] = 'required|integer|greater_than_equal_to[0]|less_than_equal_to[100]';
-            $rules['teaching'] = 'permit_empty|integer|greater_than_equal_to[0]|less_than_equal_to[100]';
-            $rules['research'] = 'permit_empty|integer|greater_than_equal_to[0]|less_than_equal_to[100]';
-            $extraFields = ['teaching', 'research'];
+            $rules['teaching_score'] = 'required|integer';
+            $rules['research_score'] = 'required|integer';
+            $rules['supervision_score'] = 'required|integer';
+            $rules['service_score'] = 'required|integer';
+            $extraFields = ['teaching_score', 'research_score', 'supervision_score', 'service_score'];
         } elseif ($category === 'senior_non_academic') {
             $rules['overall_score'] = 'required|integer|greater_than_equal_to[0]|less_than_equal_to[100]';
-            $rules['admin_performance'] = 'permit_empty|integer|greater_than_equal_to[0]|less_than_equal_to[100]';
-            $extraFields = ['admin_performance'];
+            $rules['skills_score'] = 'required|integer';
+            $rules['punctuality_score'] = 'required|integer';
+            $rules['teamwork_score'] = 'required|integer';
+            $rules['initiative_score'] = 'required|integer';
+            $extraFields = ['skills_score', 'punctuality_score', 'teamwork_score', 'initiative_score'];
         } elseif ($category === 'junior_non_academic') {
             $rules['overall_score'] = 'required|integer|greater_than_equal_to[0]|less_than_equal_to[100]';
-            $rules['discipline'] = 'permit_empty|integer|greater_than_equal_to[0]|less_than_equal_to[100]';
-            $extraFields = ['discipline'];
+            $rules['skills_score'] = 'required|integer';
+            $rules['punctuality_score'] = 'required|integer';
+            $rules['teamwork_score'] = 'required|integer';
+            $rules['initiative_score'] = 'required|integer';
+            $extraFields = ['skills_score', 'punctuality_score', 'teamwork_score', 'initiative_score'];
         } else {
             $rules['overall_score'] = 'required|integer|greater_than_equal_to[0]|less_than_equal_to[100]';
         }
@@ -140,6 +156,9 @@ class Evaluation extends BaseController
             return $this->response->setJSON(['success' => false, 'message' => 'Staff not found'])->setStatusCode(404);
         }
 
+        // guard scope
+        $this->guardStaffScope($user);
+
         // Build update payload for users table.
         // We store main fields under column names prefixed with evaluation_*
         // (Make sure these columns exist on your users table - SQL provided below).
@@ -153,12 +172,12 @@ class Evaluation extends BaseController
 
         // Category-specific direct columns (if present in DB)
         if ($category === 'academic') {
-            $update['evaluation_teaching'] = isset($post['teaching']) && $post['teaching'] !== '' ? (int)$post['teaching'] : null;
-            $update['evaluation_research'] = isset($post['research']) && $post['research'] !== '' ? (int)$post['research'] : null;
+            $update['evaluation_teaching'] = (int) $post['teaching_score'];
+            $update['evaluation_research'] = (int) $post['research_score'];
         } elseif ($category === 'senior_non_academic') {
-            $update['evaluation_admin_performance'] = isset($post['admin_performance']) && $post['admin_performance'] !== '' ? (int)$post['admin_performance'] : null;
+            $update['evaluation_admin_performance'] = (int) $post['overall_score'];
         } elseif ($category === 'junior_non_academic') {
-            $update['evaluation_discipline'] = isset($post['discipline']) && $post['discipline'] !== '' ? (int)$post['discipline'] : null;
+            $update['evaluation_discipline'] = (int) $post['overall_score'];
         }
 
         // Store any extra metrics into JSON meta column (evaluation_meta) — merge with existing meta if present

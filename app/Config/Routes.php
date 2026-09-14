@@ -54,6 +54,7 @@ $routes->group('profile', ['filter' => 'auth'], function($routes) {
     $routes->post('junior/employment/save', 'ProfileController::saveJuniorEmployment');
     $routes->get('junior/professional', 'ProfileController::juniorProfessional');
     $routes->post('junior/professional/save', 'ProfileController::saveJuniorProfessional');
+    $routes->post('save-evaluation-comment', 'Dashboard::saveEvaluationComment');
 });
 
     // Academic routes (render + save)
@@ -218,6 +219,7 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], static functio
     $routes->get('staff', 'Staff::index');              // /admin/staff
     $routes->get('staff/create', 'Staff::create');      // /admin/staff/create
     $routes->post('staff/store', 'Staff::store');       // /admin/staff/store
+    $routes->get('staff/(:num)/delete', 'Staff::delete/$1'); // /admin/staff/{id}/delete
     // put inside $routes->group('admin', ['namespace'=>'App\Controllers\Admin'], function($routes) { ... });
     $routes->get('dashboard/(:num)/view-form', 'Dashboard::viewForm/$1');
     $routes->get('dashboard/(:num)/edit-form', 'Dashboard::editForm/$1');
@@ -236,15 +238,12 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], static functio
 
 
     // admin-users CRUD (URLs: /admin/admin-users/ ...)   
-        $routes->get('admin-users',   'AdminUsers::index');   // GET  /admin/admin-users
-        $routes->get('admin-users/create', 'AdminUsers::create'); // GET  /admin/admin-users/create
-        $routes->post('store',  'AdminUsers::store'); // POST /admin/admin-users/store
-
-        // optional extra routes you probably want:
-        $routes->get('(:num)/edit',   'AdminUsers::edit/$1');
-        $routes->post('(:num)/update', 'AdminUsers::update/$1');
-        $routes->get('(:num)/delete', 'AdminUsers::delete/$1');
-        $routes->get('(:num)/view',   'AdminUsers::view/$1'); 
+        $routes->get('admin-users',   'AdminUsers::index');
+        $routes->get('admin-users/create', 'AdminUsers::create');
+        $routes->post('admin-users/store',  'AdminUsers::store');
+        $routes->get('admin-users/(:num)/edit',   'AdminUsers::edit/$1');
+        $routes->post('admin-users/(:num)/update', 'AdminUsers::update/$1');
+        $routes->get('admin-users/(:num)/delete', 'AdminUsers::delete/$1');
 
         //$routes->get('staff/(:num)/evaluations', 'Staff::evaluations/$1'); // /Evaluations
         $routes->get('Evaluations/(:num)/evaluations', 'Evaluations::evaluations/$1'); // /Evaluations

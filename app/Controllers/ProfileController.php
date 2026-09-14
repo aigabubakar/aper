@@ -939,7 +939,7 @@ public function academicEmployment()
         $facultyModel = new \App\Models\FacultyModel();
         $departmentModel = new \App\Models\DepartmentModel();
         $faculties = $facultyModel->findAll();
-        $departments = $departmentModel->where('faculty_id', $user['faculty_id'] ?? 0)->findAll();
+        $departments = $departmentModel->where('faculty_id', $user['faculty'] ?? 0)->findAll();
     } catch (\Throwable $e) {
         log_message('error','academicEmployment: faculty/department model load failed: '.$e->getMessage());
         $faculties = [];
@@ -2123,8 +2123,7 @@ public function success()
 /**
  * Print-friendly profile summary
  */
-
- public function printSummary()
+public function printSummary()
 {
     $session = session();
     if (! $session->get('isLoggedIn')) {
@@ -2134,7 +2133,6 @@ public function success()
     $userId = (int) $session->get('user_id');
     $user = $this->userModel->find($userId);
     if (! $user) {
-        // DO NOT destroy session here (avoid accidental logout). Just redirect.
         log_message('warning', "printSummary: user not found for id={$userId}");
         return redirect()->to('/login')->with('errors', ['User not found.']);
     }
@@ -2143,22 +2141,21 @@ public function success()
     if (is_object($user)) $user = (array) $user;
 
     // Defaults
-    $facultyName = $user['faculty_name'] ?? null;
-    $departmentName = $user['department_name'] ?? null;
+    $facultyVal = $user['faculty'] ?? null;
+    $departmentVal = $user['department'] ?? null;
+    $facultyName = $facultyVal;
+    $departmentName = $departmentVal;
 
     try {
-        // If faculty_name not already available, try to load via FacultyModel (if it exists)
-        if (empty($facultyName) && ! empty($user['faculty_id']) && class_exists(\App\Models\FacultyModel::class)) {
+        if (class_exists(\App\Models\FacultyModel::class) && is_numeric($facultyVal)) {
             $fm = new \App\Models\FacultyModel();
-            $f = $fm->find((int)$user['faculty_id']);
-            $facultyName = $f['name'] ?? null;
+            $f = $fm->find((int)$facultyVal);
+            $facultyName = $f['name'] ?? $facultyVal;
         }
-
-        // If department_name not already available, try to load via DepartmentModel (if it exists)
-        if (empty($departmentName) && ! empty($user['department_id']) && class_exists(\App\Models\DepartmentModel::class)) {
+        if (class_exists(\App\Models\DepartmentModel::class) && is_numeric($departmentVal)) {
             $dm = new \App\Models\DepartmentModel();
-            $d = $dm->find((int)$user['department_id']);
-            $departmentName = $d['name'] ?? null;
+            $d = $dm->find((int)$departmentVal);
+            $departmentName = $d['name'] ?? $departmentVal;
         }
     } catch (\Throwable $e) {
         log_message('warning', 'printSummary relation lookup failed: ' . $e->getMessage());
@@ -2175,8 +2172,6 @@ public function success()
     ]);
 }
 
- 
-
 
 public function printSummary1()
 {
@@ -2192,22 +2187,24 @@ public function printSummary1()
         return redirect()->to('/login')->with('errors', ['User not found.']);
     }
 
-    // Optionally load faculty/department names if you have models
-    $facultyName = null;
-    $departmentName = null;
+    $facultyVal = $user['faculty'] ?? null;
+    $departmentVal = $user['department'] ?? null;
+    $facultyName = $facultyVal;
+    $departmentName = $departmentVal;
+
     try {
-        if (! empty($user['faculty_id'])) {
+        if (class_exists(\App\Models\FacultyModel::class) && is_numeric($facultyVal)) {
             $fm = new \App\Models\FacultyModel();
-            $f = $fm->find($user['faculty_id']);
-            $facultyName = $f['name'] ?? null;
+            $f = $fm->find((int)$facultyVal);
+            $facultyName = $f['name'] ?? $facultyVal;
         }
-        if (! empty($user['department_id'])) {
+        if (class_exists(\App\Models\DepartmentModel::class) && is_numeric($departmentVal)) {
             $dm = new \App\Models\DepartmentModel();
-            $d = $dm->find($user['department_id']);
-            $departmentName = $d['name'] ?? null;
+            $d = $dm->find((int)$departmentVal);
+            $departmentName = $d['name'] ?? $departmentVal;
         }
     } catch (\Throwable $e) {
-        // ignore — optional models may not exist
+        // ignore
     }
 
     return view('profile/print_summary', [
@@ -2216,7 +2213,4 @@ public function printSummary1()
         'departmentName' => $departmentName,
     ]);
 }
-
-
-
 }

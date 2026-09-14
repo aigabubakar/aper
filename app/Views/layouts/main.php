@@ -23,7 +23,7 @@ $isLoggedIn = (bool) $session->get('isLoggedIn');
 
   
     		<!-- Theme Settings Js -->
-		<script src=<?= base_url('assets/js/theme-script.js');?> type="beac13c0e5f6ca3dfbd860c7-text/javascript"></script>
+		<script src="<?= base_url('assets/js/theme-script.js') ?>"></script>
 
   <!-- Bootstrap CSS -->
     <link href="<?= base_url('assets/css/bootstrap.min.css') ?>" rel="stylesheet">
@@ -51,6 +51,30 @@ $isLoggedIn = (bool) $session->get('isLoggedIn');
 		<!-- Main CSS -->
     <link href="<?= base_url('assets/css/style.css') ?>" rel="stylesheet">
 
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+    body > .container,
+    .main-wrapper {
+      display: flex;
+      flex-direction: column;
+      flex: 1 0 auto;
+    }
+    .main-wrapper > .content, 
+    .main-wrapper > .container {
+      flex: 1 0 auto;
+    }
+    .footer {
+      flex-shrink: 0;
+      margin-top: auto;
+    }
+  </style>
   <?= $this->renderSection('styles') ?>
 </head>
 

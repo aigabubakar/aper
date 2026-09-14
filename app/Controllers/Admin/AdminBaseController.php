@@ -15,10 +15,32 @@ class AdminBaseController extends BaseController
     /**
      * Protect admin-only routes
      */
-    protected function guard()
+    protected function guard($requiredRole = null)
     {
         if (! $this->admin) {
-            return redirect()->to('/admin/login')->with('error', 'Please log in as administrator.');
+            if (service('request')->isAJAX()) {
+                service('response')
+                    ->setStatusCode(401)
+                    ->setJSON(['success' => false, 'message' => 'Please log in as administrator.'])
+                    ->send();
+                exit();
+            }
+            throw new \CodeIgniter\HTTP\Exceptions\RedirectException(
+                redirect()->to('/admin/login')->with('error', 'Please log in as administrator.')
+            );
+        }
+
+        if ($requiredRole && (!isset($this->admin['role']) || $this->admin['role'] !== $requiredRole)) {
+            if (service('request')->isAJAX()) {
+                service('response')
+                    ->setStatusCode(403)
+                    ->setJSON(['success' => false, 'message' => 'Access denied: Insufficient permissions.'])
+                    ->send();
+                exit();
+            }
+            throw new \CodeIgniter\HTTP\Exceptions\RedirectException(
+                redirect()->to('/admin')->with('error', 'Access denied: Insufficient permissions.')
+            );
         }
     }
 
@@ -47,20 +69,20 @@ protected function getAdminScope(): array
 
         if ($role === 'superadmin') {
             // superadmin: allow filters if provided (no mandatory scoping)
-            if ($filterFaculty) $builder->where('u.faculty_id', (int)$filterFaculty);
-            if ($filterDepartment) $builder->where('u.department_id', (int)$filterDepartment);
+            if ($filterFaculty) $builder->where('u.faculty', (int)$filterFaculty);
+            if ($filterDepartment) $builder->where('u.department', (int)$filterDepartment);
             return;
         }
 
         if ($role === 'dean') {
             // dean: restrict to their faculty (if session has faculty_id), otherwise apply filterFaculty if it matches
             if ($facultyId) {
-                $builder->where('u.faculty_id', (int)$facultyId);
+                $builder->where('u.faculty', (int)$facultyId);
             } elseif ($filterFaculty) {
-                $builder->where('u.faculty_id', (int)$filterFaculty);
+                $builder->where('u.faculty', (int)$filterFaculty);
             } else {
                 // no faculty assigned -> return nothing (defensive)
-                $builder->where('u.faculty_id IS NOT NULL AND 0 = 1', null, false);
+                $builder->where('u.faculty IS NOT NULL AND 0 = 1', null, false);
             }
             return;
         }
@@ -68,22 +90,22 @@ protected function getAdminScope(): array
         if ($role === 'hod') {
             // hod: restrict to their department
             if ($departmentId) {
-                $builder->where('u.department_id', (int)$departmentId);
+                $builder->where('u.department', (int)$departmentId);
             } elseif ($filterDepartment) {
-                $builder->where('u.department_id', (int)$filterDepartment);
+                $builder->where('u.department', (int)$filterDepartment);
             } else {
-                $builder->where('u.department_id IS NOT NULL AND 0 = 1', null, false);
+                $builder->where('u.department IS NOT NULL AND 0 = 1', null, false);
             }
             return;
         }
 
         // fallback for other admin roles:
         if ($departmentId) {
-            $builder->where('u.department_id', (int)$departmentId);
+            $builder->where('u.department', (int)$departmentId);
             return;
         }
         if ($facultyId) {
-            $builder->where('u.faculty_id', (int)$facultyId);
+            $builder->where('u.faculty', (int)$facultyId);
             return;
         }
 
@@ -111,5 +133,53 @@ protected function getAdminScope(): array
         echo view('admin/layouts/header', $data);
         echo view($view, $data);
         echo view('admin/layouts/footer');
+    }
+
+    /**
+     * Check if a staff record is within the current admin's scope
+     */
+    protected function isWithinScope(array $staff): bool
+    {
+        $session = session();
+        $admin = $session->get('admin') ?? [];
+        $role = $admin['role'] ?? $session->get('admin_role') ?? $session->get('role') ?? null;
+        $facultyId = $admin['faculty_id'] ?? $session->get('faculty_id') ?? null;
+        $departmentId = $admin['department_id'] ?? $session->get('department_id') ?? null;
+
+        if ($role === 'superadmin') {
+            return true;
+        }
+
+        if ($role === 'dean') {
+            // Dean's faculty must match the staff's faculty
+            return $facultyId && ((int)$staff['faculty'] === (int)$facultyId || (int)($staff['faculty_id'] ?? 0) === (int)$facultyId);
+        }
+
+        if ($role === 'hod') {
+            // HOD's department must match the staff's department
+            return $departmentId && ((int)$staff['department'] === (int)$departmentId || (int)($staff['department_id'] ?? 0) === (int)$departmentId);
+        }
+
+        // fallback deny for other roles
+        return false;
+    }
+
+    /**
+     * Stop request if a staff member is outside the current admin's scope
+     */
+    protected function guardStaffScope(array $staff)
+    {
+        if (!$this->isWithinScope($staff)) {
+            if (service('request')->isAJAX()) {
+                service('response')
+                    ->setStatusCode(403)
+                    ->setJSON(['success' => false, 'message' => 'Access denied: Staff member is outside of your department/faculty scope.'])
+                    ->send();
+                exit();
+            }
+            throw new \CodeIgniter\HTTP\Exceptions\RedirectException(
+                redirect()->to('/admin')->with('error', 'Access denied: Staff member is outside of your department/faculty scope.')
+            );
+        }
     }
 }

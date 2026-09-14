@@ -26,10 +26,26 @@
 							</div>		
 						</div>
 						<div class="header-btn d-flex align-items-center">
-							<a href="<?= site_url('admin/login') ?>" class="btn btn-light d-inline-flex align-items-center me-2">
-								<i class="isax isax-lock-circle me-2"></i>Admin Sign In
-							</a>
-						
+							<?php if (session()->get('isAdminLoggedIn')): ?>
+								<div class="icon-btn me-3">
+									<a href="javascript:void(0);" id="dark-mode-toggle" class="theme-toggle activate">
+										<i class="isax isax-sun-15"></i>
+									</a>
+									<a href="javascript:void(0);" id="light-mode-toggle" class="theme-toggle">
+										<i class="isax isax-moon"></i>
+									</a>
+								</div>
+								<span class="me-3 text-dark d-none d-lg-inline fw-medium">
+									Hello, <?= esc(session()->get('admin_name') ?? 'Admin') ?>
+								</span>
+								<a href="<?= site_url('admin/logout') ?>" class="btn btn-outline-danger btn-sm d-inline-flex align-items-center">
+									<i class="isax isax-logout me-1"></i> Logout
+								</a>
+							<?php else: ?>
+								<a href="<?= site_url('admin/login') ?>" class="btn btn-light d-inline-flex align-items-center me-2">
+									<i class="isax isax-lock-circle me-2"></i>Admin Sign In
+								</a>
+							<?php endif; ?>
 						</div>
 					</div>
 				</div>

@@ -26,9 +26,6 @@ class Auth extends BaseController
         $admin = $model->where('email', $email)->first();
 
         if ($admin && password_verify($password, $admin['password'])) {
-            // Regenerate session ID to prevent fixation
-            session()->regenerate();
-
             // Save minimal session data
             session()->set([
                 'isAdminLoggedIn' => true,
@@ -36,7 +33,18 @@ class Auth extends BaseController
                 'admin_name'      => $admin['fullname'],
                 'admin_email'     => $admin['email'],
                 'admin_role'      => $admin['role'],
+                'admin'           => [
+                    'id'            => $admin['id'],
+                    'fullname'      => $admin['fullname'],
+                    'email'         => $admin['email'],
+                    'role'          => $admin['role'],
+                    'faculty_id'    => $admin['faculty'] ?? null,
+                    'department_id' => $admin['department'] ?? null,
+                ]
             ]);
+
+            // Regenerate session ID to prevent fixation
+            session()->regenerate();
 
             // Update last login timestamp
             $model->update($admin['id'], ['last_login' => date('Y-m-d H:i:s')]);
@@ -46,7 +54,8 @@ class Auth extends BaseController
 
         // Invalid credentials
         return redirect()
-            ->back()
+            ->to('/admin/login')
+            ->withInput()
             ->with('errors', ['Invalid email or password.']);
     }
     /**
@@ -60,7 +69,9 @@ public function attempt()
 
     public function logout()
     {
-        session()->destroy();
-        return redirect()->to('/admin/login')->with('message', 'You have been logged out.');
+        $session = session();
+        $session->remove(['isAdminLoggedIn', 'admin_id', 'admin_name', 'admin_email', 'admin_role', 'admin']);
+        $session->destroy();
+        return redirect()->to('/admin/login')->with('success', 'You have been logged out successfully.');
     }
 }

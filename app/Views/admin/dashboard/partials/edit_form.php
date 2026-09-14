@@ -28,7 +28,20 @@ $method = $method ?? 'edit';
     <select name="faculty_id" class="form-control">
       <option value="">— select —</option>
       <?php foreach ($faculties as $f): ?>
-        <option value="<?= (int)$f['id'] ?>" <?= (isset($user['faculty_id']) && $user['faculty_id'] == $f['id']) ? 'selected' : '' ?>>
+        <?php
+          $isSelected = false;
+          if (isset($user['faculty'])) {
+              if ($user['faculty'] == $f['id']) {
+                  $isSelected = true;
+              } elseif (strcasecmp(trim($user['faculty']), trim($f['name'])) === 0) {
+                  $isSelected = true;
+              }
+          }
+          if (isset($user['faculty_id']) && $user['faculty_id'] == $f['id']) {
+              $isSelected = true;
+          }
+        ?>
+        <option value="<?= (int)$f['id'] ?>" <?= $isSelected ? 'selected' : '' ?>>
           <?= esc($f['name']) ?>
         </option>
       <?php endforeach; ?>
@@ -42,7 +55,20 @@ $method = $method ?? 'edit';
     <select name="department_id" class="form-control">
       <option value="">— select —</option>
       <?php foreach ($departments as $d): ?>
-        <option value="<?= (int)$d['id'] ?>" <?= (isset($user['department_id']) && $user['department_id'] == $d['id']) ? 'selected' : '' ?>>
+        <?php
+          $isSelected = false;
+          if (isset($user['department'])) {
+              if ($user['department'] == $d['id']) {
+                  $isSelected = true;
+              } elseif (strcasecmp(trim($user['department']), trim($d['name'])) === 0) {
+                  $isSelected = true;
+              }
+          }
+          if (isset($user['department_id']) && $user['department_id'] == $d['id']) {
+              $isSelected = true;
+          }
+        ?>
+        <option value="<?= (int)$d['id'] ?>" <?= $isSelected ? 'selected' : '' ?>>
           <?= esc($d['name']) ?>
         </option>
       <?php endforeach; ?>

@@ -96,6 +96,16 @@ class UserModel extends Model
     'prof_qual5','prof_qual5_body','prof_qual5_date',
     
     'staff_id','category','overall_score','comments','meta','created_by',
+    'evaluation_overall_score',
+    'evaluation_teaching',
+    'evaluation_research',
+    'evaluation_admin_performance',
+    'evaluation_discipline',
+    'evaluation_comments',
+    'evaluation_by',
+    'evaluation_at',
+    'evaluation_meta',
+    'staff_evaluation_comment',
 ];
      
 
